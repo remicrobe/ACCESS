@@ -1,7 +1,8 @@
 import {typeCollab, Collaborateur} from '../database/entity/Collab';
 import {AppDataSource} from "../database/datasource";
+import {Horaires} from "../database/entity/Horaires";
 
-export async function creerCollab(prenom: string, nom: string, mail: string, motdepasse: string, date: Date, grade: typeCollab) {
+export async function creerCollab(prenom: string, nom: string, mail: string, date: Date, grade: typeCollab) {
     const utilisateurExistant = await AppDataSource.getRepository(Collaborateur).findOneBy({ mail: mail });
     if (utilisateurExistant) {
         return null;
@@ -19,5 +20,15 @@ export async function creerCollab(prenom: string, nom: string, mail: string, mot
 export function setCollabGrade(utilisateur: Collaborateur, nouveauGrade: typeCollab) {
     utilisateur.grade = nouveauGrade;
     return utilisateur
+}
+
+export async function assignerHoraire(collaborateur: Collaborateur, horaires: Horaires) {
+    if (!collaborateur || !horaires) {
+        return false;
+    }
+
+    collaborateur.horaires = horaires;
+
+    return await AppDataSource.getRepository(Collaborateur).save(collaborateur);
 }
 

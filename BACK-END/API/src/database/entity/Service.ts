@@ -1,17 +1,18 @@
 import {Collaborateur} from "./Collab";
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Horaires} from "./Horaires";
 
 @Entity()
 export class Service {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    chefservice: number;
+    @OneToOne(() => Collaborateur)
+    chefservice: Collaborateur;
 
     @Column()
     nomservice: string;
 
-    @ManyToOne(() => Collaborateur, collab => collab.services)
-    collabs: Collaborateur;
+    @OneToMany(() => Collaborateur, collab => collab.service)
+    collabs: Collaborateur[];
 }

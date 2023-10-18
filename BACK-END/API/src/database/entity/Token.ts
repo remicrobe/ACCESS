@@ -1,5 +1,9 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Collaborateur} from "./Collab";
+
+export enum tokenType{
+    'appqrcode', 'cardqrcode', 'auth', 'recoverpassword'
+}
 
 @Entity()
 export class Token {
@@ -11,13 +15,16 @@ export class Token {
 
     @Column({
         type: "enum",
-        enum: ['appqrcode', 'cardqrcode', 'auth']
+        enum: tokenType
     })
-    type: string;
+    type: tokenType;
 
     @Column()
     actif: boolean;
 
     @Column()
+    token: string;
+
+    @CreateDateColumn({ type: 'timestamp' })
     datecreation: Date;
 }

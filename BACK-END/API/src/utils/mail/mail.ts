@@ -19,7 +19,7 @@ export async function sendActivationMail(activationcode, mail, name) {
     return new Promise((resolve, reject) => {
         const activationLink = config.WEBSITEURL + '/activate/' + activationcode; // Replace with your actual activation URL
         const mailOptions = {
-            from: 'finaltraining@remi-weil.fr',
+            from: config.EMAIL,
             to: mail,
             subject: 'Your activation link',
             text: `Welcome ${name} to OpenDisk. Please click the following link to activate your account: ${activationLink}`,

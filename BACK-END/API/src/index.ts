@@ -16,8 +16,7 @@ class Index {
     }
 
     static routeConfig(){
-        Index.app.use(cors())
-        Index.app.use(express.json())
+
     }
 
     static serverConfig(){

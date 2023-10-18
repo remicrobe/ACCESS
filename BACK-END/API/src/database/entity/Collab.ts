@@ -52,8 +52,8 @@ export class Collaborateur {
     @OneToMany(() => Access, access => access.owner)
     accesses: Access[];
 
-    @OneToMany(() => Service, service => service.collabs)
-    services: Service[];
+    @ManyToOne(() => Service, service => service.collabs)
+    service: Service;
 
     @OneToOne(() => Horaires)
     horaires: Horaires;
