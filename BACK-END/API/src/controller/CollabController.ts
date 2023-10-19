@@ -1,8 +1,9 @@
 import {typeCollab, Collaborateur} from '../database/entity/Collab';
 import {AppDataSource} from "../database/datasource";
-import {Horaires} from "../database/entity/Horaires";
 
-export async function creerCollab(prenom: string, nom: string, mail: string, date: Date, grade: typeCollab) {
+
+
+export async function creerCollab(prenom: string, nom: string, mail: string, grade: typeCollab, fonction:string) {
     const utilisateurExistant = await AppDataSource.getRepository(Collaborateur).findOneBy({ mail: mail });
     if (utilisateurExistant) {
         return null;
@@ -12,8 +13,8 @@ export async function creerCollab(prenom: string, nom: string, mail: string, dat
     utilisateur.prenom = prenom;
     utilisateur.nom = nom;
     utilisateur.mail = mail;
-    utilisateur.date = date;
     utilisateur.grade = grade;
+    utilisateur.fonction = fonction
     return await AppDataSource.getRepository(Collaborateur).save(utilisateur)
 }
 
@@ -22,13 +23,18 @@ export function setCollabGrade(utilisateur: Collaborateur, nouveauGrade: typeCol
     return utilisateur
 }
 
-export async function assignerHoraire(collaborateur: Collaborateur, horaires: Horaires) {
-    if (!collaborateur || !horaires) {
-        return false;
-    }
+// Méthode pour vérifier si un collaborateur est de grade RH
+export function isRH(collab: Collaborateur): boolean {
+    return collab.grade === typeCollab.rh;
+}
 
-    collaborateur.horaires = horaires;
+// Méthode pour vérifier si un collaborateur est de grade DRH
+export function isDRH(collab: Collaborateur): boolean {
+    return collab.grade === typeCollab.drh;
+}
 
-    return await AppDataSource.getRepository(Collaborateur).save(collaborateur);
+// Méthode pour vérifier si un collaborateur est de grade ARH
+export function isARH(collab: Collaborateur): boolean {
+    return collab.grade === typeCollab.arh;
 }
 
