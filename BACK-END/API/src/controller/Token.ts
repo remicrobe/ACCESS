@@ -9,7 +9,7 @@ export async function setAuthToken(collab) {
     token.collab = collab;
     token.type = tokenType.auth; // Type de token de connexion
     token.actif = true;
-    token.token = randomUUID()
+    token.token = 'jwt'
     token.datecreation = new Date();
     return await AppDataSource.getRepository(Token).save(token);
 }
