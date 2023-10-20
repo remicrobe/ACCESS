@@ -18,6 +18,7 @@
     "vuetify": "^3.3.19"
   },
   "dependencies": {
+    "@nuxtjs/toast": "^3.3.1",
     "vite-plugin-vuetify": "^1.0.2"
   }
 }

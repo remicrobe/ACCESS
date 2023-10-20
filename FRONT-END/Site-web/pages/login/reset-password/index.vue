@@ -32,7 +32,7 @@
             <p class="text-body-2 mt-10">
               <span
                 >Vous avez retrouvé vos accès ?
-                <NuxtLink to="/" class="font-weight-bold text-primary"
+                <NuxtLink to="/login" class="font-weight-bold text-primary"
                   >Se connecter !</NuxtLink
                 ></span
               >
@@ -42,7 +42,7 @@
       </VCol>
       <VCol class="hidden-md-and-down fill-height" md="5" lg="7">
         <VImg
-          src="bg-login.jpg"
+          src="/bg-login.jpg"
           cover
           class="h-100 rounded-xl d-flex align-center justify-center"
         >
