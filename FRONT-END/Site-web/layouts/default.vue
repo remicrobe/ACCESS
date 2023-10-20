@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-	  <v-navigation-drawer app v-model="drawer" v-if="!isLoginPage">
+	  <v-navigation-drawer color="primary" app v-model="drawer" v-if="!isLoginPage">
 		<v-list>
 			<v-list-item
           		prepend-avatar="https://randomuser.me/api/portraits/men/1.jpg"
@@ -15,7 +15,7 @@
 		</v-list>
 	  </v-navigation-drawer>
   
-	  <v-app-bar :elevation="1" app v-if="!isLoginPage">
+	  <v-app-bar color="primary" :elevation="1" app v-if="!isLoginPage">
 		<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 		<v-toolbar-title>{{ currentRouteTitle }}</v-toolbar-title>
 	  </v-app-bar>
