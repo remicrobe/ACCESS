@@ -2,7 +2,10 @@ import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} fro
 import {Collaborateur} from "./Collab";
 
 export enum tokenType{
-    'appqrcode', 'cardqrcode', 'auth', 'recoverpassword'
+    'appqrcode'='appqrcode',
+    'cardqrcode'="cardqrcode",
+    'auth'="auth",
+    'recoverpassword'="recoverpassword"
 }
 
 @Entity()
@@ -25,6 +28,6 @@ export class Token {
     @Column()
     token: string;
 
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     datecreation: Date;
 }

@@ -1,7 +1,12 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collaborateur} from "./Collab";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Collaborateur, typeCollab} from "./Collab";
 import {Service} from "./Service";
+import {Historique} from "./Historique";
 
+export enum typePoint {
+    pointaccess='ap',
+    pointeuse='pointeuse'
+}
 @Entity()
 export class Access {
     @PrimaryGeneratedColumn()
@@ -9,6 +14,13 @@ export class Access {
 
     @Column()
     macadress: string;
+
+    @Column({
+        type: "enum",
+        enum: typePoint,
+        default: typePoint.pointeuse
+    })
+    typePoint: typePoint;
 
     @Column()
     location: string;
@@ -19,9 +31,6 @@ export class Access {
     @Column()
     active: boolean;
 
-    @Column()
-    level: number;
-
     @ManyToMany(() => Collaborateur)
     @JoinTable()
     collabAutorise: Collaborateur[]
@@ -29,4 +38,7 @@ export class Access {
     @ManyToMany(() => Service)
     @JoinTable()
     serviceAutorise: Service[]
+
+    @OneToMany(() => Historique, hist => hist.collab)
+    historique: Historique[];
 }

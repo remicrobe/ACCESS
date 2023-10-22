@@ -1,4 +1,4 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Collaborateur} from "./Collab";
 
 @Entity()
@@ -20,4 +20,16 @@ export class Absence {
         enum: ['conge', 'maladie', 'autre']
     })
     raison: string;
+
+    @Column({nullable:true})
+    description: string;
+
+    @Column({nullable:true})
+    accepte: boolean;
+
+    @Column({nullable:true})
+    datereponse: Date;
+
+    @CreateDateColumn({select:false})
+    dateDemande: Date;
 }

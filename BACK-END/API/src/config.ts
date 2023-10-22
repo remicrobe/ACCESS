@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config()
 export default {
     PORT: process.env.PORT,
+    JWT_SECRET: process.env.JWT_SECRET,
     DBHOST: process.env.DBHOST,
     DBNAME: process.env.DBNAME,
     DBUSER: process.env.DBUSER,

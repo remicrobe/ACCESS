@@ -1,13 +1,9 @@
-import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collaborateur} from "./Collab";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class HorairesModele {
+export class Horaire {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column()
-    nom: string;
 
     @Column({ type: 'time', default: '00:00:00' })
     hDebLundi: string;
@@ -50,9 +46,6 @@ export class HorairesModele {
 
     @Column({ type: 'time', default: '00:00:00' })
     hFinDimanche: string;
-
-    @OneToMany(() => Collaborateur, collab => collab.horairesdefault, {nullable:true})
-    collabs: Collaborateur[];
 
 
 }

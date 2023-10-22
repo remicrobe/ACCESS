@@ -6,6 +6,9 @@ import * as cors from 'cors'
 import {AppDataSource} from "./database/datasource";
 import {collaborateurRouter} from "./route/collaborateur";
 import {serviceRouter} from "./route/service"
+import {accessRouter} from "./route/access";
+import {tokenRouter} from "./route/token";
+import {absenceRouter} from "./route/absence";
 
 class Index {
     static app = express()
@@ -19,6 +22,9 @@ class Index {
     static routeConfig(){
         Index.app.use('/collab', collaborateurRouter)
         Index.app.use('/service', serviceRouter)
+        Index.app.use('/access', accessRouter)
+        Index.app.use('/token', tokenRouter)
+        Index.app.use('/absence', absenceRouter)
     }
 
     static serverConfig(){
