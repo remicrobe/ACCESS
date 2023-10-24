@@ -1,9 +1,9 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
-import { themeColor, useTheme } from "react-native-rapi-ui";
+import {themeColor, useTheme} from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 
@@ -12,24 +12,27 @@ import SecondScreen from "../screens/SecondScreen";
 import About from "../screens/About";
 import Profile from "../screens/Profile";
 import {View} from "react-native";
+import Login from "../screens/connexion/Login";
+import ForgetPassword from "../screens/connexion/ForgetPassword";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
-  return (
-    <MainStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <MainStack.Screen name="MainTabs" component={MainTabs} />
-      <MainStack.Screen name="SecondScreen" component={SecondScreen} />
-    </MainStack.Navigator>
-  );
+    return (
+        <MainStack.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
+            <MainStack.Screen name="Login" component={Login}/>
+            <MainStack.Screen name="ForgetPassword" component={ForgetPassword}/>
+            <MainStack.Screen name="MainTabs" component={MainTabs}/>
+        </MainStack.Navigator>
+    );
 };
 
 const Tabs = createBottomTabNavigator();
 const MainTabs = () => {
-    const { isDarkmode } = useTheme();
+    const {isDarkmode} = useTheme();
     return (
         <Tabs.Navigator
             screenOptions={{
@@ -45,8 +48,8 @@ const MainTabs = () => {
                 name="Accueil"
                 component={Home}
                 options={{
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} icon={"md-home"} />
+                    tabBarIcon: ({focused}) => (
+                        <TabBarIcon focused={focused} icon={"md-home"}/>
                     ),
                 }}
             />
@@ -55,8 +58,8 @@ const MainTabs = () => {
                 name="Mon activité"
                 component={Profile}
                 options={{
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} icon={"analytics-outline"} />
+                    tabBarIcon: ({focused}) => (
+                        <TabBarIcon focused={focused} icon={"analytics-outline"}/>
                     ),
                 }}
             />
@@ -65,7 +68,7 @@ const MainTabs = () => {
                 component={Home}
                 options={{
                     tabBarLabel: () => null,
-                    tabBarIcon: ({ focused }) => (
+                    tabBarIcon: ({focused}) => (
                         <View style={{
                             position: 'absolute',
                             bottom: 20, // space from bottombar
@@ -76,7 +79,7 @@ const MainTabs = () => {
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}>
-                            <TabBarIcon focused={focused} icon={"qr-code-outline"} />
+                            <TabBarIcon focused={focused} icon={"qr-code-outline"}/>
                         </View>
                     ),
                 }}
@@ -85,8 +88,8 @@ const MainTabs = () => {
                 name="Planning"
                 component={About}
                 options={{
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} icon={"calendar"} />
+                    tabBarIcon: ({focused}) => (
+                        <TabBarIcon focused={focused} icon={"calendar"}/>
                     ),
                 }}
             />
@@ -94,8 +97,8 @@ const MainTabs = () => {
                 name="Mes infos"
                 component={Profile}
                 options={{
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} icon={"person"} />
+                    tabBarIcon: ({focused}) => (
+                        <TabBarIcon focused={focused} icon={"person"}/>
                     ),
                 }}
             />
@@ -105,9 +108,9 @@ const MainTabs = () => {
 
 
 export default () => {
-  return (
-    <NavigationContainer>
-      <Main />
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <Main/>
+        </NavigationContainer>
+    );
 };

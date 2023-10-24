@@ -35,7 +35,7 @@ export default function ({ navigation }) {
             <Button
               text="Go to second screen"
               onPress={() => {
-                navigation.navigate("SecondScreen");
+                navigation.navigate("Login");
               }}
               style={{
                 marginTop: 10,
