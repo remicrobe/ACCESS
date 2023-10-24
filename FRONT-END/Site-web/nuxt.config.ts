@@ -15,7 +15,14 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify());
       });
     },
+    '@pinia/nuxt'
   ],
+  runtimeConfig: {
+    public:{
+      apiUrl: 'http://localhost:3005',
+      version: '0.0.1'
+    }
+  },
 
   app: {
     head: {
