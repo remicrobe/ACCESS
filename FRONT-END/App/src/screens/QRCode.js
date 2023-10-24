@@ -13,17 +13,7 @@ export default function ({ navigation }) {
   const { isDarkmode } = useTheme();
   return (
     <Layout>
-      <TopNav
-        middleContent="Second Screen"
-        leftContent={
-          <Ionicons
-            name="chevron-back"
-            size={20}
-            color={isDarkmode ? themeColor.white100 : "#191921"}
-          />
-        }
-        leftAction={() => navigation.goBack()}
-      />
+      
       <View
         style={{
           flex: 1,
@@ -32,7 +22,7 @@ export default function ({ navigation }) {
         }}
       >
         {/* This text using ubuntu font */}
-        <Text fontWeight="bold">This is the second screen</Text>
+        <Text fontWeight="bold">Ici on affiche le QRCode</Text>
       </View>
     </Layout>
   );

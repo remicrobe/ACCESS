@@ -12,7 +12,7 @@ export default function ({ navigation }) {
 					justifyContent: 'center',
 				}}
 			>
-				<Text>This is the Profile tab</Text>
+				<Text>Ici on affiche les infos du profil utilisateur</Text>
 			</View>
 		</Layout>
 	);

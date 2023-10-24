@@ -8,12 +8,15 @@ import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 
 import Home from "../screens/Home";
-import SecondScreen from "../screens/SecondScreen";
-import About from "../screens/About";
+import SecondScreen from "../screens/QRCode";
+import About from "../screens/Planning";
 import Profile from "../screens/Profile";
 import {View} from "react-native";
 import Login from "../screens/connexion/Login";
 import ForgetPassword from "../screens/connexion/ForgetPassword";
+import QRCode from "../screens/QRCode";
+import Planning from "../screens/Planning";
+import Activity from "../screens/Activity";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
@@ -26,6 +29,7 @@ const Main = () => {
             <MainStack.Screen name="Login" component={Login}/>
             <MainStack.Screen name="ForgetPassword" component={ForgetPassword}/>
             <MainStack.Screen name="MainTabs" component={MainTabs}/>
+            <MainStack.Screen name="QRCode" component={QRCode}/>
         </MainStack.Navigator>
     );
 };
@@ -56,7 +60,7 @@ const MainTabs = () => {
 
             <Tabs.Screen
                 name="Mon activité"
-                component={Profile}
+                component={Activity}
                 options={{
                     tabBarIcon: ({focused}) => (
                         <TabBarIcon focused={focused} icon={"analytics-outline"}/>
@@ -65,7 +69,7 @@ const MainTabs = () => {
             />
             <Tabs.Screen
                 name="QR Code"
-                component={Home}
+                component={QRCode}
                 options={{
                     tabBarLabel: () => null,
                     tabBarIcon: ({focused}) => (
@@ -86,7 +90,7 @@ const MainTabs = () => {
             />
             <Tabs.Screen
                 name="Planning"
-                component={About}
+                component={Planning}
                 options={{
                     tabBarIcon: ({focused}) => (
                         <TabBarIcon focused={focused} icon={"calendar"}/>
