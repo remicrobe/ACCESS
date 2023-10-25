@@ -4,8 +4,8 @@
       <v-card
         class="mx-auto"
       >
-        <v-toolbar class="pt-n5" title="Gérer les demandes" color="primary">
-          <collab-demande-configurator/>
+        <v-toolbar class="pt-n5" :title="'Gérer les demandes du personnel' " color="primary">
+          <collab-demande-configurator />
         </v-toolbar>
 
         <v-card-text
@@ -21,6 +21,9 @@
 <style scoped>
 
 </style>
-<script setup lang="ts">
+<script>
 import CollabDemandeConfigurator from "~/components/collab/demande/demandeConfigurator.vue";
+import { useGlobalStore } from "~/services/globalStore";
+
+
 </script>

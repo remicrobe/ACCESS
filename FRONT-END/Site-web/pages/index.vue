@@ -8,11 +8,34 @@
           <v-card-subtitle>{{ item.subtitle }}</v-card-subtitle>
         </v-card>
       </v-col>
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+
+      <v-card v-if="user" color="primary" class="mt-2 mb-2" :title="`Bienvenue ${user.prenom}`" variant="tonal" max-width="100%">
+        <v-card-text v-if="user.grade === 'collab'">
+          En tant que collaborateur et chef de service, vous pouvez ici visualiser les demandes de vos collaborateurs, les visualiser,
+          et suivre leurs présence dans les locaux. <br>
+          En cas de nouvelle demande, vous les verrez apparaître des notifications ci dessous
+        </v-card-text>
+      </v-card>
+
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+      <v-divider></v-divider>
     </v-row>
   </template>
   
   <script>
+  import { useGlobalStore } from "~/services/globalStore";
+
   export default {
+    async setup() {
+      let user = await useGlobalStore().getUserInfo;
+      return { user };
+    },
     data: () => ({
       items: [
         { title: 'Employés dans les locaux', subtitle: '26K', icon: 'mdi-account' },

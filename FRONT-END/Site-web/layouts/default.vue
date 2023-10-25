@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer color="primary" app v-model="drawer" v-if="!isLoginPage">
-      <v-list >
+      <v-list>
         <v-list-item
           v-if="user"
           prepend-avatar="/default.png"
@@ -12,13 +12,19 @@
 
         <v-divider></v-divider>
 
-        <v-list-item v-for="route in routes" :to="route.route" :title="route.title" :append-icon="route.icon" />
+        <template v-for="route in routes">
+          <v-list-item
+            v-if="route.grade.includes('*') || user && route.grade.includes(user.grade)"
+            :to="route.route"
+            :title="route.title"
+            :append-icon="route.icon" />
+        </template>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar color="primary" :elevation="1" app v-if="!isLoginPage">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>{{ 'AccessLink > ' + currentRouteTitle  }}</v-toolbar-title>
+      <v-toolbar-title>{{ "AccessLink > " + currentRouteTitle }}</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -33,39 +39,48 @@
 import { useGlobalStore } from "~/services/globalStore";
 
 export default {
+  async setup() {
+    let user = await useGlobalStore().getUserInfo;
+    return { user };
+  },
   data: () => ({
     drawer: true,
-    user: useGlobalStore().getUserInfo(),
     routes: [
       {
         route: "/",
         title: "Accueil",
         icon: "mdi-home",
+        grade: ["*"],
       },
       {
         route: "/collab",
         title: "Collaborateurs",
         icon: "mdi-account-multiple",
+        grade: ["*"],
       },
       {
         route: "/demande-collab",
         title: "Demandes",
         icon: "mdi-frequently-asked-questions",
+        grade: ["*"],
       },
       {
         route: "/services",
         title: "Services",
         icon: "mdi-domain",
+        grade: ["drh", "rh", "arh"],
       },
       {
         route: "/access",
         title: "Points d'accès",
         icon: "mdi-door",
+        grade: ["drh", "rh", "arh"],
       },
       {
         route: "/access-history",
         title: "Historique d'accès",
         icon: "mdi-history",
+        grade: ["*"],
       },
     ],
   }),
@@ -80,24 +95,27 @@ export default {
       return matchingRoute ? matchingRoute.title : "";
     },
   },
-  created(){
+  created() {
+
     if (!this.isLoginPage && !useGlobalStore().isLogin()) {
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
   },
   watch: {
-    $route(o,n){
+    async $route(o, n) {
+      // Afin de faire perdurer la réactivité, faire rappel au getter dès changement de route
+      this.user = await useGlobalStore().getUserInfo;
       if (!this.isLoginPage && !useGlobalStore().isLogin()) {
-        this.$router.push('/login');
+        this.$router.push("/login");
       }
-    }
+    },
   },
-  methods:{
-    disconnect(){
-      useGlobalStore().disconnect()
-      this.$router.push('/login');
-    }
-  }
+  methods: {
+    disconnect() {
+      useGlobalStore().disconnect();
+      this.$router.push("/login");
+    },
+  },
 };
 </script>
   

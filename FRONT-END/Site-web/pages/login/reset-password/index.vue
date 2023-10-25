@@ -75,7 +75,7 @@ export default {
       const valid = await this.$refs.loginform.validate(); // Vérifiez les règles
 
       if(valid.valid){
-        if(await useGlobalStore().forgotPassword(this.password)){
+        if(await useGlobalStore().forgotPassword(this.email)){
           this.loading = false
         }
       }
