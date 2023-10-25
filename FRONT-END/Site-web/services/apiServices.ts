@@ -3,6 +3,20 @@ import defu from "defu";
 import { FetchContext, FetchResponse } from "ofetch";
 import { R } from "vite-node/types-516036fa";
 
+/*
+How to use api service,
+You just do useApiService(url, useFetchOptions, needAuth)
+
+exemple of useFetch options : {method:"post",body:"......")
+
+needAuth is faculative default is false
+
+how need auth is use
+reead auth token with useCookie('auth');
+
+so you need to define the cookie
+ */
+
 export function useApiService<T> (url: string, options: UseFetchOptions<T> = {}, needAuth: boolean = true) {
     const config = useRuntimeConfig().public.apiUrl
     let authHeader: HeadersInit = {};

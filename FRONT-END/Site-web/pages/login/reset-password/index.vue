@@ -11,7 +11,7 @@
           />
             <h1>Aide a la connexion</h1>
 
-            <VForm @submit.prevent="submit" class="mt-7">
+            <VForm ref="loginform" @submit.prevent="submit" class="mt-7">
               <div class="mt-1">
                 <label class="label text-grey-darken-2" for="email">Email</label>
                 <VTextField
@@ -24,7 +24,7 @@
                 />
               </div>
               <div class="mt-5">
-                <VBtn type="submit" block min-height="44" color="primary"
+                <VBtn :loading=false type="submit" block min-height="44" color="primary"
                   >Envoyer les instuctions !</VBtn
                 >
               </div>
@@ -60,17 +60,26 @@
 
 <script>
 import { useFormRules } from '#imports';
+import { useGlobalStore } from "~/services/globalStore";
 
 export default {
   data() {
     return {
       email: "",
-      password: "",
+      loading: false
     };
   },
   methods:{
-    submit(){
-      //Appel API etc...
+    async submit(){
+      this.loading = true
+      const valid = await this.$refs.loginform.validate(); // Vérifiez les règles
+
+      if(valid.valid){
+        if(await useGlobalStore().forgotPassword(this.password)){
+          this.loading = false
+        }
+      }
+      this.loading = false
     }
   }
 }

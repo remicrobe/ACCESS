@@ -109,7 +109,7 @@
             </v-col>
 
           </v-row>
-          <v-alert v-if="!(checkDate()===true)" :text="checkDate()" type="warning"></v-alert>
+          <v-alert v-if="!(checkDate()===true)" :text="checkDate()" color="orange-darken-3" type="warning"></v-alert>
         </v-container>
       </v-card-text>
       <v-card-actions class="mt-n5">

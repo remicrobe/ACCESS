@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public:{
-      apiUrl: 'http://localhost:3005',
+      apiUrl: '',
       version: '0.0.1'
     }
   },

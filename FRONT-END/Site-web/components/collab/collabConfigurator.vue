@@ -113,8 +113,49 @@
                 density="comfortable"
               />
             </v-col>
-
+            <v-col
+              cols="12"
+              md="6"
+              class="mt-n5"
+            >
+              <v-select
+                variant="outlined"
+                label="Modèle d'horraire"
+                :items="['35h']"
+                v-model="hModel"
+                density="comfortable"
+                clearable
+              />
+            </v-col>
+            <template v-if="hModel === null" v-for="day in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']">
+              <v-col
+                cols="12"
+                sm="3"
+                class="mt-n5"
+              >
+                <v-text-field
+                  variant="outlined"
+                  :label="'Heure de début ' + day"
+                  density="comfortable"
+                  type="time"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="3"
+                class="mt-n5"
+              >
+                <v-text-field
+                  variant="outlined"
+                  :label="'Heure de fin ' + day"
+                  density="comfortable"
+                  type="time"
+                />
+              </v-col>
+            </template>
           </v-row>
+
+
         </v-container>
       </v-card-text>
       <v-card-actions class="mt-n5">
@@ -151,6 +192,7 @@ export default {
     return {
       modal: false,
       loading: false,
+      hModel: null
     };
   },
   props: ["edit"]

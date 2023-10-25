@@ -1,13 +1,14 @@
 <template>
   <v-app>
     <v-navigation-drawer color="primary" app v-model="drawer" v-if="!isLoginPage">
-      <v-list>
+      <v-list >
         <v-list-item
+          v-if="user"
           prepend-avatar="/default.png"
-          title="John Doe"
-          subtitle="Développeur"
+          :title="user.nom + ' ' + user.prenom"
+          :subtitle="user.fonction"
         />
-        <v-list-item to="/login" title="Se déconnecter" append-icon="mdi-login" />
+        <v-list-item @click="disconnect" title="Se déconnecter" append-icon="mdi-login" />
 
         <v-divider></v-divider>
 
@@ -29,9 +30,12 @@
 </template>
 
 <script>
+import { useGlobalStore } from "~/services/globalStore";
+
 export default {
   data: () => ({
     drawer: true,
+    user: useGlobalStore().getUserInfo(),
     routes: [
       {
         route: "/",
@@ -65,6 +69,7 @@ export default {
       },
     ],
   }),
+
   computed: {
     isLoginPage() {
       return this.$route.path.indexOf("login") !== -1;
@@ -75,6 +80,24 @@ export default {
       return matchingRoute ? matchingRoute.title : "";
     },
   },
+  created(){
+    if (!this.isLoginPage && !useGlobalStore().isLogin()) {
+      this.$router.push('/login');
+    }
+  },
+  watch: {
+    $route(o,n){
+      if (!this.isLoginPage && !useGlobalStore().isLogin()) {
+        this.$router.push('/login');
+      }
+    }
+  },
+  methods:{
+    disconnect(){
+      useGlobalStore().disconnect()
+      this.$router.push('/login');
+    }
+  }
 };
 </script>
   
