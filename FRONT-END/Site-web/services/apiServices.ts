@@ -17,7 +17,7 @@ reead auth token with useCookie('auth');
 so you need to define the cookie
  */
 
-export function useApiService<T> (url: string, options: UseFetchOptions<T> = {}, needAuth: boolean = true) {
+export function useApiService<T> (url: string, options: UseFetchOptions<T> = {}, needAuth: boolean = true, notif = false) {
     const config = useRuntimeConfig().public.apiUrl
     let authHeader: HeadersInit = {};
 
@@ -30,8 +30,20 @@ export function useApiService<T> (url: string, options: UseFetchOptions<T> = {},
         baseURL: config,
         headers: authHeader,
         onResponse(context: FetchContext & { response: FetchResponse<R> }): Promise<void> | void {
+            if(notif){
+                useNuxtApp().$toast(`Récupération effectué avec succés !`, {
+                    type: 'success',
+                    hideProgressBar: true,
+                });
+            }
         },
         onResponseError(context: FetchContext & { response: FetchResponse<R> }): Promise<void> | void {
+            if(notif) {
+                useNuxtApp().$toast(`Une erreur est survenue. Prière de réésayer plus tard`, {
+                    type: 'error',
+                    hideProgressBar: true,
+                });
+            }
         }
     }
 

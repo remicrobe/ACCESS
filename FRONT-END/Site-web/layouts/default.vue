@@ -59,6 +59,12 @@ export default {
         grade: ["*"],
       },
       {
+        route: "/horaires",
+        title: "Horaires",
+        icon: "mdi-clock",
+        grade: ["drh", "rh", "arh"],
+      },
+      {
         route: "/demande-collab",
         title: "Demandes",
         icon: "mdi-frequently-asked-questions",
