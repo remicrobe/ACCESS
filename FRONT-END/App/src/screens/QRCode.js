@@ -13,7 +13,7 @@ export default function ({ navigation }) {
   const { isDarkmode } = useTheme();
   return (
     <Layout>
-      
+
       <View
         style={{
           flex: 1,
