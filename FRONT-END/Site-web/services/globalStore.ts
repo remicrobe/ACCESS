@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useApiService } from "~/services/apiServices";
+import { Collaborateur, ICollaborateur } from "~/interface/interface";
 
 
 
@@ -8,12 +9,11 @@ export const useGlobalStore = defineStore('global', {
   state: () => ({
     isLoggedIn: false,
     role: null,
-    loggedUser: undefined as any
+    loggedUser: null as ICollaborateur | null
   }),
   actions: {
     async login(email:string,password:string) {
       let auth = useCookie('auth');
-      console.log(useNuxtApp().$toast)
       let {status,data} = await useApiService('https://restful-booker.herokuapp.com/auth', {method:"post",body:{email,password}})
       if(status.value==="success" ){
         auth.value = 'OK'
