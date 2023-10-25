@@ -19,6 +19,11 @@
           et suivre leurs présence dans les locaux. <br>
           En cas de nouvelle demande, vous les verrez apparaître des notifications ci dessous
         </v-card-text>
+        <v-card-text v-else>
+          En tant que RH , vous pouvez ici visualiser les collaborateurs, ainsi que leurs demande, vous pouvez les modifier
+          et suivre leurs présence dans les locaux. <br>
+          Par ailleurs, il vous ai aussi possible de modifier l'ensemble des accès <br>
+        </v-card-text>
       </v-card>
 
       <v-divider></v-divider>

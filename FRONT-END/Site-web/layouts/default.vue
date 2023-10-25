@@ -102,14 +102,18 @@ export default {
     }
   },
   watch: {
-    async $route(o, n) {
-      // Afin de faire perdurer la réactivité, faire rappel au getter dès changement de route
-      this.user = await useGlobalStore().getUserInfo;
-      if (!this.isLoginPage && !useGlobalStore().isLogin()) {
-        this.$router.push("/login");
-      }
-    },
+    '$route': {
+      handler: async function(o, n) {
+        // Afin de faire perdurer la réactivité, faire rappel au getter dès changement de route
+        this.user = await useGlobalStore().getUserInfo;
+        if (!this.isLoginPage && !useGlobalStore().isLogin()) {
+          this.$router.push("/login");
+        }
+      },
+      deep: true
+    }
   },
+
   methods: {
     disconnect() {
       useGlobalStore().disconnect();

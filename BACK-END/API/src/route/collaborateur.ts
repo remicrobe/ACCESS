@@ -153,7 +153,7 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
         console.log(req.body)
         motdepasse = createHash('sha256').update(motdepasse).digest('hex');
 
-        let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({mail, motdepasse})
+        let collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({where:{mail, motdepasse},relations:{service:{chefservice:true}}})
 
         res.send(await setAuthToken(collab))
 

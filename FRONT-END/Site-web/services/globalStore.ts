@@ -36,8 +36,19 @@ export const useGlobalStore = defineStore('global', {
       console.log(useNuxtApp().$toast)
       let {status,data} = await useApiService<any>('/collab/connect', {method:"post",body:{mail,motdepasse}})
       if(status.value==="success" ){
-        auth.value = data.value.jwtToken
         this.loggedUser = data.value.collab
+        console.log(this.loggedUser.grade)
+        if((this.loggedUser.grade === 'drh' || this.loggedUser.grade === 'arh' || this.loggedUser.grade === 'rh') || this.loggedUser.service && (this.loggedUser.id === this.loggedUser.service.chefservice.id)){
+          auth.value = data.value.jwtToken
+        }else{
+          useNuxtApp().$toast(`${this.loggedUser.prenom}, vous n'avez aucune permission sur cet outil, utiliser l'application Access`, {
+            type: 'error',
+            hideProgressBar: true,
+          });
+          this.disconnect()
+        }
+
+
         return true
       }else{
         useNuxtApp().$toast(`Vos informations de connexion semblent non correct`, {
