@@ -34,6 +34,12 @@ export async function getAbsenceUnderMyControl(collab: Collaborateur) {
     });
 }
 
+export async function getAllAbsences() {
+    return await AppDataSource.getRepository(Absence).find({
+        relations: {collab: true}
+    });
+}
+
 export async function modifierAbsence(absenceId: number, datedeb: Date, datefin: Date, raison: string, donneurDordre: Collaborateur, description?: string) {
     const absence = await AppDataSource.getRepository(Absence).findOneOrFail({
         where: {id: absenceId},

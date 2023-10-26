@@ -117,7 +117,7 @@ collaborateurRouter.put('/modifierCollab/:collaborateur',jwtMiddleware, async (r
 collaborateurRouter.post('/recuperation/:token', async (req: Request, res: Response) => {
     try {
         const token = req.params.token;
-        const password = req.body.password;
+        const password = req.body.motdepasse;
 
         console.log(token)
         res.send(await checkTokenPassword(token, password))
@@ -132,6 +132,7 @@ collaborateurRouter.post('/demande-recuperation/', async (req: Request, res: Res
     try {
         const mail = req.body.mail;
         let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({mail})
+
         let success = await setTokenPasswordAndSendMail(collab)
         if (success) {
             res.send('Mail de récupération envoyé')
@@ -149,9 +150,10 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
     try {
         const mail = req.body.mail;
         let motdepasse = req.body.motdepasse;
+        console.log(req.body)
         motdepasse = createHash('sha256').update(motdepasse).digest('hex');
 
-        let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({mail, motdepasse})
+        let collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({where:{mail, motdepasse},relations:{service:{chefservice:true}}})
 
         res.send(await setAuthToken(collab))
 

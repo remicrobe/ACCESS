@@ -97,4 +97,27 @@ serviceRouter.get('/:serviceId/collaborateurs', jwtMiddlewareFullInfo, async (re
     }
 });
 
+// Obtenir les services
+serviceRouter.get('/', jwtMiddlewareFullInfo, async (req, res) => {
+    try {
+        let connectedCollab:Collaborateur = req.body.connectedCollab
+
+        const service = await AppDataSource.getRepository(Service).find({relations:{chefservice:true,collabs:true}});
+
+
+        if(
+            isDRH(connectedCollab)
+            || isARH(connectedCollab)
+            || isRH(connectedCollab)
+        ) {
+            res.send(service);
+        }else{
+            res.sendStatus(401)
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Erreur lors de la récupération des collaborateurs' });
+    }
+});
+
 export {serviceRouter}

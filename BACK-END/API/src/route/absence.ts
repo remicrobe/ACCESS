@@ -7,17 +7,34 @@ import {
     accepterAbsence,
     creerAbsence,
     getAbsences,
-    getAbsenceUnderMyControl,
+    getAbsenceUnderMyControl, getAllAbsences,
     modifierAbsence
 } from "../controller/AbsenceController";
+import {Absence} from "../database/entity/Absence";
+import {isARH, isDRH, isRH} from "../controller/CollabController";
+import {isSuperior} from "../controller/ServiceController";
 const absenceRouter = express.Router();
 
 // Obtenir les absences des collaborateurs sous mon contrôle
 absenceRouter.get('/absenceDeMesCollaborateurs', jwtMiddlewareFullInfo, async (req, res) => {
     try {
-        const collab = req.body.connectedCollab;
-        const absences = await getAbsenceUnderMyControl(collab);
+        const collab:Collaborateur = req.body.connectedCollab;
+        let absences:Absence[] = undefined
+
+        if(
+            isDRH(collab)
+            || isARH(collab)
+            || isRH(collab)
+        ) {
+            absences = await getAllAbsences()
+        }
+        else if(collab.service.chefservice.id === collab.id){
+            absences = await getAbsenceUnderMyControl(collab);
+        }else{
+            return res.sendStatus(401)
+        }
         return res.json(absences);
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Erreur lors de la récupération des absences' });

@@ -21,5 +21,13 @@
 <style scoped>
 
 </style>
-<script setup lang="ts">
+<script>
+import { useGlobalStore } from "~/services/globalStore";
+
+export default {
+  async setup() {
+    let user = await useGlobalStore().getUserInfo;
+    return { user };
+  },
+}
 </script>
