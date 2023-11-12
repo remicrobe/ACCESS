@@ -25,6 +25,7 @@
     <v-app-bar color="primary" :elevation="1" app v-if="!isLoginPage">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>{{ "AccessLink > " + currentRouteTitle }}</v-toolbar-title>
+      <notification></notification>
     </v-app-bar>
 
     <v-main>
@@ -37,10 +38,13 @@
 
 <script>
 import { useGlobalStore } from "~/services/globalStore";
+import Notification from "~/components/global/notification.vue";
 
 export default {
+  components: { Notification },
   async setup() {
-    let user = await useGlobalStore().getUserInfo;
+    let user = await useGlobalStore().getUserInfo();
+
     return { user };
   },
   data: () => ({
@@ -101,30 +105,27 @@ export default {
       return matchingRoute ? matchingRoute.title : "";
     },
   },
-  created() {
+  async mounted() {
+    await this.checkUserRight()
 
-    if (!this.isLoginPage && !useGlobalStore().isLogin()) {
-      this.$router.push("/login");
-    }
-  },
-  watch: {
-    '$route': {
-      handler: async function(o, n) {
-        // Afin de faire perdurer la réactivité, faire rappel au getter dès changement de route
-        this.user = await useGlobalStore().getUserInfo;
-        if (!this.isLoginPage && !useGlobalStore().isLogin()) {
-          this.$router.push("/login");
-        }
-      },
-      deep: true
-    }
-  },
+    watch(() => this.$route, async (to, from) => {
+      if(!this.user){
+        this.user = await useGlobalStore().getUserInfo();
+      }
+      await this.checkUserRight()
+    }, { deep: true });
 
+  },
   methods: {
     disconnect() {
       useGlobalStore().disconnect();
-      this.$router.push("/login");
+      useRouter().push('/login')
     },
+    checkUserRight(){
+      if (!this.isLoginPage && !useGlobalStore().isLogin()) {
+        useRouter().push('/login?ref=' + useRouter().currentRoute.value.fullPath)
+      }
+    }
   },
 };
 </script>

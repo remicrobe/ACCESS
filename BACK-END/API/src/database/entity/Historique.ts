@@ -16,8 +16,16 @@ export class Historique {
     @ManyToOne(() => Access, acc => acc.historique)
     point: Access;
 
+    @Column()
+    typeAction: string
+
+    @Column()
+    actionAutorise: boolean
+
     @Column({default: 'Identité'})
     statutUtilise: string
+
+
 
 
 

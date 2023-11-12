@@ -63,7 +63,7 @@
 </template>
 
 
-<script lang="ts">
+<script>
 import { useFormRules } from '#imports';
 import { useGlobalStore } from "~/services/globalStore";
 
@@ -83,7 +83,7 @@ export default {
       if(valid.valid){
         if(await useGlobalStore().login(this.email,this.password)){
           this.loading = false
-          this.$router.push('/')
+          this.$router.push(useRouter().currentRoute.value.query.ref ? useRouter().currentRoute.value.query.ref : '/')
         }
       }
       this.loading = false

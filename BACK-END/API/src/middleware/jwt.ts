@@ -11,6 +11,7 @@ export async function jwtMiddleware(req, res, next) {
 
     const collab = await checkJwtToken(jwtToken);
     if (collab) {
+        req.body.jwtToken = jwtToken
         req.body.connectedCollab = collab;
         next();
     } else {
@@ -30,6 +31,7 @@ export async function jwtMiddlewareFullInfo(req, res, next) {
 
     const collab = await getCollabInfoFromToken(jwtToken);
     if (collab) {
+        req.body.jwtToken = jwtToken
         req.body.connectedCollab = collab;
         next();
     } else {

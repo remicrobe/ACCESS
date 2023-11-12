@@ -30,6 +30,12 @@ export class Absence {
     @Column({nullable:true})
     datereponse: Date;
 
-    @CreateDateColumn({select:false})
+    @CreateDateColumn({select:true})
     dateDemande: Date;
+
+    @ManyToOne(() => Collaborateur)
+    reponseDe: Collaborateur;
+
+    @ManyToOne(() => Collaborateur)
+    modifierPar: Collaborateur;
 }

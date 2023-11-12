@@ -50,7 +50,7 @@ export default {
   },
   methods:{
     async openModal(){
-      let {data} = await useApiService(`/token/genererPDFCarteQrCode/${this.collabsID}`,{method:"GET"},true,true)
+      let {data} = await useApiService(`/token/genererPDFCarteQrCode/${this.collabsID}`,{method:"GET"},true,false)
       let pdfUrl = URL.createObjectURL(data.value);
       // Attribuer l'URL à une variable de données pour l'utiliser dans le template
       this.pdfUrl = pdfUrl;

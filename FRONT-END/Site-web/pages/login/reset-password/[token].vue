@@ -35,7 +35,7 @@
                 />
               </div>
                 <div class="mt-5">
-                  <VBtn type="submit" :loading="loading" block min-height="44" color="primary"
+                  <VBtn type="submit" :loading="loading" :disabled="loading" block min-height="44" :color="buttonColor"
                     >Changer le mot de passe !</VBtn
                   >
                 </div>
@@ -68,7 +68,8 @@
         email: "",
         password: "",
         repassword: "",
-        loading:false
+        loading:false,
+        buttonColor: 'primary'
       };
     },
     methods:{
@@ -78,7 +79,10 @@
 
         if(valid.valid){
           if(await useGlobalStore().setPassword(this.$route.params.token,this.password)){
+            this.buttonColor = 'success'
             setTimeout(()=>this.$router.push('/login'),3000)
+          }else{
+            this.buttonColor = 'error'
           }
         }
         this.loading = false

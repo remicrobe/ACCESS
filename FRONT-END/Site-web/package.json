@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "reset": "rm -rf .nuxt node_modules .output package-lock.json && npm install",
     "preview": "nuxt preview",
@@ -20,6 +20,7 @@
   "dependencies": {
     "@nuxtjs/toast": "^3.3.1",
     "@pinia/nuxt": "^0.5.1",
+    "luxon": "^3.4.3",
     "pinia": "^2.1.7",
     "vite-plugin-vuetify": "^1.0.2",
     "vue3-toastify": "^0.1.14"

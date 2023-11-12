@@ -10,6 +10,7 @@ import {accessRouter} from "./route/access";
 import {tokenRouter} from "./route/token";
 import {absenceRouter} from "./route/absence";
 import {modeleHoraireRouter} from "./route/modele-horaire";
+import {historiqueRouter} from "./route/historique";
 
 class Index {
     static app = express()
@@ -27,6 +28,7 @@ class Index {
         Index.app.use('/token', tokenRouter)
         Index.app.use('/absence', absenceRouter)
         Index.app.use('/modele-horaire', modeleHoraireRouter)
+        Index.app.use('/historique', historiqueRouter)
     }
 
     static serverConfig(){

@@ -4,6 +4,8 @@ import {Request, Response} from "express";
 import {collaborateurRouter} from "./collaborateur";
 import {AppDataSource} from "../database/datasource";
 import {HorairesModele} from "../database/entity/HorairesModele";
+import { ErrorHandler } from "../utils/error/error-handler";
+import {editModele, nouveauModele} from "../controller/HorraireController";
 
 const modeleHoraireRouter = express.Router();
 
@@ -11,7 +13,23 @@ modeleHoraireRouter.get('/', jwtMiddlewareFullInfo, async (req: Request, res: Re
     try {
         res.send(await AppDataSource.getRepository(HorairesModele).find())
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenue lors de la recup.'});
+        ErrorHandler(error, req, res)
+    }
+});
+
+modeleHoraireRouter.put('/:id', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
+    try {
+        res.send(await editModele(parseInt(req.params.id),req.body.nom,req.body))
+    } catch (error) {
+        ErrorHandler(error, req, res)
+    }
+});
+
+modeleHoraireRouter.post('/', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
+    try {
+        res.send(await nouveauModele(req.body.nom,req.body))
+    } catch (error) {
+        ErrorHandler(error, req, res)
     }
 });
 
@@ -19,7 +37,7 @@ modeleHoraireRouter.get('/:id', jwtMiddlewareFullInfo, async (req: Request, res:
     try {
         res.send(await AppDataSource.getRepository(HorairesModele).findOneByOrFail({id:parseInt(req.params.id)}))
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenuee lors de la recup.'});
+        ErrorHandler(error, req, res)
     }
 });
 

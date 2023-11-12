@@ -21,7 +21,8 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public:{
-      apiUrl: 'http://localhost:5000',
+      apiUrl: 'https://api.access-link.tech',
+      // apiUrl: 'http://localhost:5000',
       version: '0.0.1'
     }
   },

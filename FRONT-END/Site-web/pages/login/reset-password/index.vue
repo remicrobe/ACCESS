@@ -24,7 +24,7 @@
                 />
               </div>
               <div class="mt-5">
-                <VBtn :loading=false type="submit" block min-height="44" color="primary"
+                <VBtn :loading="loading" :disabled="loading" type="submit" block min-height="44" :color="buttonColor"
                   >Envoyer les instuctions !</VBtn
                 >
               </div>
@@ -66,7 +66,8 @@ export default {
   data() {
     return {
       email: "",
-      loading: false
+      loading: false,
+      buttonColor: 'primary'
     };
   },
   methods:{
@@ -76,7 +77,9 @@ export default {
 
       if(valid.valid){
         if(await useGlobalStore().forgotPassword(this.email)){
-          this.loading = false
+          this.buttonColor = 'success'
+        }else{
+          this.buttonColor = 'error'
         }
       }
       this.loading = false

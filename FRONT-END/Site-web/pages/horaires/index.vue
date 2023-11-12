@@ -5,7 +5,7 @@
         class="mx-auto"
       >
         <v-toolbar class="pt-n5" :title="'Gérer les modèles d\'horraires' " color="primary">
-          <horraire-configurator />
+          <horraire-configurator @add="add"/>
         </v-toolbar>
 
         <v-card-text
@@ -24,7 +24,7 @@
             >
 
               <template v-slot:item.actions="{ item }">
-                <horraire-configurator edit="item"/>
+                <horraire-configurator @edit="edit" :edit="item"/>
               </template>
             </v-data-table>
           </v-card-text>
@@ -44,7 +44,7 @@ import { useApiService } from "~/services/apiServices";
 
 export default{
   async setup(){
-    let {data:modele,pending:loading} = await useApiService('http://localhost:5000/modele-horaire', {method:"get"},true,true)
+    let {data:modele,pending:loading} = await useApiService('/modele-horaire', {method:"get"},true)
 
     return {modele,loading}
   },
@@ -54,6 +54,14 @@ export default{
         { title: 'Nom', value: 'nom' },
         { title: 'Actions', value:'actions',align: 'end', sortable:false }
       ],
+    }
+  },
+  methods:{
+    add(model){
+      this.modele.push(model)
+    },
+    edit(model){
+      this.modele[this.modele.findIndex((m)=> m.id === model.id)] = model
     }
   }
 }
