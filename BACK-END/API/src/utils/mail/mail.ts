@@ -99,6 +99,85 @@ export async function sendNewCongeMail(collab:Collaborateur, chefService: Collab
     });
 }
 
+export async function sendAbsenceMail(collab:Collaborateur, chefService: Collaborateur) {
+    return new Promise((resolve, reject) => {
+        const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
+
+        fs.readFile('mail-template/collab-no-present.html', 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                let htmlContent = data.replace('PRENOMCOLLAB', collab.prenom)
+                    .replace('DATE', new Date().toLocaleDateString('fr-FR'))
+
+                const mailOptions = {
+                    from: config.EMAIL,
+                    to: collab.mail,
+                    cc: chefService.mail,
+                    replyTo: chefService.mail,
+                    subject: 'Une absence irrégulière est survenue',
+                    html: htmlContent,
+                    attachments: [{
+                        filename: 'logo.png',
+                        path: logoPath,
+                        cid: 'logo' // Identique à l'attribut 'cid' dans le src de l'image dans le HTML
+                    }]
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(info);
+                    }
+                });
+            }
+        });
+    });
+}
+
+export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Collaborateur, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date) {
+    return new Promise((resolve, reject) => {
+        const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
+
+        fs.readFile('mail-template/collab-hour-not-correct.html', 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                let htmlContent = data
+                    .replace('DATE', new Date().toLocaleDateString('fr-FR'))
+                    .replace('PRENOMCOLLAB', collab.prenom)
+                    .replace('HEUREDEBUTATTENDUE',obtenirDateFR(hdeb))
+                    .replace('HEUREFINATTENDUE',obtenirDateFR(hfin))
+                    .replace('HEUREDEBUTREELLE',obtenirDateFR(hdebreel))
+                    .replace('HEUREFINREELLE',obtenirDateFR(hfinreel))
+
+                const mailOptions = {
+                    from: config.EMAIL,
+                    to: collab.mail,
+                    cc: chefService.mail,
+                    replyTo: chefService.mail,
+                    subject: 'Une incohérence dans les horaires a été remarqué',
+                    html: htmlContent,
+                    attachments: [{
+                        filename: 'logo.png',
+                        path: logoPath,
+                        cid: 'logo' // Identique à l'attribut 'cid' dans le src de l'image dans le HTML
+                    }]
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(info);
+                    }
+                });
+            }
+        });
+    });
+}
+
 export async function sendResponseConge(collab:Collaborateur, accepteur: Collaborateur, demande:Absence) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo

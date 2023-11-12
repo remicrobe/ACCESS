@@ -35,7 +35,7 @@
 
         <v-list-item
           v-else
-          title="Vous n'avez aucune notification a traité">
+          title="Vous n'avez aucune notification a traiter">
         </v-list-item>
 
         <v-card-actions>

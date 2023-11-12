@@ -25,8 +25,4 @@ export class Historique {
     @Column({default: 'Identité'})
     statutUtilise: string
 
-
-
-
-
 }
