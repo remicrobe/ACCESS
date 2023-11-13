@@ -105,8 +105,8 @@ export async function modifierAbsence(absenceId: number, datedeb: string, datefi
     let idResp = absence.collab.service.chefservice ? absence.collab.service.chefservice.id : -1
     if (isDRH(donneurDordre) || isARH(donneurDordre) || isRH(donneurDordre) || await isSuperior(donneurDordre, absence.collab)) {
         let oldAbsence = {...absence}
-        absence.datedeb = DateTime.fromISO(datedeb, { zone: "Europe/Paris" }).toJSDate();
-        absence.datefin = DateTime.fromISO(datefin, { zone: "Europe/Paris" }).toJSDate();
+        absence.datedeb = DateTime.fromISO(datedeb, { zone: "Europe/Paris" }).isValid ? DateTime.fromISO(datedeb, { zone: "Europe/Paris" }).toJSDate() : absence.datedeb;
+        absence.datefin = DateTime.fromISO(datefin, { zone: "Europe/Paris" }).isValid ? DateTime.fromISO(datefin, { zone: "Europe/Paris" }).toJSDate() : absence.datefin;
         absence.raison = raison;
         absence.description = description;
         absence.modifierPar = donneurDordre
