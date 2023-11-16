@@ -13,6 +13,7 @@ import {absenceRouter} from "./route/absence";
 import {modeleHoraireRouter} from "./route/modele-horaire";
 import {historiqueRouter} from "./route/historique";
 import {advertCollabHorsHeure} from "./controller/CollabController";
+import { paramRouter } from './route/param';
 
 class Index {
     static app = express()
@@ -31,6 +32,7 @@ class Index {
         Index.app.use('/absence', absenceRouter)
         Index.app.use('/modele-horaire', modeleHoraireRouter)
         Index.app.use('/historique', historiqueRouter)
+        Index.app.use('/param', paramRouter)
     }
 
     static jobsConfig(){
