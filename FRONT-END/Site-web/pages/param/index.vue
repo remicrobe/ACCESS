@@ -16,7 +16,7 @@
             :items="params"
             :items-per-page="5"
             class="elevation-1"
-            items-per-page-text="Services par page : "
+            items-per-page-text="Paramètres par page : "
           >
             <template v-slot:item.actions="{ item }">
               <param-configurator @edit="edit" :edit="item"/>
