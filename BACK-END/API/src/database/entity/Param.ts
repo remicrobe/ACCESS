@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryColumn} from "typeorm";
 
 @Entity()
-export class ParamModele {
+export class Param {
     @PrimaryColumn()
     uniqueName: string;
 

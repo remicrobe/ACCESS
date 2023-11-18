@@ -17,7 +17,7 @@
             :items="services"
             :items-per-page="5"
             class="elevation-1"
-            items-per-page-text="Services par page : "
+            items-per-page-text="Paramètres par page : "
           >
             <template v-slot:item.chefservice="{ item }">
               <v-chip v-if="item.chefservice" color="blue" dark>{{ item.chefservice.prenom + ' ' + item.chefservice.nom}}</v-chip>

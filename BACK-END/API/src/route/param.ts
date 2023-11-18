@@ -10,17 +10,18 @@ import { listeParam, modifierParam } from "../controller/ParamController";
 const paramRouter = express.Router();
 
 // Modifier un param
-paramRouter.post('/modifierParam', jwtMiddleware, async (req, res) => {
-    const { nom, valeur } = req.body;
+paramRouter.put('/modifierParam/:uniqueName', jwtMiddleware, async (req, res) => {
+    const { value } = req.body;
+    const {uniqueName} = req.params
     const collab:Collaborateur = req.body.connectedCollab;
     try {
-        if(!checkRequiredField([ nom, valeur ])){
+        if(!checkRequiredField([ value, uniqueName ])){
             return res.sendStatus(422)
         }
         if (!isDRH(collab) && !isARH(collab) && !isRH(collab) ){
             return res.sendStatus(401)
         }
-        return await modifierParam(nom,valeur)
+        res.send(await modifierParam(uniqueName,value))
 
     } catch (error) {
         ErrorHandler(error, req, res)
@@ -35,7 +36,9 @@ paramRouter.get('/', jwtMiddleware, async (req, res) => {
         if (!isDRH(collab) && !isARH(collab) && !isRH(collab) ){
             return res.sendStatus(401)
         }
-        return await listeParam()
+        let params = await listeParam()
+        console.log(params)
+        res.send(params)
     } catch (error) {
         ErrorHandler(error, req, res)
     }
