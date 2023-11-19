@@ -9,7 +9,7 @@ export class Presence {
     @ManyToOne(() => Collaborateur)
     collab: Collaborateur;
 
-    @Column()
+    @Column({type: 'date'})
     datePres: Date;
 
     @Column({ type: 'time', default: '00:00:00' })
@@ -29,4 +29,7 @@ export class Presence {
 
     @Column()
     creePar: string;
+
+    @Column()
+    desc: string;
 }

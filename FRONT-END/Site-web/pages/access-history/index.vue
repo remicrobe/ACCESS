@@ -82,6 +82,7 @@
             >
               <v-autocomplete
                 variant="outlined"
+                v-if="services"
                 label="Services"
                 :items="services"
                 item-title="nomservice"

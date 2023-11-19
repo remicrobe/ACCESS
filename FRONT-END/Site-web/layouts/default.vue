@@ -92,6 +92,12 @@ export default {
         icon: "mdi-history",
         grade: ["*"],
       },
+      {
+        route: "/presence",
+        title: "Temps de présence",
+        icon: "mdi-archive-clock-outline",
+        grade: ["*"],
+      },
     ],
   }),
 
