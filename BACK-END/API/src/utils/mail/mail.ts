@@ -99,7 +99,7 @@ export async function sendNewCongeMail(collab:Collaborateur, chefService: Collab
     });
 }
 
-export async function sendAbsenceMail(collab:Collaborateur, chefService: Collaborateur) {
+export async function sendAbsenceMail(collab:Collaborateur, chefService: Collaborateur, date:Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -108,7 +108,7 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
                 reject(err);
             } else {
                 let htmlContent = data.replace('PRENOMCOLLAB', collab.prenom)
-                    .replace('DATE', new Date().toLocaleDateString('fr-FR'))
+                    .replace('DATE', date.toLocaleDateString('fr-FR'))
 
                 const mailOptions = {
                     from: config.EMAIL,
@@ -136,7 +136,7 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
     });
 }
 
-export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Collaborateur, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date) {
+export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Collaborateur, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date, date:Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -145,7 +145,7 @@ export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Col
                 reject(err);
             } else {
                 let htmlContent = data
-                    .replace('DATE', new Date().toLocaleDateString('fr-FR'))
+                    .replace('DATE', date.toLocaleDateString('fr-FR'))
                     .replace('PRENOMCOLLAB', collab.prenom)
                     .replace('HEUREDEBUTATTENDUE',obtenirDateFR(hdeb))
                     .replace('HEUREFINATTENDUE',obtenirDateFR(hfin))
