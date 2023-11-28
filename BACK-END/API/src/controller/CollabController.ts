@@ -284,6 +284,7 @@ export async function advertCollabHorsHeure() {
 
         noPresentCollab.forEach((collab) => {
             sendAbsenceMail(collab, collab.service.chefservice, yesterday.toJSDate())
+            systemeCreerPresence(collab,"00:00:00","00:00:00",yesterday.toJSDate(),'Basé sur historique')
         })
 
     } catch (e) {

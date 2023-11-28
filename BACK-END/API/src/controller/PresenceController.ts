@@ -91,4 +91,5 @@ export async function systemeCreerPresence(collab:Collaborateur,hdeb:string,hfin
     presence.collab = collab
     presence.datePres = date
     presence.creePar = 'SYSTEME'
+    return await AppDataSource.getRepository(Presence).save(presence);
 }
