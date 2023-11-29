@@ -96,19 +96,21 @@ while True:
                 collabInfo = response.json()
                 label.config(text='Bienvenue ...')
             except requests.exceptions.RequestException as e:
-                print(f"Error: {e}")
-                print(e.response)
                 if e.response is not None: 
                     if 404 == e.response.status_code:
                         label.config(text='Erreur ...')
                         sublabel.config(text='Votre carte d\'accès n\'est pas reconue par le système')
                 else:
+                    print(f"Error: {e}")
                     label.config(text='Mode hors ligne ...')
                     for collab in collabAutorise:
-                        print(collab['id'] == parse_data['idCollab'])
-                        
-                        if(collab['id'] == parse_data['idCollab']):
+                        idCollab = int(parse_data['idCollab'])
+                        print("collab['id']:", collab['id'], type(collab['id']))
+                        print("parse_data['idCollab']:", idCollab, type(idCollab))
+
+                        if collab['id'] == idCollab:
                             sublabel.config(text='Accès autorisé')
+                            break
                         else:
                             sublabel.config(text='Accès non autorisé')
                     
