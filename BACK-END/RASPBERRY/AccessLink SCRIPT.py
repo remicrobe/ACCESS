@@ -56,6 +56,8 @@ while True:
                 response = requests.get(api + "/access/config/" + mac)
                 response.raise_for_status()
                 config = response.json()
+                servicesAutorise = config['serviceAutorise']
+                collabAutorise = config['collabAutorise']
                 label.config(text='Bonjour, veuillez passer votre QR Code')
                 state = "read_qr"
             except requests.exceptions.RequestException as e:
@@ -69,15 +71,49 @@ while True:
         _, img = cap.read()
         data, bbox, _ = detector.detectAndDecode(img)
 
+        data = 'idService:1;idCollab:1;token:1d5eba0f-88bc-4501-b40f-e7a814da5a97'
+
         if data:
             if last_scanned == data:
                 if time.time() - last_scanned_time < 10:
                     continue
-
+            
             last_scanned = data
             last_scanned_time = time.time()
 
-            label.config(text=data)
+            elements = data.split(";")
+            print(elements)
+
+            parse_data = {}
+            for element in elements:
+                key, value = element.split(":")
+                parse_data[key] = value
+
+            # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé a accéder au point
+            try:
+                response = requests.get(api + "/access/check/" + mac + "/" + parse_data['token'])
+                response.raise_for_status()
+                collabInfo = response.json()
+                label.config(text='Bienvenue ...')
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}")
+                print(e.response)
+                if e.response is not None: 
+                    if 404 == e.response.status_code:
+                        label.config(text='Erreur ...')
+                        sublabel.config(text='Votre carte d\'accès n\'est pas reconue par le système')
+                else:
+                    label.config(text='Mode hors ligne ...')
+                    for collab in collabAutorise:
+                        print(collab['id'] == parse_data['idCollab'])
+                        
+                        if(collab['id'] == parse_data['idCollab']):
+                            sublabel.config(text='Accès autorisé')
+                        else:
+                            sublabel.config(text='Accès non autorisé')
+                    
+                last_try = time.time()
+
             print(data)
 
         if time.time() - last_scanned_time > 5:

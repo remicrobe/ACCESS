@@ -60,7 +60,7 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
 
                 let service = collab.service ? collab.service.id.toString() : 'aucun'
 
-                const qrCodeDataUrl = await QRCode.toDataURL(`idService:${service}:idCollab;${collab.id};token:${tokenCard.token}`);
+                const qrCodeDataUrl = await QRCode.toDataURL(`idService:${service};idCollab:${collab.id};token:${tokenCard.token}`);
                 const qrCodeImageBytes = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
                 const qrCodeImage = await pdfDoc.embedPng(qrCodeImageBytes);
 
