@@ -84,7 +84,6 @@ export default {
     headers(){
       if(!this.$vuetify.display.mobile){
         return [
-          { title: 'Identifiant', value: 'id' },
           { title: 'Identité', value: 'prenom' },
           { title: 'Fonction', value: 'fonction' },
           { title: 'Grade', value: 'grade' },
@@ -104,3 +103,7 @@ export default {
 };
 
 </script>
+
+<style scoped>
+
+</style>

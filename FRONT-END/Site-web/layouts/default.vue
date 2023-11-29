@@ -87,9 +87,21 @@ export default {
         grade: ["drh", "rh", "arh"],
       },
       {
+        route: "/param",
+        title: "Paramètres",
+        icon: "mdi-settings",
+        grade: ["drh", "rh", "arh"],
+      },
+      {
         route: "/access-history",
         title: "Historique d'accès",
         icon: "mdi-history",
+        grade: ["*"],
+      },
+      {
+        route: "/presence",
+        title: "Temps de présence",
+        icon: "mdi-archive-clock-outline",
         grade: ["*"],
       },
     ],

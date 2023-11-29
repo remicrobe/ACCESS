@@ -140,6 +140,10 @@ collaborateurRouter.put('/modifierCollab/:collaborateur', jwtMiddleware, async (
             if(!checkRequiredField([prenom, nom, {object: mail, type: 'mail'}, grade,fonction])){
                 return res.sendStatus(422)
             }
+            if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab)) {
+                grade = target.grade
+                service = target.service
+            }
             const collaborateur = await modifierCollab(target,prenom, nom, mail, grade, fonction, service, horairesdefault, horaire,actif)
             if (collaborateur) {
                 res.status(201).json(collaborateur);

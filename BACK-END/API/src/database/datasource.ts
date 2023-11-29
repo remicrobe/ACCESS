@@ -13,5 +13,5 @@ export const AppDataSource = new DataSource({
     database: config.DBNAME,
     entities: isProduction ? ["build/database/entity/**/*.js"] : ["src/database/entity/**/*.ts"],
     logging: false,
-    synchronize: false
+    synchronize: true
 })

@@ -22,7 +22,11 @@
 
       <v-card-text>
         <v-container>
-          <span> Vous êtes sur le point d'accepter ou de refuser l'absence du collaborateur</span>
+          <span> Vous êtes sur le point d'accepter ou de refuser l'absence de
+            {{ `${demande.collab.prenom} ${demande.collab.nom} du
+                ${new Date(demande.datedeb).toLocaleString()} au
+                ${new Date(demande.datefin).toLocaleString()}` }}
+          </span>
 
         </v-container>
       </v-card-text>
