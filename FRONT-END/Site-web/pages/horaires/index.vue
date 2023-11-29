@@ -18,7 +18,7 @@
             <v-data-table
               :headers="headers"
               :items="modele"
-              :items-per-page="5"
+              :items-per-page="-1"
               class="elevation-1"
               items-per-page-text="Modeles par page : "
             >
@@ -26,6 +26,8 @@
               <template v-slot:item.actions="{ item }">
                 <horraire-configurator @edit="edit" :edit="item"/>
               </template>
+
+              <template #bottom></template>
             </v-data-table>
           </v-card-text>
         </v-card-text>
