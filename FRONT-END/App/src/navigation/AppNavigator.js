@@ -1,5 +1,5 @@
-import React from "react";
-import {NavigationContainer} from "@react-navigation/native";
+import React, {useEffect} from "react";
+import {NavigationContainer, useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
@@ -17,9 +17,28 @@ import ForgetPassword from "../screens/connexion/ForgetPassword";
 import QRCode from "../screens/QRCode";
 import Planning from "../screens/Planning";
 import Activity from "../screens/Activity";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getCollabData} from '../../App';
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        try {
+            getCollabData()
+                .then((collabData) => {
+                    if (collabData === null) {
+                        navigation.navigate("Login");
+                    } else {
+                        navigation.navigate("MainTabs");
+                    }
+                });
+
+        } catch (error) {
+            alert('Une erreur est survenue lors de la récupération de vos données, veuillez vous reconnecter.');
+        }
+    }, []);
     return (
         <MainStack.Navigator
             screenOptions={{
@@ -37,6 +56,7 @@ const Main = () => {
 const Tabs = createBottomTabNavigator();
 const MainTabs = () => {
     const {isDarkmode} = useTheme();
+
     return (
         <Tabs.Navigator
             screenOptions={{
@@ -75,7 +95,7 @@ const MainTabs = () => {
                     tabBarIcon: ({focused}) => (
                         <View style={{
                             position: 'absolute',
-                            bottom: 20, // space from bottombar
+                            bottom: 15, // space from bottombar
                             height: 60,
                             width: 60,
                             borderRadius: 30,
