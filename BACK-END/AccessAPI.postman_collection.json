@@ -1,0 +1,586 @@
+{
+	"info": {
+		"_postman_id": "dd2cc68f-36cd-49c3-b391-46400b565a7a",
+		"name": "AccessAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30661445"
+	},
+	"item": [
+		{
+			"name": "collab",
+			"item": [
+				{
+					"name": "Créer un collaborateur",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/collab",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collab"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier un collaborateur",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoxNCwiY29sbGFiSWQiOjUsImlhdCI6MTY5Nzg3ODQ3M30.tkt1ph1KizL7odRM_Bse2zh0ZZvyfUDFRc18d7aAdts",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"prenom\": \"John\",\r\n  \"nom\": \"Doe\",\r\n  \"mail\": \"johndoe@example.com\",\r\n  \"grade\": \"drh\",\r\n  \"fonction\": \"Ingénieur\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/collab/modifierCollab/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collab",
+								"modifierCollab",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Connecter un collaborateur",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Récupérer compte",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/collab/validerCollab/34d3dcc1-737c-4612-b538-af2e4aa4211c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collab",
+								"validerCollab",
+								"34d3dcc1-737c-4612-b538-af2e4aa4211c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Demande récupération compte",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mail\":\"mickroglosse@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/collab/demande-recuperation/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collab",
+								"demande-recuperation",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Info perso",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Colalb sous mon control",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "Les requètes de ce dossier permettent d'agir sur les collaborateurs ...."
+		},
+		{
+			"name": "service",
+			"item": [
+				{
+					"name": "Créer un service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nomService\": \"Nouveau Service\",\r\n  \"collaborateurs\": [1, 2], // IDs des collaborateurs (facultatif)\r\n  \"chefService\": 1 // ID du chef de service (facultatif)\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/service",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier un service",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nomService\": \"Nouveau Nom de Service\", // Nouveau nom de service (obligatoire)\r\n  \"chefService\": 2, // Nouvel ID du chef de service (facultatif)\r\n  \"collaborateurs\": [1, 2] // IDs des collaborateurs (facultatif)\r\n}\r\n\r\n// Notez que au moins un des champs et nécéssaire",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/service/{serviceID}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"service",
+								"{serviceID}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer un service",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/service/{serviceID}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"service",
+								"{serviceID}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Récupérer les services",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Récupérer collab d'un service",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Récupérer mon service",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Service sous mon control",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "Les requètes de ce dossier permettent d'agir sur les services...."
+		},
+		{
+			"name": "Access",
+			"item": [
+				{
+					"name": "Creer un point",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjozLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTYyMTE4fQ.ddTg7VRWlEurX44EKDVJmuEgirh0TPRvZdw_REq4EyQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"macadress\": \"00:0a:95:9d:68:16\",\r\n    \"typePoint\": \"ap\",\r\n    \"location\": \"Bureau principal\",\r\n    \"nompoint\": \"Point d'accès 1\",\r\n    \"active\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/access/creerAccess",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"access",
+								"creerAccess"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier un point",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjozLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTYyMTE4fQ.ddTg7VRWlEurX44EKDVJmuEgirh0TPRvZdw_REq4EyQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"macadress\": \"00:0a:95:9d:68:16\",\r\n    \"typePoint\": \"pointeuse\",\r\n    \"location\": \"Bureau secondaire\",\r\n    \"nompoint\": \"Point d'accès 2\",\r\n    \"active\": false,\r\n    \"collabAutoriseIds\": [1,2],\r\n    \"serviceAutoriseIds\": [1]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/access/modifierAccess/:accessId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"access",
+								"modifierAccess",
+								":accessId"
+							],
+							"variable": [
+								{
+									"key": "accessId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtenir tout les points d'access",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Obtenir mes points d'accès",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "Gérerer carte collab",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjozLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTYyMTE4fQ.ddTg7VRWlEurX44EKDVJmuEgirh0TPRvZdw_REq4EyQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"collabId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/token/genererCarteQrCode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"token",
+								"genererCarteQrCode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Générer QR code app",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Générer PDF carte",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
+			"description": "Va permettre aux collaborateurs de récupérer leurs QR code d'entrée pour l'application,\n\net au RH de gérer les codes pour les cartes physique en cas de besoin"
+		},
+		{
+			"name": "Historique",
+			"item": [],
+			"description": "Va permettre d'agir sur l'ensemble des entrées sorties des collaborateurs, de faire des saisies manuelles de la part des chefs de services sur demande des collaborateurs.\n\n  \nMais aussi pour les collaborateurs de visualiser l'ensemble de leurs entrées sorties, pour par exemple prouver qu'ils étaient bien présent etc...."
+		},
+		{
+			"name": "Absence",
+			"item": [
+				{
+					"name": "absenceDeMesCollaborateurs",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "mesAbsences",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "creerUneAbsence",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoxLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTk5MDU3fQ.S_s_leoLWSU3AAmVxemP4hr0QeHq0RwPnG6SzGsn1AA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"datedeb\": \"2023-12-01T00:00:00.000Z\",\r\n    \"datefin\": \"2023-12-31T00:00:00.000Z\",\r\n    \"raison\": \"conge\",\r\n    \"description\": \"Vacances de fin d'année\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/absence/creerUneAbsence",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"absence",
+								"creerUneAbsence"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modifierAbsence",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoxLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTk5MDU3fQ.S_s_leoLWSU3AAmVxemP4hr0QeHq0RwPnG6SzGsn1AA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"datedeb\": \"2023-12-15T00:00:00.000Z\",\r\n    \"datefin\": \"2024-01-15T00:00:00.000Z\",\r\n    \"raison\": \"conge\",\r\n    \"description\": \"Extension des vacances de fin d'année\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/absence/modifierAbsence/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"absence",
+								"modifierAbsence",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accepterAbsence",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklkIjoxLCJjb2xsYWJJZCI6MSwiaWF0IjoxNjk3OTk5MDU3fQ.S_s_leoLWSU3AAmVxemP4hr0QeHq0RwPnG6SzGsn1AA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reponse\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/absence/accepterAbsence/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"absence",
+								"accepterAbsence",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -3,17 +3,12 @@ import {AppDataSource} from "../database/datasource";
 import {Collaborateur} from "../database/entity/Collab";
 import {Service} from "../database/entity/Service";
 import {In} from "typeorm";
+import {Historique} from "../database/entity/Historique";
+import {DateTime} from "luxon";
+import {sendunauthorizedAccessMail} from "../utils/mail/mail";
 
-export async function creerAccess(macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutoriseIds: number[], serviceAutoriseIds: number[]) {
+export async function creerAccess(macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutorise: any[], serviceAutorise: any[]) {
 
-    let collabAutorise
-    if (collabAutoriseIds && collabAutoriseIds.length > 0) {
-         collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutoriseIds)});
-    }
-    let serviceAutorise
-    if (serviceAutoriseIds && serviceAutoriseIds.length > 0) {
-         serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutoriseIds)});
-    }
 
     let access = new Access();
     access.macadress = macadress;
@@ -21,13 +16,17 @@ export async function creerAccess(macadress: string, typePoint: typePoint, locat
     access.location = location;
     access.nompoint = nompoint;
     access.active = active;
-    access.collabAutorise = collabAutorise;
-    access.serviceAutorise = serviceAutorise;
+    if (collabAutorise && collabAutorise.length > 0) {
+        access.collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutorise.map((c) => c.id))});
+    }
+    if (serviceAutorise && serviceAutorise.length > 0) {
+        access.serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutorise.map((s) => s.id))});
+    }
 
     return await AppDataSource.getRepository(Access).save(access)
 }
 
-export async function modifierAccess(accessID: number, macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutoriseIds: number[], serviceAutoriseIds: number[]) {
+export async function modifierAccess(accessID: number, macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutorise: any[], serviceAutorise: any[]) {
 
     const access = await AppDataSource.getRepository(Access).findOne(
         {
@@ -44,49 +43,49 @@ export async function modifierAccess(accessID: number, macadress: string, typePo
         return null;
     }
 
-    let collabAutorise
-    if (collabAutoriseIds && collabAutoriseIds.length > 0) {
-        collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutoriseIds)});
-    }
-    let serviceAutorise
-    if (serviceAutoriseIds && serviceAutoriseIds.length > 0) {
-        serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutoriseIds)});
-    }
-
     access.macadress = macadress;
     access.typePoint = typePoint;
     access.location = location;
     access.nompoint = nompoint;
     access.active = active;
-    access.collabAutorise = collabAutorise;
-    access.serviceAutorise = serviceAutorise;
+    if (collabAutorise && collabAutorise.length > 0) {
+        access.collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutorise.map((c) => c.id))});
+    } else {
+        access.collabAutorise = null
+    }
+    if (serviceAutorise && serviceAutorise.length > 0) {
+        access.serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutorise.map((s) => s.id))});
+    } else {
+        access.serviceAutorise = null
+    }
+
 
     return await AppDataSource.getRepository(Access).save(access);
 }
 
-export async function listeAccess(){
+export async function listeAccess() {
     return await AppDataSource.getRepository(Access).find({
-        relations:{
+        relations: {
             collabAutorise: true,
             serviceAutorise: true,
         }
     })
 }
 
-export async function pointAccessAccessible(collab: Collaborateur){
+export async function pointAccessAccessible(collab: Collaborateur) {
     const collabId = collab.id;
     const serviceId = collab.service.id;
 
     let accessByCollab = await AppDataSource.getRepository(Access)
         .createQueryBuilder("access")
         .leftJoin("access.collabAutorise", "collab")
-        .where("collab.id = :collabId", { collabId })
+        .where("collab.id = :collabId", {collabId})
         .getMany();
 
     let accessByService = await AppDataSource.getRepository(Access)
         .createQueryBuilder("access")
         .leftJoin("access.serviceAutorise", "service")
-        .where("service.id = :serviceId", { serviceId })
+        .where("service.id = :serviceId", {serviceId})
         .getMany();
 
     let allAccess = [...accessByCollab, ...accessByService];
@@ -109,7 +108,7 @@ export async function getPointConfig(macAdress) {
     // Récupérer le point d'accès à partir de l'adresse MAC
     return await AppDataSource.getRepository(Access).findOneOrFail({
         where: {
-            macadress: macAdress
+            macadress: macAdress,
         },
         relations: {
             collabAutorise: true,
@@ -118,15 +117,26 @@ export async function getPointConfig(macAdress) {
     })
 }
 
-export async function aAccess(collaborateur, macAdress) {
+export async function aAccess(collaborateur: Collaborateur, macAdress) {
+
+
     // Récupérer le point d'accès à partir de l'adresse MAC
     const access = await AppDataSource.getRepository(Access).findOneOrFail({
         where: {
-            macadress: macAdress
+            macadress: macAdress,
+            active: true,
         },
         relations: {
-            collabAutorise: true,
-            serviceAutorise: true,
+            collabAutorise: {
+                horaire: true,
+                horairesdefault: true
+            },
+            serviceAutorise: {
+                collabs: {
+                    horaire: true,
+                    horairesdefault: true
+                }
+            },
         }
     });
 
@@ -134,20 +144,71 @@ export async function aAccess(collaborateur, macAdress) {
         return null;
     }
 
-    if(access.typePoint === typePoint.pointeuse){
-        // Logique pour enregistrer dans la table que le collaborateur a pointé
-        console.log('pointage')
+
+    let newHistory = new Historique()
+    newHistory.collab = collaborateur
+    newHistory.point = access
+    newHistory.actionAutorise = true
+
+
+    if (access.typePoint === typePoint.pointeuse) {
+        newHistory.typeAction = 'Pointage'
+        await AppDataSource.getRepository(Historique).save(newHistory)
         return true
+    } else {
+        newHistory.typeAction = 'Access'
     }
 
     // Vérifier si le collaborateur a accès
-    const hasAccess = access.collabAutorise.some(collab => collab.id === collaborateur.id) ||
-        access.serviceAutorise.some(service => service.id === collaborateur.service.id);
+    let hasAccess = false;
+    if (access.collabAutorise.length > 0 || access.serviceAutorise.length > 0) {
+        if (access.collabAutorise.some(collab => collab.id === collaborateur.id)) {
+            hasAccess = true;
+        } else if (access.serviceAutorise) {
+            access.serviceAutorise.forEach((service) => {
+                service.collabs.forEach((collab) => {
+                    if (collab.id === collaborateur.id) {
+                        hasAccess = true;
+                        newHistory.statutUtilise = 'Service'
+                    }
+                })
+            })
+        }
+    }
 
-    if(hasAccess){
-        // Logique pour enregistrer dans la table que le collaborateur a accédé au point
-        return true
-    }else{
-        throw `Collaborateur ${collaborateur.id} a éssayé d'accéder a la zone ${access.nompoint} de manière non autorisée`
+    if (hasAccess) {
+        let today = new Date();
+        let dayOfWeek = today.toLocaleDateString('fr-FR', {weekday: 'long'});
+        let hDeb = 'hDeb' + dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+        let hFin = 'hFin' + dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+        const now = DateTime.now().toMillis()
+        if (collaborateur.horaire) {
+            const heureDebAutorise = DateTime.fromFormat(collaborateur.horaire[hDeb], "HH:mm:ss").toMillis();
+            const heureFinAutorise = DateTime.fromFormat(collaborateur.horaire[hFin], "HH:mm:ss").toMillis();
+            if(now < heureDebAutorise || now > heureFinAutorise){
+                newHistory.statutUtilise += ' Hors heure'
+                hasAccess = false
+            }
+        } else if (collaborateur.horairesdefault) {
+            const heureDebAutorise = DateTime.fromFormat(collaborateur.horairesdefault[hDeb], "HH:mm:ss").toMillis();
+            const heureFinAutorise = DateTime.fromFormat(collaborateur.horairesdefault[hFin], "HH:mm:ss").toMillis();
+            if(now < heureDebAutorise || now > heureFinAutorise){
+                newHistory.statutUtilise += ' Hors heure'
+                hasAccess = false
+            }
+        }
+    }
+
+    if (hasAccess) {
+        await AppDataSource.getRepository(Historique).save(newHistory)
+        return collaborateur
+    } else {
+        newHistory.actionAutorise = false
+        await AppDataSource.getRepository(Historique).save(newHistory)
+        if(collaborateur.service && collaborateur.service.chefservice)
+        {
+            sendunauthorizedAccessMail(collaborateur, collaborateur.service.chefservice, access)
+        }
+        throw `[WARNING] Collaborateur ${collaborateur.id} a éssayé d'accéder a la zone ${access.nompoint} de manière non autorisée`
     }
 }

@@ -12,4 +12,5 @@ export default {
     SMTP: process.env.SMTP,
     PORTSMTP: process.env.PORTSMTP,
     WEBSITEURL: process.env.WEBSITEURL,
+    ENVIRONMENT: process.env.ENVIRONMENT,
 };

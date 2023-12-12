@@ -1,6 +1,7 @@
 import * as express from 'express'
 
 import config from './config'
+import * as cron from 'node-cron'
 
 import * as cors from 'cors'
 import {AppDataSource} from "./database/datasource";
@@ -9,6 +10,11 @@ import {serviceRouter} from "./route/service"
 import {accessRouter} from "./route/access";
 import {tokenRouter} from "./route/token";
 import {absenceRouter} from "./route/absence";
+import {modeleHoraireRouter} from "./route/modele-horaire";
+import {historiqueRouter} from "./route/historique";
+import {advertCollabHorsHeure} from "./controller/CollabController";
+import { presenceRouter } from './route/presence';
+import { paramRouter } from './route/param';
 
 class Index {
     static app = express()
@@ -25,6 +31,16 @@ class Index {
         Index.app.use('/access', accessRouter)
         Index.app.use('/token', tokenRouter)
         Index.app.use('/absence', absenceRouter)
+        Index.app.use('/modele-horaire', modeleHoraireRouter)
+        Index.app.use('/historique', historiqueRouter)
+        Index.app.use('/presence', presenceRouter)
+        Index.app.use('/param', paramRouter)
+    }
+
+    static jobsConfig(){
+        cron.schedule('0 1 * * *', async () => {
+            await advertCollabHorsHeure();
+        });
     }
 
     static serverConfig(){
@@ -32,11 +48,13 @@ class Index {
             console.log("Connecté a la base de données")
             Index.app.listen(config.PORT, ()=> console.log(`API démarrée sur le port ${config.PORT}....`))
         }).catch(error => console.log(error))
+
     }
 
     static main() {
         Index.globalConfig()
         Index.routeConfig()
+        Index.jobsConfig()
         Index.serverConfig()
     }
 

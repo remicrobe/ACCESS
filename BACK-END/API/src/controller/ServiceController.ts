@@ -6,38 +6,34 @@ import {isARH, isDRH, isRH} from "./CollabController";
 
 
 // Éditer un service existant (chefService facultatif)
-export async function editService(service: Service, nomService: string,  collaborateurs: number[], chefService?: Collaborateur) {
+export async function editService(service: Service, nomService: string, collaborateurs: any[], chefService: number) {
     service.nomservice = nomService;
     if (collaborateurs && collaborateurs.length > 0) {
-        service.collabs = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collaborateurs)});
+        service.collabs = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collaborateurs.map((c)=>c.id))});
     }
-    if(chefService){
-        service.chefservice = chefService
+    if (chefService) {
+        service.chefservice = await AppDataSource.getRepository(Collaborateur).findOneBy({id: chefService});
     }
     return await AppDataSource.getRepository(Service).save(service);
 }
 
 
-
 // Créer un nouveau service avec des collaborateurs (chefService facultatif)
-export async function createService(nomService: string, collaborateurs: number[], chefService?: number) {
+export async function createService(nomService: string, collaborateurs: any[], chefService?: number) {
     const service = new Service();
     service.nomservice = nomService;
-    if(chefService){
+    if (chefService) {
         service.chefservice = await AppDataSource.getRepository(Collaborateur).findOneBy({id: chefService});
     }
 
     if (collaborateurs && collaborateurs.length > 0) {
-        service.collabs = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collaborateurs)});
+        service.collabs = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collaborateurs.map((c)=>c.id))});
     } else {
         service.collabs = null; // Aucun collaborateur spécifié
     }
 
     return await AppDataSource.getRepository(Service).save(service);
 }
-
-
-
 
 
 // Obtenir les collaborateurs d'un service
@@ -51,10 +47,24 @@ export async function getControlService(chefService: Collaborateur) {
 }
 
 export async function isSuperior(chefService: Collaborateur, collaborateur: Collaborateur) {
-    return (collaborateur.service.chefservice.id === chefService.id)
+    // if(!collaborateur.service) return false
+    // return (collaborateur.service.chefservice.id === chefService.id)
+
+    if (await AppDataSource.getRepository(Service).findOne({
+        where: {
+            collabs: {
+                id:In([collaborateur.id])
+            },
+            chefservice: chefService
+        }
+    })) {
+        return true
+    }else{
+        return false
+    }
 }
 
-export async function ServiceUnderControl(collab:Collaborateur){
+export async function ServiceUnderControl(collab: Collaborateur) {
     if (
         isDRH(collab)
         || isARH(collab)
@@ -62,7 +72,7 @@ export async function ServiceUnderControl(collab:Collaborateur){
     ) { // Si le collab est RH alors il peut récupérer des infos sur l'ensemble des collab
         return await AppDataSource.getRepository(Service).find({
             relations: {
-                chefservice:true,
+                chefservice: true,
                 collabs: true
             }
         })
@@ -71,11 +81,11 @@ export async function ServiceUnderControl(collab:Collaborateur){
     Donc nous allons chercher a récupérer l'ensemble des collaborateurs dans son service*/
     return await AppDataSource.getRepository(Service).find({
         relations: {
-            chefservice:true,
+            chefservice: true,
             collabs: true
         },
         where: {
-            chefservice:{
+            chefservice: {
                 id: collab.id
             }
         }
