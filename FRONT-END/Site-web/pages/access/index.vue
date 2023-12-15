@@ -13,14 +13,13 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
           v-if="access"
         >
           <v-data-table
             :headers="headers"
             :items="access"
             :items-per-page="15"
-            class="elevation-1"
             items-per-page-text="Access par page : "
           >
             <template v-slot:item.typePoint="{ item }">
@@ -81,13 +80,13 @@ export default {
           { title: "Localisation balise", value: "location" },
           { title: "Type balise", value: "typePoint" },
           { title: "Active", value: "active" },
-          { title: "Actions", value: "actions" },
+          { title: "Actions", value: "actions", align: 'end' },
         ]
       }else{
         return [
           { title: "Nom balise", value: "nompoint" },
           { title: "Active", value: "active" },
-          { title: "Actions", value: "actions" },
+          { title: "Actions", value: "actions", align: 'end' },
         ]
       }
     }

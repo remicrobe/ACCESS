@@ -5,7 +5,7 @@
         <v-toolbar class="pt-n5" :title="'Gérer les présences du personnel' " color="primary">
           <presence-configurator :collabs="collabs" @add="add" />
         </v-toolbar>
-        <v-card-text style="height: 80vh; overflow: auto">
+        <v-card-text style="overflow: auto">
           <v-row no-gutters>
             <v-col
               cols="12"
@@ -95,10 +95,9 @@
             @update:page="updatePage"
             @update:options="updateOptions"
             :items-per-page-options="[{value:5, title:'5'},{value:10, title:'10'}]"
-            class="elevation-1"
           >
             <template v-slot:item.collab="{ item }">
-              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom }}</v-chip>
+              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom.toUpperCase() }}</v-chip>
               <span v-else>Erreur</span>
             </template>
 
@@ -225,7 +224,7 @@ export default {
         { title: "Temps de présence", value: "tempspres" },
         { title: "Créé par", value: "creePar" },
         { title: "Modifié par", value: "modifiePar" },
-        { title: "Action", value: "action" },
+        { title: "Action", value: "action", align: 'end' },
       ];
     },
   },

@@ -14,14 +14,13 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
           v-if="collabs"
         >
           <v-data-table
             :headers="headers"
             :items="collabs"
             :items-per-page="15"
-            class="elevation-1"
             items-per-page-text="Collaborateurs par page : "
           >
             <template v-slot:item.prenom="{ item }">
@@ -89,13 +88,13 @@ export default {
           { title: 'Grade', value: 'grade' },
           { title: 'Service', value: 'service' , align: 'center'},
           { title: 'Actif', value:'actif' },
-          { title: 'Actions', value:'actions' }
+          { title: 'Actions', value:'actions', align: 'end' }
         ]
       }else{
         return [
           { title: 'Identité', value: 'prenom' },
           { title: 'Fonction', value: 'fonction' },
-          { title: 'Actions', value:'actions' }
+          { title: 'Actions', value:'actions', align: 'end' }
         ]
       }
     }

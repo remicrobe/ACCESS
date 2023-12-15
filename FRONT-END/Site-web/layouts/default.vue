@@ -4,10 +4,27 @@
       <v-list>
         <v-list-item
           v-if="user"
-          prepend-avatar="/default.png"
           :title="user.nom + ' ' + user.prenom"
           :subtitle="user.fonction"
-        />
+        >
+          <template #prepend>
+            <v-hover v-slot="{ isHovering, props }">
+            <v-card
+              v-bind="props"
+              variant="text"
+              class="mr-2"
+            >
+              <v-avatar
+                  rounded="0"
+              >
+                <v-img v-if="!isHovering" cover src="./default.png"></v-img>
+                <v-img @click="console.log('upload')" v-else cover src="./upload.png"></v-img>
+              </v-avatar>
+            </v-card>
+            </v-hover>
+
+          </template>
+        </v-list-item>
         <v-list-item @click="disconnect" title="Se déconnecter" append-icon="mdi-login" />
 
         <v-divider></v-divider>
@@ -141,4 +158,4 @@ export default {
   },
 };
 </script>
-  
+
