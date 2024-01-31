@@ -1,5 +1,5 @@
 import * as express from 'express'
-import {Request, Response} from 'express'
+import { Request, Response } from 'express'
 import {
     creerCollab,
     getCollabInfoFromId,
@@ -9,29 +9,46 @@ import {
     isRH,
     modifierCollab
 } from "../controller/CollabController";
-import {Collaborateur, typeCollab} from "../database/entity/Collab";
-import {AppDataSource} from "../database/datasource";
+import { Collaborateur, typeCollab } from "../database/entity/Collab";
+import { AppDataSource } from "../database/datasource";
 import {
-    checkTokenPassword,
+    checkTokenPassword, disconnectToken,
     getCollabInfoFromToken,
     setAuthToken,
     setTokenPasswordAndSendMail
 } from "../controller/Token";
-import {createHash} from "crypto";
-import {jwtMiddleware, jwtMiddlewareFullInfo} from "../middleware/jwt";
-import {isSuperior} from "../controller/ServiceController";
+import { createHash } from "crypto";
+import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
+import { isSuperior } from "../controller/ServiceController";
+import { Token } from "../database/entity/Token";
+import { ErrorHandler } from "../utils/error/error-handler";
+import {IsNull} from "typeorm";
+import {checkRequiredField} from "../utils/global";
 
 const collaborateurRouter = express.Router();
 
 // Route pour créer un collaborateur
-collaborateurRouter.post('/creerCollab', jwtMiddleware, async (req: Request, res: Response) => {
+collaborateurRouter.post('/creerCollab', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
     try {
-        let connectedCollab:Collaborateur = req.body.connectedCollab
-        if(!isDRH(connectedCollab)){
+        let connectedCollab: Collaborateur = req.body.connectedCollab
+        if (!isDRH(connectedCollab)) {
             res.sendStatus(401)
-        }else{
-            const {prenom, nom, mail, grade, fonction} = req.body;
-            const collaborateur = await creerCollab(prenom, nom, mail, grade, fonction);
+        } else {
+            let {
+                prenom,
+                nom,
+                mail,
+                grade,
+                fonction,
+                service,
+                horairesdefault,
+                horaire,
+                actif
+            } = req.body;
+            if(!checkRequiredField([prenom, nom, {object: mail, type: 'mail'}, grade,fonction])){
+                return res.sendStatus(422)
+            }
+            const collaborateur = await creerCollab(prenom, nom, mail, grade, fonction, service, horairesdefault, horaire,actif);
 
             if (collaborateur && await setTokenPasswordAndSendMail(collaborateur)) {
                 res.status(201).json(collaborateur);
@@ -40,7 +57,7 @@ collaborateurRouter.post('/creerCollab', jwtMiddleware, async (req: Request, res
             }
         }
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenue lors de la création du collaborateur.'});
+        ErrorHandler(error, req, res)
     }
 });
 
@@ -49,58 +66,85 @@ collaborateurRouter.get('/infoCollab', jwtMiddlewareFullInfo, async (req: Reques
     try {
         res.send(req.body.connectedCollab)
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenue lors de la recherche du collaborateur.'});
+        ErrorHandler(error, req, res)
     }
 });
 
 // Route pour récuperer les infos sur un collab
 collaborateurRouter.get('/infoCollab/:idcollab', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
     try {
-        let connectedCollab:Collaborateur = req.body.connectedCollab
-        let searchedCollab:Collaborateur = await getCollabInfoFromId(parseInt(req.params.idcollab))
-        if(
+        let connectedCollab: Collaborateur = req.body.connectedCollab
+        let searchedCollab: Collaborateur = await getCollabInfoFromId(parseInt(req.params.idcollab))
+        if (
             isDRH(connectedCollab)
             || isARH(connectedCollab)
             || isRH(connectedCollab)
             || (connectedCollab.id === searchedCollab.id)
-            || await isSuperior(connectedCollab,searchedCollab)
+            || await isSuperior(connectedCollab, searchedCollab)
         ) {
             res.send(searchedCollab)
-        }else{
+        } else {
             res.sendStatus(401)
         }
     } catch (error) {
-        console.log(error)
-        res.status(500).json({error: 'Une erreur est survenue lors de la recherche du collaborateur.'});
+        ErrorHandler(error, req, res)
     }
 });
 
 // Route pour récuperer les collab sous la direction du connected collab
 collaborateurRouter.get('/infoCollabSousControl/', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
     try {
-        let connectedCollab:Collaborateur = req.body.connectedCollab
+        let connectedCollab: Collaborateur = req.body.connectedCollab
 
         res.send(await getCollabUnderControl(connectedCollab))
 
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenue lors de la recherche du collaborateur.'});
+        ErrorHandler(error, req, res)
+    }
+});
+
+// Route pour obtenir l'ensemble des collaborateurs sanns service
+collaborateurRouter.get('/sansService', jwtMiddleware, async (req: Request, res: Response) => {
+    try {
+        let connectedCollab: Collaborateur = req.body.connectedCollab
+        if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab)) {
+            res.sendStatus(401)
+        } else {
+            res.send(await AppDataSource.getRepository(Collaborateur).find({where:{service:IsNull()}}))
+        }
+    } catch (error) {
+        ErrorHandler(error, req, res)
     }
 });
 
 // Route pour modifier un collaborateur
-collaborateurRouter.put('/modifierCollab/:collaborateur',jwtMiddleware, async (req: Request, res: Response) => {
+collaborateurRouter.put('/modifierCollab/:collaborateur', jwtMiddleware, async (req: Request, res: Response) => {
+    const collabID = parseInt(req.params.collaborateur);
     try {
-        let connectedCollab:Collaborateur = req.body.connectedCollab
-        if(!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab)){
+        let connectedCollab: Collaborateur = req.body.connectedCollab
+        let target = await AppDataSource.getRepository(Collaborateur).findOneOrFail({where:{id:collabID},relations:{service:{chefservice:true}}})
+        if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab) && !await isSuperior(connectedCollab,target)) {
             res.sendStatus(401)
-        }else {
-            const collabID = parseInt(req.params.collaborateur);
-            let {prenom, nom, mail, grade, fonction,actif,horaire} = req.body;
-            if(actif){
-                actif = parseInt(actif) === 1
+        } else {
+
+            let {prenom,
+                nom,
+                mail,
+                grade,
+                fonction,
+                service,
+                horairesdefault,
+                horaire,
+                actif
+            } = req.body;
+            if(!checkRequiredField([prenom, nom, {object: mail, type: 'mail'}, grade,fonction])){
+                return res.sendStatus(422)
             }
-            const collaborateur = await modifierCollab(collabID, prenom, nom, mail, grade, fonction,actif,horaire);
-            console.log(collaborateur)
+            if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab)) {
+                grade = target.grade
+                service = target.service
+            }
+            const collaborateur = await modifierCollab(target,prenom, nom, mail, grade, fonction, service, horairesdefault, horaire,actif)
             if (collaborateur) {
                 res.status(201).json(collaborateur);
             } else {
@@ -108,8 +152,7 @@ collaborateurRouter.put('/modifierCollab/:collaborateur',jwtMiddleware, async (r
             }
         }
     } catch (error) {
-        console.log(error)
-        res.status(500).json({error: 'Une erreur est survenue lors de la modification du collaborateur.'});
+        ErrorHandler(error, req, res)
     }
 });
 
@@ -117,13 +160,11 @@ collaborateurRouter.put('/modifierCollab/:collaborateur',jwtMiddleware, async (r
 collaborateurRouter.post('/recuperation/:token', async (req: Request, res: Response) => {
     try {
         const token = req.params.token;
-        const password = req.body.password;
+        const password = req.body.motdepasse;
 
-        console.log(token)
         res.send(await checkTokenPassword(token, password))
     } catch (error) {
-        console.log(error)
-        res.status(500).json({error: 'Une erreur est survenue lors du paramètrage du compte.'});
+        ErrorHandler(error, req, res)
     }
 });
 
@@ -131,7 +172,11 @@ collaborateurRouter.post('/recuperation/:token', async (req: Request, res: Respo
 collaborateurRouter.post('/demande-recuperation/', async (req: Request, res: Response) => {
     try {
         const mail = req.body.mail;
+        if(!checkRequiredField([ {object: mail, type: 'mail'}])){
+            return res.sendStatus(422)
+        }
         let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({mail})
+
         let success = await setTokenPasswordAndSendMail(collab)
         if (success) {
             res.send('Mail de récupération envoyé')
@@ -140,7 +185,7 @@ collaborateurRouter.post('/demande-recuperation/', async (req: Request, res: Res
         }
 
     } catch (error) {
-        res.status(500).json({error: 'Une erreur est survenue lors du paramètrage du compte.'});
+        ErrorHandler(error, req, res)
     }
 });
 
@@ -149,16 +194,30 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
     try {
         const mail = req.body.mail;
         let motdepasse = req.body.motdepasse;
+        if(!checkRequiredField([ {object: mail, type: 'mail'},motdepasse])){
+            return res.sendStatus(422)
+        }
         motdepasse = createHash('sha256').update(motdepasse).digest('hex');
 
-        let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({mail, motdepasse})
+        let collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
+            where: {mail, motdepasse},
+            relations: {service: {chefservice: true}}
+        })
 
         res.send(await setAuthToken(collab))
 
     } catch (error) {
-        console.log(error)
-        res.status(500).json({error: 'Une erreur est survenue lors de la connexion au compte.'});
+        ErrorHandler(error, req, res)
     }
 });
 
-export {collaborateurRouter};
+// Route pour déconnecter
+collaborateurRouter.post('/deconneter/', jwtMiddleware, async (req: Request, res: Response) => {
+    try {
+        res.send(await disconnectToken(req.body.jwtToken))
+    } catch (error) {
+        ErrorHandler(error, req, res)
+    }
+});
+
+export { collaborateurRouter };

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Layout, Text } from 'react-native-rapi-ui';
+import {View} from 'react-native';
+import {Layout, Text} from 'react-native-rapi-ui';
 
-export default function ({ navigation }) {
+export default function ({navigation}) {
     return (
         <Layout>
             <View

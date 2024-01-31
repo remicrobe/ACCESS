@@ -1,8 +1,10 @@
 import vuetify from "vite-plugin-vuetify";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+// @ts-ignore
 export default defineNuxtConfig({
   // import styles
+  // @ts-ignore
   css: ["@/assets/main.scss"],
   devtools: { enabled: true },
   // enable takeover mode
@@ -19,7 +21,8 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public:{
-      apiUrl: 'http://localhost:3005',
+      apiUrl: 'https://api.access-link.tech',
+      //apiUrl: 'http://localhost:5000',
       version: '0.0.1'
     }
   },

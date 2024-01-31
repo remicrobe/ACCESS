@@ -97,6 +97,38 @@ export async function getCollabInfoFromToken(jwtToken) {
     return token.collab;
 }
 
+// Méthode qui désactive le token de connexion utilisé
+export async function disconnectToken(jwtToken) {
+    // Vérifier le JWT
+    let decoded;
+    try {
+        decoded = jwt.verify(jwtToken, config.JWT_SECRET);
+    } catch (err) {
+        return false
+    }
+
+    // Récupérer le token de la base de données
+    const token = await AppDataSource.getRepository(Token).findOneOrFail(
+        {
+            where:
+                {
+                    type: tokenType.auth,
+                    id: decoded.tokenId,
+                    actif: true
+                }
+        }
+    );
+
+    if (!token) {
+        return false
+    }
+    token.actif = false
+    await AppDataSource.getRepository(Token).save(token)
+
+    // Retourner le collaborateur
+    return true
+}
+
 
 export async function delAllAuthToken(collab) {
     await AppDataSource.getRepository(Token).update({collab, type: tokenType.auth}, {actif: false});
@@ -200,7 +232,10 @@ export async function checkQRCode(tokenToCheck) {
             }, relations: {
                 collab: {
                     horaire: true,
-                    horairesdefault : true
+                    horairesdefault : true,
+                    service: {
+                        chefservice: true
+                    }
                 }
             }
         },
