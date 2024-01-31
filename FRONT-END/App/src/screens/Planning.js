@@ -1,19 +1,57 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Layout, Text } from 'react-native-rapi-ui';
-
-export default function ({ navigation }) {
-	return (
-		<Layout>
-			<View
-				style={{
-					flex: 1,
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-			>
-				<Text>Ici on affiche le planning</Text>
-			</View>
-		</Layout>
-	);
-}
+import {LocaleConfig} from 'react-native-calendars';
+import React, {useState} from 'react';
+import {Calendar} from 'react-native-calendars';
+ 
+LocaleConfig.locales['fr'] = {
+  monthNames: [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
+  ],
+  monthNames: [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
+  ],
+  monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+  dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+  dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+  today: "Aujourd'hui"
+};
+ 
+LocaleConfig.defaultLocale = 'fr';
+ 
+const App = () => {
+  const [selected, setSelected] = useState('');
+ 
+  return (
+    <Calendar
+      onDayPress={day => {
+        setSelected(day.dateString);
+      }}
+      markedDates={{
+        [selected]: {selected: true, disableTouchEvent: true, selectedDotColor: 'orange'}
+      }}
+    />
+  );
+};
+ 
+export default App;
