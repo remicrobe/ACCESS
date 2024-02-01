@@ -15,6 +15,8 @@ import {historiqueRouter} from "./route/historique";
 import {advertCollabHorsHeure} from "./controller/CollabController";
 import { presenceRouter } from './route/presence';
 import { paramRouter } from './route/param';
+import { incidentRouter } from './route/incident';
+import { parseMailIncident } from './jobs/mailParserIncident';
 
 class Index {
     static app = express()
@@ -35,11 +37,18 @@ class Index {
         Index.app.use('/historique', historiqueRouter)
         Index.app.use('/presence', presenceRouter)
         Index.app.use('/param', paramRouter)
+        Index.app.use('/incident', incidentRouter)
     }
 
     static jobsConfig(){
+        // A 1h du matin, chaque jour
         cron.schedule('0 1 * * *', async () => {
             await advertCollabHorsHeure();
+        });
+
+        // Chaque minute, chaque jour
+        cron.schedule('* * * * *', async () => {
+            await parseMailIncident();
         });
     }
 

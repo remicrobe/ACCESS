@@ -12,6 +12,7 @@ import {Service} from "./Service";
 import {HorairesModele} from "./HorairesModele";
 import {Horaire} from "./Horaire";
 import {Historique} from "./Historique";
+import { Incident } from './Incident';
 export enum typeCollab {
     rh='rh',
     drh='drh',
@@ -50,6 +51,9 @@ export class Collaborateur {
 
     @OneToMany(() => Absence, absence => absence.collab)
     absences: Absence[];
+
+    @OneToMany(() => Incident, incident => incident.collab)
+    incident: Incident[];
 
     @OneToMany(() => Historique, hist => hist.collab)
     historique: Historique[];

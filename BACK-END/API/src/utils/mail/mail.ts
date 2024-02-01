@@ -99,7 +99,7 @@ export async function sendNewCongeMail(collab:Collaborateur, chefService: Collab
     });
 }
 
-export async function sendAbsenceMail(collab:Collaborateur, chefService: Collaborateur, date:Date) {
+export async function sendAbsenceMail(collab:Collaborateur, idIncident: number, date:Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -113,8 +113,7 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
                 const mailOptions = {
                     from: config.EMAIL,
                     to: collab.mail,
-                    cc: chefService.mail,
-                    replyTo: chefService.mail,
+                    replyTo: 'incident-' + idIncident + '@access-link.tech',
                     subject: 'Une absence irrégulière est survenue',
                     html: htmlContent,
                     attachments: [{
@@ -136,7 +135,7 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
     });
 }
 
-export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Collaborateur, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date, date:Date) {
+export async function sendNotGoodHourMail(collab:Collaborateur, idIncident: number, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date, date:Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -155,8 +154,7 @@ export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Col
                 const mailOptions = {
                     from: config.EMAIL,
                     to: collab.mail,
-                    cc: chefService.mail,
-                    replyTo: chefService.mail,
+                    replyTo: 'incident-' + idIncident + '@access-link.tech',
                     subject: 'Une incohérence dans les horaires a été remarqué',
                     html: htmlContent,
                     attachments: [{
