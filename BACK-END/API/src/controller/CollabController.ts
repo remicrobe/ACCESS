@@ -283,6 +283,7 @@ export async function advertCollabHorsHeure() {
             if (Math.abs(diffStart.hours) >= 1 || Math.abs(diffEnd.hours) >= 1) { // difference is one hour or more
                 let incident = await AppDataSource.getRepository(Incident).save({
                     collab: collab,
+                    creePar: 'SYSTEME',
                     desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} - Problème de timing. Différence de plus d'une heure 
                     entre l'heure prévue de début (${formatDate(expectedStart)}) et l'heure réelle de début (${formatDate(actualStart)}).
                      Heure prévue de fin : ${formatDate(expectedEnd)}, Heure réelle de fin : ${formatDate(actualEnd)}.`,
@@ -296,6 +297,7 @@ export async function advertCollabHorsHeure() {
             let incident = await AppDataSource.getRepository(Incident).save({
                 collab: collab,
                 desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} -Absence.`,
+                creePar: 'SYSTEME'
             })
             sendAbsenceMail(collab, incident.id, yesterday.toJSDate())
             systemeCreerPresence(collab,"00:00:00","00:00:00",yesterday.toJSDate(),'Basé sur historique')

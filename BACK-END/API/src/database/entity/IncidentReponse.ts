@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
 import { PrimaryGeneratedColumn } from "typeorm/decorator/columns/PrimaryGeneratedColumn";
 import { Incident } from "./Incident";
 
@@ -12,4 +12,7 @@ export class IncidentReponse {
 
     @ManyToOne(() => Incident, inc => inc.reponse)
     incident: Incident;
+
+    @CreateDateColumn({select:true})
+    creeLe: Date;
 }

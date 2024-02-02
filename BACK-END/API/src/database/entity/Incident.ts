@@ -19,7 +19,7 @@ export class Incident {
     @ManyToOne(() => Collaborateur)
     modifiePar: Collaborateur;
 
-    @Column()
+    @Column({nullable: true})
     modifieLe: Date;
 
     @CreateDateColumn({select:true})
@@ -27,9 +27,6 @@ export class Incident {
 
     @Column()
     creePar: string;
-
-    @Column()
-    desc: string;
 
     @OneToMany(() => IncidentReponse, incidentReponse => incidentReponse.incident)
     reponse: IncidentReponse[];

@@ -3,6 +3,7 @@ dotenv.config()
 export default {
     PORT: process.env.PORT,
     JWT_SECRET: process.env.JWT_SECRET,
+    SALAGE: process.env.SALAGE,
 
     DBHOST: process.env.DBHOST,
     DBNAME: process.env.DBNAME,
@@ -16,6 +17,8 @@ export default {
     PASSWORDEMAILAPI: process.env.PASSWORDEMAILAPI,
 
     SMTP: process.env.SMTP,
+    IMAP: process.env.IMAP,
+    PORTIMAP: parseInt(process.env.PORTIMAP),
     PORTSMTP: process.env.PORTSMTP,
 
     WEBSITEURL: process.env.WEBSITEURL,
