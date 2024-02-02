@@ -24,6 +24,7 @@ import { Token } from "../database/entity/Token";
 import { ErrorHandler } from "../utils/error/error-handler";
 import {IsNull} from "typeorm";
 import {checkRequiredField} from "../utils/global";
+import config from '../config';
 
 const collaborateurRouter = express.Router();
 
@@ -197,7 +198,7 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
         if(!checkRequiredField([ {object: mail, type: 'mail'},motdepasse])){
             return res.sendStatus(422)
         }
-        motdepasse = createHash('sha256').update(motdepasse).digest('hex');
+        motdepasse = createHash('sha256').update(config.SALAGE + motdepasse).digest('hex');
 
         let collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
             where: {mail, motdepasse},
