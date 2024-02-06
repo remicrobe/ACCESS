@@ -1,7 +1,7 @@
-import {Access, typePoint} from '../database/entity/Access';
-import {AppDataSource} from "../database/datasource";
-import {Collaborateur, typeCollab} from "../database/entity/Collab";
-import {Service} from "../database/entity/Service";
+import { Access, typePoint } from '../database/entity/Access';
+import { AppDataSource } from "../database/datasource";
+import { Collaborateur, typeCollab } from "../database/entity/Collab";
+import { Service } from "../database/entity/Service";
 import * as express from "express";
 import {
     creerAccess,
@@ -11,16 +11,16 @@ import {
     aAccess,
     getPointConfig
 } from "../controller/AccessController";
-import {jwtMiddleware, jwtMiddlewareFullInfo} from "../middleware/jwt";
-import {checkQRCode} from "../controller/Token";
-import {ErrorHandler} from "../utils/error/error-handler";
-import {MoreThan, Not} from "typeorm";
-import {Historique} from "../database/entity/Historique";
-import {DateTime} from "luxon";
-import {Absence} from "../database/entity/Absence";
-import {isARH, isDRH, isRH} from "../controller/CollabController";
-import {getAbsenceUnderMyControl, getAllAbsences} from "../controller/AbsenceController";
-import {getHistory, getHistoryByService} from "../controller/HistoriqueController";
+import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
+import { checkQRCode } from "../controller/Token";
+import { ErrorHandler } from "../utils/error/error-handler";
+import { MoreThan, Not } from "typeorm";
+import { Historique } from "../database/entity/Historique";
+import { DateTime } from "luxon";
+import { Absence } from "../database/entity/Absence";
+import { isARH, isDRH, isRH } from "../controller/CollabController";
+import { getAbsenceUnderMyControl, getAllAbsences } from "../controller/AbsenceController";
+import { getHistory, getHistoryByService } from "../controller/HistoriqueController";
 
 const accessRouter = express.Router();
 
@@ -33,7 +33,7 @@ accessRouter.post('/creerAccess', jwtMiddleware, async (req, res) => {
         const newAccess = await creerAccess(macadress, typePoint, location, nompoint, active, collabAutorise, serviceAutorise);
         return res.send(newAccess);
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
@@ -48,7 +48,7 @@ accessRouter.put('/modifierAccess/:accessId', jwtMiddlewareFullInfo, async (req,
         }
         return res.json(await modifierAccess(accessId, macadress, typePoint, location, nompoint, active, collabAutorise, serviceAutorise));
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
@@ -58,33 +58,33 @@ accessRouter.get('/listeAccess', jwtMiddlewareFullInfo, async (req, res) => {
         const accessList = await listeAccess();
         return res.json(accessList);
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 // Obtenir les points d'accès accessibles par un collaborateur
 accessRouter.get('/pointsAccessibles', jwtMiddlewareFullInfo, async (req, res) => {
     try {
-        let connectedCollab: Collaborateur = req.body.connectedCollab
+        let connectedCollab: Collaborateur = req.body.connectedCollab;
         return res.send(await pointAccessAccessible(connectedCollab));
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 accessRouter.get('/notifications', jwtMiddlewareFullInfo, async (req, res) => {
     try {
-        let connectedCollab: Collaborateur = req.body.connectedCollab
-        let notifications = []
-        let absenceFilter = {state: 'En attente'}
+        let connectedCollab: Collaborateur = req.body.connectedCollab;
+        let notifications = [];
+        let absenceFilter = {state: 'En attente'};
         const now = DateTime.now().setZone('Europe/Paris');
         let historiqueFilter = {
             state: 'Refusé',
             startDate: now.startOf('day').toJSDate(),
             endDate: now.endOf('day').toJSDate(),
-        }
-        let absences
-        let historique
+        };
+        let absences;
+        let historique;
 
         //On récupère les demandes de congés non accepté
         if (
@@ -92,37 +92,37 @@ accessRouter.get('/notifications', jwtMiddlewareFullInfo, async (req, res) => {
             || isARH(connectedCollab)
             || isRH(connectedCollab)
         ) {
-            absences = await getAllAbsences(null, null, absenceFilter)
+            absences = await getAllAbsences(null, null, absenceFilter);
         } else if (connectedCollab.service.chefservice.id === connectedCollab.id) {
             absences = await getAbsenceUnderMyControl(connectedCollab, null, null, absenceFilter);
         }
 
-        if (absences[1]> 0) {
+        if (absences[1] > 0) {
             notifications.push({
                 title: 'Absence',
                 subtitle: 'Vous n\'avez pas traité certaines demande d\'absence',
                 link: "/demande-collab/",
-            })
+            });
         }
 
         //On récupère les accès non autorisé
         if (isDRH(connectedCollab) || isARH(connectedCollab) || isRH(connectedCollab)) {
-            historique = await getHistory(null, null, historiqueFilter)
+            historique = await getHistory(null, null, historiqueFilter);
         } else if (connectedCollab.service && connectedCollab.service.chefservice.id === connectedCollab.id) {
-            historique = await getHistoryByService(connectedCollab.service, null, null, historiqueFilter)
+            historique = await getHistoryByService(connectedCollab.service, null, null, historiqueFilter);
         }
 
-        if (historique[1]> 0) {
+        if (historique[1] > 0) {
             notifications.push({
                 title: 'Access',
                 subtitle: 'Vos collaborateurs ont accédé a certains points de manière non autorisé, prière de remonter la raison',
                 link: "/demande-collab/",
-            })
+            });
         }
 
-        res.send(notifications)
+        res.send(notifications);
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
@@ -145,7 +145,7 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
                     }
                 }
             ]
-        })
+        });
 
         let totalInOut = await AppDataSource.getRepository(Historique).count({
             where: {
@@ -153,7 +153,7 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
                 typeAction: 'Access',
                 actionAutorise: true
             }
-        })
+        });
 
         let collabInToday = await AppDataSource.getRepository(Historique)
             .createQueryBuilder("historique")
@@ -170,21 +170,21 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
             {title: "Entrées sorties", subtitle: `${totalInOut}`, icon: "mdi-exit-to-app"},
         ];
 
-        res.send(items)
+        res.send(items);
 
 
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 // Tester si un token a accès a un point
 accessRouter.get('/check/:token/:macAdress', async (req, res) => {
     try {
-        let collab = await checkQRCode(req.params.token)
-        res.send(await aAccess(collab, req.params.macAdress))
+        let collab = await checkQRCode(req.params.token);
+        res.send(await aAccess(collab, req.params.macAdress));
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
@@ -192,10 +192,10 @@ accessRouter.get('/check/:token/:macAdress', async (req, res) => {
 accessRouter.get('/config/:macAdress', async (req, res) => {
     try {
 
-        res.send(await getPointConfig(req.params.macAdress))
+        res.send(await getPointConfig(req.params.macAdress));
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
-export {accessRouter}
+export { accessRouter };

@@ -1,5 +1,5 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collaborateur} from "./Collab";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Collaborateur } from "./Collab";
 
 @Entity()
 export class Presence {
@@ -12,10 +12,10 @@ export class Presence {
     @Column({type: 'date'})
     datePres: Date;
 
-    @Column({ type: 'time', default: '00:00:00' })
+    @Column({type: 'time', default: '00:00:00'})
     hdeb: string;
 
-    @Column({ type: 'time', default: '00:00:00' })
+    @Column({type: 'time', default: '00:00:00'})
     hfin: string;
 
     @ManyToOne(() => Collaborateur)
@@ -24,7 +24,7 @@ export class Presence {
     @Column()
     modifieLe: Date;
 
-    @CreateDateColumn({select:true})
+    @CreateDateColumn({select: true})
     creeLe: Date;
 
     @Column()

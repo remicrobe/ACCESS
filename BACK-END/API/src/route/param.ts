@@ -11,37 +11,37 @@ const paramRouter = express.Router();
 
 // Modifier un param
 paramRouter.put('/modifierParam/:uniqueName', jwtMiddleware, async (req, res) => {
-    const { value } = req.body;
-    const {uniqueName} = req.params
-    const collab:Collaborateur = req.body.connectedCollab;
+    const {value} = req.body;
+    const {uniqueName} = req.params;
+    const collab: Collaborateur = req.body.connectedCollab;
     try {
-        if(!checkRequiredField([ value, uniqueName ])){
-            return res.sendStatus(422)
+        if (!checkRequiredField([value, uniqueName])) {
+            return res.sendStatus(422);
         }
-        if (!isDRH(collab) && !isARH(collab) && !isRH(collab) ){
-            return res.sendStatus(401)
+        if (!isDRH(collab) && !isARH(collab) && !isRH(collab)) {
+            return res.sendStatus(401);
         }
-        res.send(await modifierParam(uniqueName,value))
+        res.send(await modifierParam(uniqueName, value));
 
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 // Lister les paramètres
 paramRouter.get('/', jwtMiddleware, async (req, res) => {
-    const { nom, valeur } = req.body;
-    const collab:Collaborateur = req.body.connectedCollab;
+    const {nom, valeur} = req.body;
+    const collab: Collaborateur = req.body.connectedCollab;
     try {
-        if (!isDRH(collab) && !isARH(collab) && !isRH(collab) ){
-            return res.sendStatus(401)
+        if (!isDRH(collab) && !isARH(collab) && !isRH(collab)) {
+            return res.sendStatus(401);
         }
-        let params = await listeParam()
-        console.log(params)
-        res.send(params)
+        let params = await listeParam();
+        console.log(params);
+        res.send(params);
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
-export {paramRouter };
+export { paramRouter };

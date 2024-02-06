@@ -1,11 +1,11 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collaborateur} from "./Collab";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Collaborateur } from "./Collab";
 
-export enum tokenType{
-    'appqrcode'='appqrcode',
-    'cardqrcode'="cardqrcode",
-    'auth'="auth",
-    'recoverpassword'="recoverpassword"
+export enum tokenType {
+    'appqrcode' = 'appqrcode',
+    'cardqrcode' = "cardqrcode",
+    'auth' = "auth",
+    'recoverpassword' = "recoverpassword"
 }
 
 @Entity()

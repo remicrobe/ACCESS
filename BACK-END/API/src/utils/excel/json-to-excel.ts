@@ -13,7 +13,7 @@ export function jsonToExcel(jsonArray: any): Readable {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Récapitulatif");
 
     // Écrire le classeur dans un buffer
-    let buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    let buffer = XLSX.write(workbook, {type: 'buffer', bookType: 'xlsx'});
 
     // Créer un stream à partir du buffer
     let stream = new Readable();

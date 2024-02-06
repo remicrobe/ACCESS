@@ -13,7 +13,7 @@ export class Incident {
     @Column()
     description: string;
 
-    @Column({default: false})
+    @Column({default: true})
     ouvert: boolean;
 
     @ManyToOne(() => Collaborateur)
@@ -22,11 +22,14 @@ export class Incident {
     @Column({nullable: true})
     modifieLe: Date;
 
-    @CreateDateColumn({select:true})
+    @CreateDateColumn({select: true})
     creeLe: Date;
 
     @Column()
     creePar: string;
+
+    @Column()
+    dateIncident: Date;
 
     @OneToMany(() => IncidentReponse, incidentReponse => incidentReponse.incident)
     reponse: IncidentReponse[];
