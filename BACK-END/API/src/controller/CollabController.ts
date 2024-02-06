@@ -284,6 +284,7 @@ export async function advertCollabHorsHeure() {
                 let incident = await AppDataSource.getRepository(Incident).save({
                     collab: collab,
                     creePar: 'SYSTEME',
+                    dateIncident: yesterday,
                     desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} - Problème de timing. Différence de plus d'une heure 
                     entre l'heure prévue de début (${formatDate(expectedStart)}) et l'heure réelle de début (${formatDate(actualStart)}).
                      Heure prévue de fin : ${formatDate(expectedEnd)}, Heure réelle de fin : ${formatDate(actualEnd)}.`,
@@ -296,6 +297,7 @@ export async function advertCollabHorsHeure() {
         for(let collab of noPresentCollab){
             let incident = await AppDataSource.getRepository(Incident).save({
                 collab: collab,
+                dateIncident: yesterday,
                 desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} -Absence.`,
                 creePar: 'SYSTEME'
             })

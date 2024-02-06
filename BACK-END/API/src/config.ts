@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-dotenv.config()
+
+dotenv.config();
 export default {
     PORT: process.env.PORT,
     JWT_SECRET: process.env.JWT_SECRET,

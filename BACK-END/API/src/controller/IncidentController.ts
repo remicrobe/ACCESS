@@ -1,65 +1,65 @@
-import { Between, IsNull, In } from "typeorm"
-import { AppDataSource } from "../database/datasource"
-import { Collaborateur } from "../database/entity/Collab"
-import { Incident } from "../database/entity/Incident"
+import { Between, IsNull, In } from "typeorm";
+import { AppDataSource } from "../database/datasource";
+import { Collaborateur } from "../database/entity/Collab";
+import { Incident } from "../database/entity/Incident";
 
-export async function getIncidentUnderMyControl(collab: Collaborateur, page:number,itemParPage:number,filter:any) {
-    let dateConfig, accepteConfig
-    if(filter.startDate && filter.endDate){
-        dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate))
+export async function getIncidentUnderMyControl(collab: Collaborateur, page: number, itemParPage: number, filter: any) {
+    let dateConfig, accepteConfig;
+    if (filter.startDate && filter.endDate) {
+        dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate));
     }
-    if(filter.state === 'Ouvert'){
-        accepteConfig = true
-    }else if(filter.state === 'Fermé'){
-        accepteConfig = false
+    if (filter.state === 'Ouvert') {
+        accepteConfig = true;
+    } else if (filter.state === 'Fermé') {
+        accepteConfig = false;
     }
     return await AppDataSource.getRepository(Incident).findAndCount({
         where: {
             creeLe: dateConfig,
             ouvert: accepteConfig,
             collab: {
-                id: filter.collabs ?  In(filter.collabs) : undefined,
+                id: filter.collabs ? In(filter.collabs) : undefined,
                 service: {
-                    chefservice:{
-                        id:collab.id
+                    chefservice: {
+                        id: collab.id
                     }
                 }
             }
         },
-        order:{
+        order: {
             creeLe: 'DESC'
         },
-        relations: {collab: true, modifiePar: true},
-        skip: page ? page > 1 ? (page-1)*itemParPage : 0 : undefined,
+        relations: {collab: true, modifiePar: true, reponse: true},
+        skip: page ? page > 1 ? (page - 1) * itemParPage : 0 : undefined,
         take: itemParPage ? itemParPage : undefined,
     });
 }
 
-export async function getAllIncident(page:number,itemParPage:number,filter:any) {
-    let dateConfig, accepteConfig
-    if(filter.startDate && filter.endDate){
-        dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate))
+export async function getAllIncident(page: number, itemParPage: number, filter: any) {
+    let dateConfig, accepteConfig;
+    if (filter.startDate && filter.endDate) {
+        dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate));
     }
-    if(filter.state){
-        if(filter.state === 'Ouvert'){
-            accepteConfig = true
-        }else if(filter.state === 'Fermé'){
-            accepteConfig = false
+    if (filter.state) {
+        if (filter.state === 'Ouvert') {
+            accepteConfig = true;
+        } else if (filter.state === 'Fermé') {
+            accepteConfig = false;
         }
     }
     return await AppDataSource.getRepository(Incident).findAndCount({
-        relations: {collab: true, modifiePar: true},
-        where:{
+        relations: {collab: true, modifiePar: true, reponse: true},
+        where: {
             creeLe: dateConfig,
             ouvert: accepteConfig,
             collab: {
-                id: filter.collabs ?  In(filter.collabs) : undefined,
+                id: filter.collabs ? In(filter.collabs) : undefined,
             },
         },
-        order:{
+        order: {
             creeLe: 'DESC'
         },
-        skip: page ? page > 1 ? (page-1)*itemParPage : 0 : undefined,
+        skip: page ? page > 1 ? (page - 1) * itemParPage : 0 : undefined,
         take: itemParPage ? itemParPage : undefined,
     });
 }

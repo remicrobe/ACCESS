@@ -11,61 +11,59 @@ import {
     modifierPresenceCollab,
     obtenirPresenceCollab
 } from "../controller/PresenceController";
-import {jsonToExcel} from "../utils/excel/json-to-excel";
-import {Presence} from "../database/entity/Presence";
+import { jsonToExcel } from "../utils/excel/json-to-excel";
+import { Presence } from "../database/entity/Presence";
 
 const presenceRouter = express.Router();
 
 presenceRouter.get('/presenceDeMesCollaborateurs/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req, res) => {
     try {
-        const collab:Collaborateur = req.body.connectedCollab;
-        let presence = undefined
-        let page = parseInt(req.params.page)
-        let itemsParPage = parseInt(req.params.itemsParPage)
-        let filter = req.query.filtering ? JSON.parse(req.query.filtering as string) : undefined
-        if(
+        const collab: Collaborateur = req.body.connectedCollab;
+        let presence = undefined;
+        let page = parseInt(req.params.page);
+        let itemsParPage = parseInt(req.params.itemsParPage);
+        let filter = req.query.filtering ? JSON.parse(req.query.filtering as string) : undefined;
+        if (
             isDRH(collab)
             || isARH(collab)
             || isRH(collab)
         ) {
-            presence = await listerPresence(page, itemsParPage, filter)
-        }
-        else if(collab.service.chefservice.id === collab.id){
+            presence = await listerPresence(page, itemsParPage, filter);
+        } else if (collab.service.chefservice.id === collab.id) {
             presence = await listerPresenceMesCollabs(collab, page, itemsParPage, filter);
-        }else{
-            return res.sendStatus(401)
+        } else {
+            return res.sendStatus(401);
         }
         return res.send(presence);
 
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 presenceRouter.get('/presenceDeMesCollaborateurs/export/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req, res) => {
     try {
-        const collab:Collaborateur = req.body.connectedCollab;
-        let presence = undefined
-        let page = parseInt(req.params.page)
-        let itemsParPage = parseInt(req.params.itemsParPage)
-        let filter = req.query.filtering ? JSON.parse(req.query.filtering as string) : undefined
-        if(
+        const collab: Collaborateur = req.body.connectedCollab;
+        let presence = undefined;
+        let page = parseInt(req.params.page);
+        let itemsParPage = parseInt(req.params.itemsParPage);
+        let filter = req.query.filtering ? JSON.parse(req.query.filtering as string) : undefined;
+        if (
             isDRH(collab)
             || isARH(collab)
             || isRH(collab)
         ) {
-            presence = await listerPresence(page, itemsParPage, filter)
-        }
-        else if(collab.service.chefservice.id === collab.id){
+            presence = await listerPresence(page, itemsParPage, filter);
+        } else if (collab.service.chefservice.id === collab.id) {
             presence = await listerPresenceMesCollabs(collab, page, itemsParPage, filter);
-        }else{
-            return res.sendStatus(401)
+        } else {
+            return res.sendStatus(401);
         }
-        presence[0] .forEach((pres) => {
-            pres.collab = pres.collab.nom + ' ' + pres.collab.prenom
-            if(pres.modifierPar)
-                pres.modifiePar = pres.modifiePar.nom + ' ' + pres.modifiePar.prenom
-        })
+        presence[0].forEach((pres) => {
+            pres.collab = pres.collab.nom + ' ' + pres.collab.prenom;
+            if (pres.modifierPar)
+                pres.modifiePar = pres.modifiePar.nom + ' ' + pres.modifiePar.prenom;
+        });
 
         let stream = jsonToExcel(presence[0]);
 
@@ -74,7 +72,7 @@ presenceRouter.get('/presenceDeMesCollaborateurs/export/:page?/:itemsParPage?', 
         stream.pipe(res);
 
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
@@ -85,15 +83,15 @@ presenceRouter.get('/mesPresences', jwtMiddlewareFullInfo, async (req, res) => {
         const presence = await obtenirPresenceCollab(collab);
         return res.json(presence);
     } catch (error) {
-        ErrorHandler(error, req, res)
+        ErrorHandler(error, req, res);
     }
 });
 
 presenceRouter.post('/ajouterPresenceCollab', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab: Collaborateur = req.body.connectedCollab;
-        const { idCollab, datePres, hdeb, hfin, desc } = req.body;
-        res.send(await ajouterPresenceCollab(idCollab, datePres, hdeb, hfin, desc, collab))
+        const {idCollab, datePres, hdeb, hfin, desc} = req.body;
+        res.send(await ajouterPresenceCollab(idCollab, datePres, hdeb, hfin, desc, collab));
     } catch (error) {
         ErrorHandler(error, req, res);
     }
@@ -102,9 +100,9 @@ presenceRouter.post('/ajouterPresenceCollab', jwtMiddlewareFullInfo, async (req,
 presenceRouter.put('/modifierPresenceCollab/:idPres', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab: Collaborateur = req.body.connectedCollab;
-        const { idPres } = req.params;
-        const { idCollab , datePres, hdeb, hfin, desc } = req.body;
-        res.send(await modifierPresenceCollab(parseInt(idPres), datePres, hdeb, hfin,desc, collab));
+        const {idPres} = req.params;
+        const {idCollab, datePres, hdeb, hfin, desc} = req.body;
+        res.send(await modifierPresenceCollab(parseInt(idPres), datePres, hdeb, hfin, desc, collab));
 
     } catch (error) {
         ErrorHandler(error, req, res);
@@ -112,5 +110,5 @@ presenceRouter.put('/modifierPresenceCollab/:idPres', jwtMiddlewareFullInfo, asy
 });
 
 
-export { presenceRouter }
+export { presenceRouter };
 
