@@ -5,11 +5,8 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 import {themeColor, useTheme} from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
-import TabBarText from "../components/utils/TabBarText";
 
 import Home from "../screens/Home";
-import SecondScreen from "../screens/QRCode";
-import About from "../screens/Planning";
 import Profile from "../screens/Profile";
 import {View} from "react-native";
 import Login from "../screens/connexion/Login";
@@ -17,27 +14,26 @@ import ForgetPassword from "../screens/connexion/ForgetPassword";
 import QRCode from "../screens/QRCode";
 import Planning from "../screens/Planning";
 import Activity from "../screens/Activity";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getCollabData} from '../../App';
+import {useUserStore} from "../store/user.store";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        try {
-            getCollabData()
-                .then((collabData) => {
-                    if (collabData === null) {
-                        navigation.navigate("Login");
-                    } else {
-                        navigation.navigate("MainTabs");
-                    }
-                });
+        async function fetchUserData() {
+            let res = await useUserStore.getState().getUserData();
 
-        } catch (error) {
-            alert('Une erreur est survenue lors de la récupération de vos données, veuillez vous reconnecter.');
+            if (!res) {
+                navigation.navigate("Login");
+                alert("Nous n'avons pu récupérer vos informations, veuillez essayer de vous reconnecter !")
+            } else {
+                navigation.navigate("MainTabs");
+            }
+
         }
+        fetchUserData()
+
     }, []);
     return (
         <MainStack.Navigator
@@ -73,7 +69,7 @@ const MainTabs = () => {
                 component={Home}
                 options={{
                     tabBarIcon: ({focused}) => (
-                        <TabBarIcon focused={focused} icon={"md-home"}/>
+                        <TabBarIcon focused={focused} icon={"home-outline"}/>
                     ),
                 }}
             />

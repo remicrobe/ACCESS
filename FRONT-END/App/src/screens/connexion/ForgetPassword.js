@@ -15,8 +15,7 @@ import {
     useTheme,
     themeColor,
 } from "react-native-rapi-ui";
-import axios from 'axios';
-import {baseUrl} from '../../../App';
+import $axios from "../../plugins/axios";
 
 export default function ({navigation}) {
     const {isDarkmode, setTheme} = useTheme();
@@ -26,7 +25,7 @@ export default function ({navigation}) {
 
     async function forget() {
         setLoading(true);
-        await axios.post(`${baseUrl}/collab/demande-recuperation/`, {mail: email})
+        await $axios.post(`collab/demande-recuperation/`, {mail: email})
             .then((res) => {
                 alert(`Vous avez reçu un mail !`);
                 navigation.navigate("Login");
