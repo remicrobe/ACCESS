@@ -1,6 +1,7 @@
-import { DataSource } from "typeorm"
-import config from '../config'
-console.log(config)
+import { DataSource } from "typeorm";
+import config from '../config';
+
+console.log(config);
 
 const isProduction = config.ENVIRONMENT === 'BUILD';
 
@@ -14,4 +15,4 @@ export const AppDataSource = new DataSource({
     entities: isProduction ? ["build/database/entity/**/*.js"] : ["src/database/entity/**/*.ts"],
     logging: false,
     synchronize: true
-})
+});

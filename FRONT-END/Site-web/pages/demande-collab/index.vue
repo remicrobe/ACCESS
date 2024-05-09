@@ -9,7 +9,7 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
         >
           <v-row no-gutters>
             <v-col
@@ -150,7 +150,6 @@
             @update:page="setPage"
             @update:options="updateOptions"
             :items-per-page-options="[{value:5, title:'5'},{value:10, title:'10'}]"
-            class="elevation-1"
           >
             <template v-slot:item.datedeb="{ item }">
               <v-chip v-if="item.collab" color="warning" dark>{{ new Date(item.datedeb).toLocaleDateString() }} à
@@ -159,7 +158,7 @@
             </template>
 
             <template v-slot:item.collab="{ item }">
-              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom }}</v-chip>
+              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom.toUpperCase() }}</v-chip>
               <span v-else>No Collaborator</span>
             </template>
 
@@ -292,13 +291,13 @@ export default {
           { title: "Type absence", value: "raison" },
           { title: "Description", value: "description" },
           { title: "Accepté", value: "accepte", align: "center" },
-          { title: "Actions", value: "actions" },
+          { title: "Actions", value: "actions", align: 'end' },
         ];
       } else {
         return [
           { title: "Collaborateur", value: "collab" },
           { title: "Accepté", value: "accepte", align: "center" },
-          { title: "Actions", value: "actions" },
+          { title: "Actions", value: "actions", align: 'end' },
         ];
       }
     },

@@ -9,18 +9,17 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
           v-if="!loading && services"
         >
           <v-data-table
             :headers="headers"
             :items="services"
             :items-per-page="5"
-            class="elevation-1"
             items-per-page-text="Services par page : "
           >
             <template v-slot:item.chefservice="{ item }">
-              <v-chip v-if="item.chefservice" color="blue" dark>{{ item.chefservice.prenom + ' ' + item.chefservice.nom}}</v-chip>
+              <v-chip v-if="item.chefservice" color="blue" dark>{{ item.chefservice.prenom + ' ' + item.chefservice.nom.toUpperCase() }}</v-chip>
               <span v-else>No Collaborator</span>
             </template>
 
@@ -75,11 +74,10 @@ export default {
     headers() {
       if (!this.$vuetify.display.mobile) {
         return [
-          { title: 'ID', value: 'id' },
           { title: 'Nom service', value: 'nomservice' },
           { title: 'Chef service', value: 'chefservice' },
           { title: 'NB Collaborateurs', value: 'collabs', align: 'center' },
-          { title: 'Actions', value: 'actions' }
+          { title: 'Actions', value: 'actions', align: 'end' }
         ]
       } else {
         return [
