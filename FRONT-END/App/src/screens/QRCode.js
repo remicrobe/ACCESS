@@ -39,7 +39,7 @@ export default function ({ navigation }) {
     function getQRCode() {
         $axios.post(`token/genererAppQrCode`)
             .then((res) => {
-                setQrCodeToken(res.data.token);
+                setQrCodeToken(res.data);
             })
             .catch((err) => {
                 alert("Une erreur est survenue lors de la récupération de votre QR code");

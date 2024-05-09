@@ -103,11 +103,15 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
 
 
 // Générer un QR Code pour l'application
-tokenRouter.post('/genererAppQrCode', jwtMiddleware, async (req, res) => {
+tokenRouter.post('/genererAppQrCode', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab = req.body.connectedCollab;
+
         const newToken = await setTokenAppQrCode(collab);
-        return res.send(newToken);
+
+        let accessString = `idService:${newToken.collab.service.id};token:${newToken.token};idCollab:${collab.id}`
+
+        return res.send(accessString);
     } catch (e) {
         ErrorHandler(e, req, res);
     }
