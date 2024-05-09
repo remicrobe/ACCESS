@@ -12,11 +12,11 @@ sudo modprobe bcm2835-v4l2
 
 pip install requests getmac tk pillow
 
-# Chemin absolu du script AccessLink SCRIPT.py
+# Chemin absolu du script AccessLink_SCRIPT.py
 SCRIPT_PATH=AccessLink_SCRIPT.py
 
 # Chemin absolu du dossier de destination
-DESTINATION_PATH=/chemin/vers/dossier/approprié
+DESTINATION_PATH=/usr/local/bin/
 
 # Copie du script vers le dossier de destination
 cp $SCRIPT_PATH $DESTINATION_PATH

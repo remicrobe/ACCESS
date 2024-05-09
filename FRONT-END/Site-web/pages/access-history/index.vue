@@ -3,7 +3,7 @@
     <v-col md="12">
       <v-card class="mx-auto">
         <v-toolbar class="pt-n5" title="Gérer les entrées-sorties" color="primary"></v-toolbar>
-        <v-card-text style="height: 77vh; overflow: auto">
+        <v-card-text style="overflow: auto">
           <v-row no-gutters>
             <v-col
               cols="12"
@@ -142,10 +142,9 @@
             @update:page="setPage"
             @update:options="updateOptions"
             :items-per-page-options="[{value:5, title:'5'},{value:10, title:'10'}]"
-            class="elevation-1"
           >
             <template v-slot:item.identite="{ item }">
-              <span>{{ item.collab.nom + " " + item.collab.prenom }}</span>
+              <span>{{ item.collab.nom.toUpperCase() + " " + item.collab.prenom }}</span>
             </template>
             <template v-slot:item.nompoint="{ item }">
               <span>{{ item.point.nompoint }}</span>
@@ -192,7 +191,7 @@ export default {
         { title: "Date", value: "date" },
         { title: "Action autorisée", value: "actionAutorise" },
         { title: "Type d'action", value: "typeAction" },
-        { title: "Statut d'utilisation", value: "statutUtilise" },
+        { title: "Statut d'utilisation", value: "statutUtilise", align: 'end' },
       ],
       filtering: {
         startDate: null,

@@ -1,15 +1,15 @@
-import {Collaborateur, typeCollab} from '../database/entity/Collab';
-import {AppDataSource} from "../database/datasource";
-import {Token, tokenType} from "../database/entity/Token";
+import { Collaborateur, typeCollab } from '../database/entity/Collab';
+import { AppDataSource } from "../database/datasource";
+import { Token, tokenType } from "../database/entity/Token";
 import * as express from "express";
-import {jwtMiddleware, jwtMiddlewareFullInfo} from "../middleware/jwt";
-import {getTokenCardQrCode, setTokenAppQrCode, setTokenCardQrCode} from "../controller/Token";
-import {isARH, isDRH, isRH} from "../controller/CollabController";
+import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
+import { getTokenCardQrCode, setTokenAppQrCode, setTokenCardQrCode } from "../controller/Token";
+import { isARH, isDRH, isRH } from "../controller/CollabController";
 import * as fs from "fs";
-import {PDFDocument, StandardFonts} from 'pdf-lib'
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import * as QRCode from "qrcode";
 import { ErrorHandler } from "../utils/error/error-handler";
-import {isSuperior} from "../controller/ServiceController";
+import { isSuperior } from "../controller/ServiceController";
 
 declare global {
     type HTMLCanvasElement = never;
@@ -20,47 +20,47 @@ const tokenRouter = express.Router();
 // Générer un QR Code pour une carte
 tokenRouter.post('/genererCarteQrCode/:collabId', jwtMiddleware, async (req, res) => {
     try {
-        const connectedCollab:Collaborateur = req.body.connectedCollab;
+        const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
         const collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({id: collabId});
 
         if (!isDRH(connectedCollab) && !isARH(connectedCollab) && isRH(connectedCollab)) {
-            res.sendStatus(401)
+            res.sendStatus(401);
         } else {
             res.send(await setTokenCardQrCode(collab));
         }
     } catch (e) {
-        ErrorHandler(e, req, res)
+        ErrorHandler(e, req, res);
     }
 });
 
 // Obtenir le pdf avec la carte du collaborateur
 tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, res) => {
     try {
-        const connectedCollab:Collaborateur = req.body.connectedCollab;
+        const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
         const collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
             where: {id: collabId},
-            relations: {service: {chefservice:true}}
+            relations: {service: {chefservice: true}}
         });
-        if(!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab) && !await isSuperior(connectedCollab,collab)){
-            res.sendStatus(401)
+        if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab) && !await isSuperior(connectedCollab, collab)) {
+            res.sendStatus(401);
         } else {
-            let tokenCard = await getTokenCardQrCode(collab)
+            let tokenCard = await getTokenCardQrCode(collab);
             if (!tokenCard) {
-                tokenCard = await setTokenCardQrCode(collab)
+                tokenCard = await setTokenCardQrCode(collab);
             }
 
             if (!isDRH(collab) && !isARH(collab) && isRH(collab)) {
-                res.sendStatus(401)
+                res.sendStatus(401);
             } else {
                 const pdfBytes = await fs.promises.readFile('PDF/MNS-COLLAB-TEMPLATE.pdf');
                 const pdfDoc = await PDFDocument.load(pdfBytes);
                 const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-                let service = collab.service ? collab.service.id.toString() : 'aucun'
+                let service = collab.service ? collab.service.id.toString() : 'aucun';
 
-                const qrCodeDataUrl = await QRCode.toDataURL(`idService:${service}:idCollab;${collab.id};token:${tokenCard.token}`);
+                const qrCodeDataUrl = await QRCode.toDataURL(`idService:${service};idCollab:${collab.id};token:${tokenCard.token}`);
                 const qrCodeImageBytes = Buffer.from(qrCodeDataUrl.split(',')[1], 'base64');
                 const qrCodeImage = await pdfDoc.embedPng(qrCodeImageBytes);
 
@@ -97,20 +97,24 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
             }
         }
     } catch (e) {
-        ErrorHandler(e, req, res)
+        ErrorHandler(e, req, res);
     }
 });
 
 
 // Générer un QR Code pour l'application
-tokenRouter.post('/genererAppQrCode', jwtMiddleware, async (req, res) => {
+tokenRouter.post('/genererAppQrCode', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab = req.body.connectedCollab;
+
         const newToken = await setTokenAppQrCode(collab);
-        return res.send(newToken);
+
+        let accessString = `idService:${newToken.collab.service.id};token:${newToken.token};idCollab:${collab.id}`
+
+        return res.send(accessString);
     } catch (e) {
-        ErrorHandler(e, req, res)
+        ErrorHandler(e, req, res);
     }
 });
 
-export {tokenRouter}
+export { tokenRouter };

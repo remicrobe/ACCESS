@@ -8,19 +8,20 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
           v-if="!loading && params"
         >
           <v-data-table
             :headers="headers"
             :items="params"
-            :items-per-page="5"
-            class="elevation-1"
+            :items-per-page="-1"
             items-per-page-text="Paramètres par page : "
           >
             <template v-slot:item.actions="{ item }">
               <param-configurator @edit="edit" :edit="item"/>
             </template>
+
+            <template #bottom></template>
           </v-data-table>
         </v-card-text>
       </v-card>
@@ -49,7 +50,7 @@ export default {
       return [
         { title: "Nom du paramètre", value: "viewName" },
         { title: "Valeur", value: "value", align: "center" },
-        { title: "Actions", value: "actions" },
+        { title: "Actions", value: "actions", align: 'end' },
       ];
 
     },

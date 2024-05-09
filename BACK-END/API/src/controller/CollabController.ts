@@ -9,6 +9,7 @@ import {DateTime} from "luxon";
 import {isNull} from "util";
 import {sendAbsenceMail, sendNotGoodHourMail} from "../utils/mail/mail";
 import {systemeCreerPresence} from "./PresenceController";
+import { Incident } from '../database/entity/Incident';
 
 
 export async function creerCollab(prenom: string, nom: string, mail: string, grade: typeCollab, fonction: string, service: any, modelehoraire: any, horraire: any[], actif: boolean) {
@@ -263,7 +264,10 @@ export async function advertCollabHorsHeure() {
             }))
             .getMany();
 
-        presentCollab.forEach((collab) => {
+        const formatDate = (date) => date.toLocaleString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' });
+
+
+        for(let collab of presentCollab) {
             let expectedStartString = collab.horairesdefault[hDeb];
             let expectedStart = DateTime.fromFormat(expectedStartString, 'HH:mm:ss').minus({day: 1});
             let actualStart = DateTime.fromJSDate(collab.historique[0].date);
@@ -277,15 +281,29 @@ export async function advertCollabHorsHeure() {
 
             let diffEnd = actualEnd.diff(expectedEnd, "hour").toObject();
             if (Math.abs(diffStart.hours) >= 1 || Math.abs(diffEnd.hours) >= 1) { // difference is one hour or more
-                sendNotGoodHourMail(collab, collab.service.chefservice, expectedStart.toJSDate(), expectedEnd.toJSDate(), actualStart.toJSDate(), actualEnd.toJSDate(), yesterday.toJSDate())
+                let incident = await AppDataSource.getRepository(Incident).save({
+                    collab: collab,
+                    creePar: 'SYSTEME',
+                    dateIncident: yesterday.toJSDate(),
+                    desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} - Problème de timing. Différence de plus d'une heure 
+                    entre l'heure prévue de début (${formatDate(expectedStart)}) et l'heure réelle de début (${formatDate(actualStart)}).
+                     Heure prévue de fin : ${formatDate(expectedEnd)}, Heure réelle de fin : ${formatDate(actualEnd)}.`,
+                })
+                sendNotGoodHourMail(collab, incident.id, expectedStart.toJSDate(), expectedEnd.toJSDate(), actualStart.toJSDate(), actualEnd.toJSDate(), yesterday.toJSDate())
             }
             systemeCreerPresence(collab,actualStart.toFormat("HH:mm:ss"),actualEnd.toFormat("HH:mm:ss"),yesterday.toJSDate(),'Basé sur historique')
-        })
+        }
 
-        noPresentCollab.forEach((collab) => {
-            sendAbsenceMail(collab, collab.service.chefservice, yesterday.toJSDate())
+        for(let collab of noPresentCollab){
+            let incident = await AppDataSource.getRepository(Incident).save({
+                collab: collab,
+                dateIncident: yesterday.toJSDate(),
+                desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} -Absence.`,
+                creePar: 'SYSTEME'
+            })
+            sendAbsenceMail(collab, incident.id, yesterday.toJSDate())
             systemeCreerPresence(collab,"00:00:00","00:00:00",yesterday.toJSDate(),'Basé sur historique')
-        })
+        }
 
     } catch (e) {
         console.log(e)

@@ -1,11 +1,11 @@
 import * as nodemailer from 'nodemailer';
-import config from '../../config'
+import config from '../../config';
 import * as path from "path";
 import * as fs from "fs";
-import {Collaborateur} from "../../database/entity/Collab";
-import {Access} from "../../database/entity/Access";
-import {Absence} from "../../database/entity/Absence";
-import {obtenirDateFR} from "../date/date";
+import { Collaborateur } from "../../database/entity/Collab";
+import { Access } from "../../database/entity/Access";
+import { Absence } from "../../database/entity/Absence";
+import { obtenirDateFR } from "../date/date";
 
 const transporter = nodemailer.createTransport({
     host: config.SMTP,  // Utilisation du serveur SMTP fourni dans les variables d'environnement
@@ -16,10 +16,9 @@ const transporter = nodemailer.createTransport({
         pass: config.PASSWORD,
     },
     tls: {
-        rejectUnauthorized:false
+        rejectUnauthorized: false
     }
 });
-
 
 
 export async function sendRecoveryMail(recovery, mail, name) {
@@ -57,9 +56,9 @@ export async function sendRecoveryMail(recovery, mail, name) {
     });
 }
 
-export async function sendNewCongeMail(collab:Collaborateur, chefService: Collaborateur, demande:Absence) {
+export async function sendNewCongeMail(collab: Collaborateur, chefService: Collaborateur, demande: Absence) {
     return new Promise((resolve, reject) => {
-        const link = config.WEBSITEURL + '/demande-collab'
+        const link = config.WEBSITEURL + '/demande-collab';
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
         fs.readFile('mail-template/request-absence.html', 'utf8', (err, data) => {
@@ -72,7 +71,7 @@ export async function sendNewCongeMail(collab:Collaborateur, chefService: Collab
                     .replace('PRENOMCOLLAB', collab.prenom)
                     .replace('DATEDEB', obtenirDateFR(demande.datedeb))
                     .replace('DATEFIN', obtenirDateFR(demande.datefin))
-                    .replace('RAISONDEMANDE', demande.description)
+                    .replace('RAISONDEMANDE', demande.description);
 
                 const mailOptions = {
                     from: config.EMAIL,
@@ -99,7 +98,7 @@ export async function sendNewCongeMail(collab:Collaborateur, chefService: Collab
     });
 }
 
-export async function sendAbsenceMail(collab:Collaborateur, chefService: Collaborateur, date:Date) {
+export async function sendAbsenceMail(collab: Collaborateur, idIncident: number, date: Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -108,13 +107,12 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
                 reject(err);
             } else {
                 let htmlContent = data.replace('PRENOMCOLLAB', collab.prenom)
-                    .replace('DATE', date.toLocaleDateString('fr-FR'))
+                    .replace('DATE', date.toLocaleDateString('fr-FR'));
 
                 const mailOptions = {
                     from: config.EMAIL,
                     to: collab.mail,
-                    cc: chefService.mail,
-                    replyTo: chefService.mail,
+                    replyTo: 'incident-' + idIncident + '@access-link.tech',
                     subject: 'Une absence irrégulière est survenue',
                     html: htmlContent,
                     attachments: [{
@@ -136,7 +134,7 @@ export async function sendAbsenceMail(collab:Collaborateur, chefService: Collabo
     });
 }
 
-export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Collaborateur, hdeb:Date, hfin:Date, hdebreel:Date, hfinreel:Date, date:Date) {
+export async function sendNotGoodHourMail(collab: Collaborateur, idIncident: number, hdeb: Date, hfin: Date, hdebreel: Date, hfinreel: Date, date: Date) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -147,16 +145,15 @@ export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Col
                 let htmlContent = data
                     .replace('DATE', date.toLocaleDateString('fr-FR'))
                     .replace('PRENOMCOLLAB', collab.prenom)
-                    .replace('HEUREDEBUTATTENDUE',obtenirDateFR(hdeb))
-                    .replace('HEUREFINATTENDUE',obtenirDateFR(hfin))
-                    .replace('HEUREDEBUTREELLE',obtenirDateFR(hdebreel))
-                    .replace('HEUREFINREELLE',obtenirDateFR(hfinreel))
+                    .replace('HEUREDEBUTATTENDUE', obtenirDateFR(hdeb))
+                    .replace('HEUREFINATTENDUE', obtenirDateFR(hfin))
+                    .replace('HEUREDEBUTREELLE', obtenirDateFR(hdebreel))
+                    .replace('HEUREFINREELLE', obtenirDateFR(hfinreel));
 
                 const mailOptions = {
                     from: config.EMAIL,
                     to: collab.mail,
-                    cc: chefService.mail,
-                    replyTo: chefService.mail,
+                    replyTo: 'incident-' + idIncident + '@access-link.tech',
                     subject: 'Une incohérence dans les horaires a été remarqué',
                     html: htmlContent,
                     attachments: [{
@@ -178,7 +175,7 @@ export async function sendNotGoodHourMail(collab:Collaborateur, chefService: Col
     });
 }
 
-export async function sendResponseConge(collab:Collaborateur, accepteur: Collaborateur, demande:Absence) {
+export async function sendResponseConge(collab: Collaborateur, accepteur: Collaborateur, demande: Absence) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -192,7 +189,7 @@ export async function sendResponseConge(collab:Collaborateur, accepteur: Collabo
                     .replace('PRENOMCOLLAB', collab.prenom)
                     .replace('DATEDEB', obtenirDateFR(demande.datedeb))
                     .replace('DATEFIN', obtenirDateFR(demande.datefin))
-                    .replace('STATUS', demande.accepte ? 'Accepté' : 'Refusé')
+                    .replace('STATUS', demande.accepte ? 'Accepté' : 'Refusé');
 
                 const mailOptions = {
                     from: config.EMAIL,
@@ -220,7 +217,7 @@ export async function sendResponseConge(collab:Collaborateur, accepteur: Collabo
     });
 }
 
-export async function sendEditConge(collab:Collaborateur, editeur: Collaborateur, demande:Absence, OLDdemande:Absence) {
+export async function sendEditConge(collab: Collaborateur, editeur: Collaborateur, demande: Absence, OLDdemande: Absence) {
     return new Promise((resolve, reject) => {
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo
 
@@ -235,13 +232,13 @@ export async function sendEditConge(collab:Collaborateur, editeur: Collaborateur
                     .replace('DATEDEB', obtenirDateFR(demande.datedeb))
                     .replace('DATEFIN', obtenirDateFR(demande.datefin))
                     .replace('OLDDD', obtenirDateFR(OLDdemande.datedeb))
-                    .replace('OLDDF', obtenirDateFR(OLDdemande.datefin))
+                    .replace('OLDDF', obtenirDateFR(OLDdemande.datefin));
 
                 const mailOptions = {
                     from: config.EMAIL,
                     to: collab.mail,
                     cc: editeur.mail,
-                    replyTo:  editeur.mail,
+                    replyTo: editeur.mail,
                     subject: 'Votre demande a été modifiée',
                     html: htmlContent,
                     attachments: [{
@@ -263,7 +260,7 @@ export async function sendEditConge(collab:Collaborateur, editeur: Collaborateur
     });
 }
 
-export async function sendunauthorizedAccessMail(collab:Collaborateur, chefService: Collaborateur, access:Access) {
+export async function sendunauthorizedAccessMail(collab: Collaborateur, chefService: Collaborateur, access: Access) {
     return new Promise((resolve, reject) => {
         const link = config.WEBSITEURL + '/access-history';
         const logoPath = 'mail-template/mns-fulllogo.png'; // Remplacez par le chemin de votre logo

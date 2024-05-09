@@ -9,17 +9,16 @@
         </v-toolbar>
 
         <v-card-text
-          style="height: 80vh; overflow: auto"
+          style="overflow: auto"
         >
           <v-card-text
-            style="height: 80vh; overflow: auto"
+            style="overflow: auto"
             v-if="!loading && modele"
           >
             <v-data-table
               :headers="headers"
               :items="modele"
               :items-per-page="-1"
-              class="elevation-1"
               items-per-page-text="Modeles par page : "
             >
 

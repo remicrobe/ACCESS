@@ -211,7 +211,7 @@ export async function checkTokenPassword(token2check, password) {
         if (currentDate <= expirationDate && token.token === token2check) {
             token.actif = false
             collab.valide = true
-            collab.motdepasse = createHash('sha256').update(password).digest('hex');
+            collab.motdepasse = createHash('sha256').update(config.SALAGE + password).digest('hex');
             await AppDataSource.getRepository(Token).save(token)
             await AppDataSource.getRepository(Collaborateur).save(collab)
             return true;

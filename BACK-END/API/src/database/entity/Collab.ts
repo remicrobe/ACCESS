@@ -5,19 +5,22 @@ import {
     OneToMany,
     ManyToOne, OneToOne, CreateDateColumn, JoinColumn,
 } from 'typeorm';
-import {Absence} from "./Absence";
-import {Token} from "./Token";
-import {Access} from "./Access";
-import {Service} from "./Service";
-import {HorairesModele} from "./HorairesModele";
-import {Horaire} from "./Horaire";
-import {Historique} from "./Historique";
+import { Absence } from "./Absence";
+import { Token } from "./Token";
+import { Access } from "./Access";
+import { Service } from "./Service";
+import { HorairesModele } from "./HorairesModele";
+import { Horaire } from "./Horaire";
+import { Historique } from "./Historique";
+import { Incident } from './Incident';
+
 export enum typeCollab {
-    rh='rh',
-    drh='drh',
-    arh='arh',
-    collab='collab'
+    rh = 'rh',
+    drh = 'drh',
+    arh = 'arh',
+    collab = 'collab'
 }
+
 @Entity()
 export class Collaborateur {
     @PrimaryGeneratedColumn()
@@ -32,10 +35,10 @@ export class Collaborateur {
     @Column()
     mail: string;
 
-    @Column({default:null,nullable:true,select:false})
+    @Column({default: null, nullable: true, select: false})
     motdepasse: string;
 
-    @Column({default:'Collaborateur'})
+    @Column({default: 'Collaborateur'})
     fonction: string;
 
     @Column({
@@ -51,25 +54,28 @@ export class Collaborateur {
     @OneToMany(() => Absence, absence => absence.collab)
     absences: Absence[];
 
+    @OneToMany(() => Incident, incident => incident.collab)
+    incident: Incident[];
+
     @OneToMany(() => Historique, hist => hist.collab)
     historique: Historique[];
 
-    @ManyToOne(() => Service, service => service.collabs, {nullable:true})
+    @ManyToOne(() => Service, service => service.collabs, {nullable: true})
     service: Service;
 
-    @ManyToOne(() => HorairesModele, {nullable:true})
+    @ManyToOne(() => HorairesModele, {nullable: true})
     horairesdefault: HorairesModele;
 
     @OneToOne(() => Horaire)
     @JoinColumn()
-    horaire: Horaire
+    horaire: Horaire;
 
-    @Column({default:true})
+    @Column({default: true})
     actif: boolean;
 
-    @Column({default:false})
+    @Column({default: false})
     valide: boolean;
 
-    @CreateDateColumn({select:false})
+    @CreateDateColumn({select: false})
     date: Date;
 }

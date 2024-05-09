@@ -1,5 +1,5 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {Collaborateur} from "./Collab";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Collaborateur } from "./Collab";
 
 @Entity()
 export class Absence {
@@ -21,16 +21,16 @@ export class Absence {
     })
     raison: string;
 
-    @Column({nullable:true})
+    @Column({nullable: true})
     description: string;
 
-    @Column({nullable:true})
+    @Column({nullable: true})
     accepte: boolean;
 
-    @Column({nullable:true})
+    @Column({nullable: true})
     datereponse: Date;
 
-    @CreateDateColumn({select:true})
+    @CreateDateColumn({select: true})
     dateDemande: Date;
 
     @ManyToOne(() => Collaborateur)
