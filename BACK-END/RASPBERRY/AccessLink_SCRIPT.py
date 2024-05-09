@@ -8,7 +8,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 # api url
-api = 'https://access-api-38cea021d5b8.herokuapp.com/'
+api = 'https://access-api-38cea021d5b8.herokuapp.com'
 
 # On récupère l'adresse mac de la machine
 mac = gma()
