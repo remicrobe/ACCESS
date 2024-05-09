@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image,} from "react-native";
 import {Layout, Text, TextInput, Button, useTheme, themeColor,} from "react-native-rapi-ui";
-import axios from 'axios';
-import {baseUrl} from '../../../App';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import $axios from "../../plugins/axios";
+import {useAuthStore} from "../../store/auth.store";
+import {useUserStore} from "../../store/user.store";
 
 export default function ({navigation}) {
     const {isDarkmode, setTheme} = useTheme();
@@ -13,10 +13,11 @@ export default function ({navigation}) {
 
     async function login() {
         setLoading(true);
-        await axios.post(`${baseUrl}/collab/connect`, {mail: email, motdepasse: password})
+        await $axios.post(`collab/connect`, {mail: email, motdepasse: password})
             .then(async (res) => {
                 try {
-                    await AsyncStorage.setItem('userData', JSON.stringify(res.data));
+                    useAuthStore.getState().setJwtToken(res.data.jwtToken);
+                    await useUserStore.getState().getUserData();
                     alert(`Bienvenue ${res.data.collab.nom} ${res.data.collab.prenom}`);
                     navigation.navigate("MainTabs");
                 } catch (error) {
@@ -24,7 +25,6 @@ export default function ({navigation}) {
                 }
             })
             .catch((err) => {
-                console.log(err, email, password);
                 alert(`Une erreur est survenue lors de la connexion`);
             })
             .finally(() => {
