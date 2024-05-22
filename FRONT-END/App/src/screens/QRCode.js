@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import $axios from "../plugins/axios";
 import QRCodeComponent from "react-native-qrcode-svg";
 import ProgressBar from 'react-native-progress/Bar';
+import {COLORS} from "../color";
 
 export default function ({ navigation }) {
     const s = require('../style');
@@ -52,12 +53,6 @@ export default function ({ navigation }) {
     return (
         <Layout>
             <View style={s.container}>
-                <View style={s.header}>
-                    <Ionicons name="qr-code-outline" size={96} color="#6c757d" />
-                    <View>
-                        <Text style={s.bold}>Votre badge d'accès</Text>
-                    </View>
-                </View>
                 <View style={styles.qrContainer}>
                     {loading ? (
                         <ActivityIndicator size="large" color="#0000ff" />
@@ -72,11 +67,19 @@ export default function ({ navigation }) {
                         )
                     )}
                 </View>
-                <ProgressBar progress={loadingProgress} width={null} />
-
+                <ProgressBar style={styles.progressBar} progress={loadingProgress} width={null} />
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.bold}>Votre badge d'accès</Text>
+                        <View style={styles.subtitleGroup}>
+                            <Text style={styles.subtitle}> Scannez ce QR Code pour entrer dans le bâtiment.</Text>
+                            <Text style={styles.subtitle}> Placez votre téléphone à environ 10cm du lecteur.</Text>
+                        </View>
+                    </View>
+                </View>
                 <Button
                     text="Recharger le QR Code"
-                    color="red"
+                    color= {COLORS.primary}
                     style={{ marginTop: 20 }}
                     onPress={getQRCode}
                 />
@@ -88,21 +91,33 @@ export default function ({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: 'center',
         padding: 16,
     },
     header: {
-        flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 16,
+        marginVertical: 16,
+        justifyContent:'center',
     },
     qrContainer: {
-        backgroundColor: "white",
+        backgroundColor: 'transparent',
+        borderColor: COLORS.primary,
+        borderWidth: 4,
+        paddingVertical: 40,
         alignItems: "center",
         justifyContent: "center",
         marginBottom: 16,
     },
     bold: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
+        textTransform: "uppercase",
+        color: '#084B83',
+    },
+    subtitleGroup: {
+        paddingTop: 20,
+    },
+    subtitle: {
+        fontSize: 12,
     },
 });
