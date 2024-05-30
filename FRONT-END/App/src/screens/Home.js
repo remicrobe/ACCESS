@@ -1,5 +1,5 @@
-import React from "react";
-import {View, Linking} from "react-native";
+import {React} from "react";
+import {View, Linking, PixelRatio} from "react-native";
 import {
     Layout,
     Button,
