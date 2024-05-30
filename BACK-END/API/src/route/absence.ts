@@ -19,7 +19,7 @@ import { jsonToExcel } from "../utils/excel/json-to-excel";
 
 const absenceRouter = express.Router();
 
-absenceRouter.get('/absenceDeMesCollaborateurs/export', jwtMiddlewareFullInfo, async (req, res) => {
+absenceRouter.get('/my/export', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab: Collaborateur = req.body.connectedCollab;
         let absences = undefined;
@@ -53,7 +53,7 @@ absenceRouter.get('/absenceDeMesCollaborateurs/export', jwtMiddlewareFullInfo, a
 });
 
 // Obtenir les absences des collaborateurs sous mon contrôle
-absenceRouter.get('/absenceDeMesCollaborateurs/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req, res) => {
+absenceRouter.get('/my/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         const collab: Collaborateur = req.body.connectedCollab;
         let absences = undefined;
@@ -107,11 +107,11 @@ absenceRouter.post('/creerUneAbsence/:idcollab?', jwtMiddlewareFullInfo, async (
             targetCollab = connectedCollab;
         }
 
-        const {datedeb, datefin, raison, description} = req.body;
-        if (!checkRequiredField([datefin, datedeb, description])) {
+        const {dateDeb, dateFin, periodeDeb, periodeFin, raison, description} = req.body;
+        if (!checkRequiredField([dateFin, dateDeb, description, periodeDeb, periodeFin])) {
             return res.sendStatus(422);
         }
-        const newAbsence = await creerAbsence(targetCollab, datedeb, datefin, raison, description);
+        const newAbsence = await creerAbsence(targetCollab, dateDeb, dateFin, periodeDeb, periodeFin, raison, description);
         return res.json(newAbsence);
     } catch (error) {
         ErrorHandler(error, req, res);

@@ -1,8 +1,8 @@
 <template>
   <VContainer fluid class="fill-height">
-    <VRow no-gutters align="center" justify="center" class="fill-height">
+    <VRow  align="center" justify="center" class="fill-height">
       <VCol cols="12" md="6" lg="5" sm="6">
-        <VRow no-gutters align="center" justify="center">
+        <VRow  align="center" justify="center">
           <VCol cols="12" md="7">
             <VImg
             src="/mns-fulllogo.png"

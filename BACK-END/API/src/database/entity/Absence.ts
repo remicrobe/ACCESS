@@ -13,7 +13,13 @@ export class Absence {
     datedeb: Date;
 
     @Column()
+    periodeDeb: number
+
+    @Column()
     datefin: Date;
+
+    @Column()
+    periodeFin: number
 
     @Column({
         type: "enum",

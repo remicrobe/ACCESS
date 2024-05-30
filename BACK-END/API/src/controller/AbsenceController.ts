@@ -8,10 +8,12 @@ import {isNull} from "util";
 import {sendEditConge, sendNewCongeMail, sendResponseConge} from "../utils/mail/mail";
 import {DateTime} from "luxon";
 
-export async function creerAbsence(collab: Collaborateur, datedeb: string, datefin: string, raison: string, description?: string) {
+export async function creerAbsence(collab: Collaborateur, datedeb: string, datefin: string, periodeDeb: number, periodeFin: number, raison: string, description?: string) {
     let absence = new Absence();
     absence.collab = collab;
     absence.datedeb = DateTime.fromISO(datedeb, { zone: "Europe/Paris" }).toJSDate();
+    absence.periodeDeb = periodeDeb;
+    absence.periodeFin = periodeFin
     absence.datefin = DateTime.fromISO(datefin, { zone: "Europe/Paris" }).toJSDate();
     absence.raison = raison;
     absence.description = description;

@@ -95,8 +95,25 @@
                 variant="outlined"
                 label="Date début"
                 :loading="loading"
-                type="datetime-local"
+                type="date"
                 v-model="demande.datedeb"
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              sm="6"
+              md="6"
+              class="mt-n5"
+            >
+              <v-select
+                clearable
+                variant="outlined"
+                label="Periode début"
+                :loading="loading"
+                item-value="value"
+                item-title="text"
+                :items="periodDeb"
+                v-model="demande.periodeDeb"
               />
             </v-col>
             <v-col
@@ -110,11 +127,28 @@
                 variant="outlined"
                 label="Date fin"
                 :loading="loading"
-                type="datetime-local"
+                type="date"
                 v-model="demande.datefin"
               />
             </v-col>
 
+            <v-col
+              cols="12"
+              sm="6"
+              md="6"
+              class="mt-n5"
+            >
+              <v-select
+                clearable
+                variant="outlined"
+                label="Periode fin"
+                :loading="loading"
+                item-value="value"
+                item-title="text"
+                :items="periodEnd"
+                v-model="demande.periodeFin"
+              />
+            </v-col>
 
             <v-col
               cols="12"
@@ -165,6 +199,7 @@
 
 import { useApiService } from "~/services/apiServices";
 import { DateTime } from "luxon";
+import { useGlobalStore } from "~/services/globalStore";
 
 export default {
   name: "collabDemandeConfigurator",
@@ -179,11 +214,15 @@ export default {
           description: undefined,
           id: undefined,
           raison: undefined,
+          periodeDeb: undefined,
+          periodeEnd: undefined,
         collab: {
           id: undefined,
         },
       },
       blankDemande: undefined,
+      periodDeb: useGlobalStore().getStartPeriod(),
+      periodEnd: useGlobalStore().getEndPeriod(),
     };
   },
   props: ["edit",'collabs'],
@@ -223,10 +262,10 @@ export default {
         this.demande =  this.merge(this.demande,this.edit)
         this.demande.collab.id = this.edit.collab.id
         if(this.demande.datedeb){
-          this.demande.datedeb = DateTime.fromISO(this.demande.datedeb).toFormat('yyyy-MM-dd HH:mm:ss')
+          this.demande.datedeb = DateTime.fromISO(this.demande.datedeb).toFormat('yyyy-MM-dd')
         }
         if(this.demande.datefin){
-          this.demande.datefin = DateTime.fromISO(this.demande.datefin).toFormat('yyyy-MM-dd HH:mm:ss')
+          this.demande.datefin = DateTime.fromISO(this.demande.datefin).toFormat('yyyy-MM-dd')
         }
       }
     },
@@ -234,7 +273,7 @@ export default {
       this.loading = true;
       let data;
       if (!this.edit) {
-        let { data: tdata, status: status } = await useApiService(`/absence/creerUneAbsence/${this.demande.collab.id}}`, {
+        let { data: tdata, status: status } = await useApiService(`/absence/creerUneAbsence/${this.demande.collab.id}`, {
           method: "post",
           body: this.demande,
           watch: false,

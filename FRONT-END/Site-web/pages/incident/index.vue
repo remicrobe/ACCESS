@@ -5,7 +5,7 @@
                 <v-toolbar class="pt-n5" :title="'Gérer les incident du personnel' " color="primary">
                 </v-toolbar>
                 <v-card-text style="overflow: auto">
-                    <v-row no-gutters>
+                    <v-row >
                         <v-col
                             cols="12"
                             sm="3"

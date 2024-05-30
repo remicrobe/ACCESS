@@ -11,7 +11,7 @@
         <v-card-text
           style="overflow: auto"
         >
-          <v-row no-gutters>
+          <v-row>
             <v-col
               cols="12"
               sm="6"
@@ -158,7 +158,9 @@
             </template>
 
             <template v-slot:item.collab="{ item }">
-              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom.toUpperCase() }}</v-chip>
+              <v-chip v-if="item.collab" color="blue" dark>{{ item.collab.prenom }} {{ item.collab.nom.toUpperCase()
+                }}
+              </v-chip>
               <span v-else>No Collaborator</span>
             </template>
 
@@ -235,7 +237,7 @@ export default {
         status,
         data,
         error,
-      } = await useApiService(`/absence/absenceDeMesCollaborateurs/${this.page}/${this.itemsParPage}`, {
+      } = await useApiService(`/absence/my/${this.page}/${this.itemsParPage}`, {
         method: "get",
         params: {
           filtering: this.filtering,
@@ -254,7 +256,7 @@ export default {
         status,
         data,
         error,
-      } = await useApiService(`/absence/absenceDeMesCollaborateurs/export/`, {
+      } = await useApiService(`/absence/my/export/`, {
         method: "get",
         params: {
           filtering: this.filtering,
@@ -291,13 +293,13 @@ export default {
           { title: "Type absence", value: "raison" },
           { title: "Description", value: "description" },
           { title: "Accepté", value: "accepte", align: "center" },
-          { title: "Actions", value: "actions", align: 'end' },
+          { title: "Actions", value: "actions", align: "end" },
         ];
       } else {
         return [
           { title: "Collaborateur", value: "collab" },
           { title: "Accepté", value: "accepte", align: "center" },
-          { title: "Actions", value: "actions", align: 'end' },
+          { title: "Actions", value: "actions", align: "end" },
         ];
       }
     },

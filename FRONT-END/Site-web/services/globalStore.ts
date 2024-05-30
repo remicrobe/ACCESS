@@ -97,10 +97,18 @@ export const useGlobalStore = defineStore('global', {
     isLogin() {
       let auth = useCookie('auth');
       return auth.value !== undefined
-
     },
-    getRole() {
-
+    getStartPeriod() {
+      return [
+        { value: 0, text: 'Matin' },
+        { value: 1, text: 'Midi' },
+      ]
     },
+    getEndPeriod() {
+      return [
+        { value: 1, text: 'Midi' },
+        { value: 2, text: 'Soir' },
+      ]
+    }
   },
 })

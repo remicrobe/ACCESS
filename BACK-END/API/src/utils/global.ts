@@ -7,7 +7,7 @@ export function checkRequiredField(fields: any) {
                 return false;
             }
         } else { // Si le champ n'est pas un objet de type 'mail'
-            if (!field) { // Vérifie si le champ est null, undefined ou ''
+            if (field === null || field === '' || field === undefined) { // Vérifie si le champ est null, undefined ou ''
                 return false;
             }
         }

@@ -1,5 +1,5 @@
 <template>
-    <v-row wrap no-gutters>
+    <v-row wrap >
         <v-col class="text-center">
             <v-divider class="mt-3"/>
         </v-col>
