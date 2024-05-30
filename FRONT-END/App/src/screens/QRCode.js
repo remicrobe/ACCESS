@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { StyleSheet, View, ActivityIndicator, SafeAreaView, ScrollView } from "react-native";
 import {Button, Layout, Text, useTheme} from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import $axios from "../plugins/axios";
 import QRCodeComponent from "react-native-qrcode-svg";
 import ProgressBar from 'react-native-progress/Bar';
 import {COLORS} from "../color";
+import {Header} from "../header/Header";
 
 export default function ({ navigation }) {
     const s = require('../style');
@@ -51,40 +52,45 @@ export default function ({ navigation }) {
     }
 
     return (
-        <Layout>
-            <View style={s.container}>
-                <View style={styles.qrContainer}>
-                    {loading ? (
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    ) : (
-                        qrCodeToken && (
-                            <QRCodeComponent
-                                value={qrCodeToken}
-                                size={200}
-                                color="black"
-                                backgroundColor="white"
-                            />
-                        )
-                    )}
-                </View>
-                <ProgressBar style={styles.progressBar} progress={loadingProgress} width={null} />
-                <View style={styles.header}>
-                    <View>
-                        <Text style={styles.bold}>Votre badge d'accès</Text>
-                        <View style={styles.subtitleGroup}>
-                            <Text style={styles.subtitle}> Scannez ce QR Code pour entrer dans le bâtiment.</Text>
-                            <Text style={styles.subtitle}> Placez votre téléphone à environ 10cm du lecteur.</Text>
+        <SafeAreaView>
+            <ScrollView>
+                <Layout>
+                    <Header/>
+                    <View style={s.container}>
+                        <View style={styles.qrContainer}>
+                            {loading ? (
+                                <ActivityIndicator size="large" color="#0000ff" />
+                            ) : (
+                                qrCodeToken && (
+                                    <QRCodeComponent
+                                        value={qrCodeToken}
+                                        size={200}
+                                        color="black"
+                                        backgroundColor="white"
+                                    />
+                                )
+                            )}
                         </View>
+                        <ProgressBar style={styles.progressBar} progress={loadingProgress} width={null} />
+                        <View style={styles.header}>
+                            <View>
+                                <Text style={styles.bold}>Votre badge d'accès</Text>
+                                <View style={styles.subtitleGroup}>
+                                    <Text style={styles.subtitle}> Scannez ce QR Code pour entrer dans le bâtiment.</Text>
+                                    <Text style={styles.subtitle}> Placez votre téléphone à environ 10cm du lecteur.</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <Button
+                            text="Recharger le QR Code"
+                            color= {COLORS.primary}
+                            style={{ marginTop: 20 }}
+                            onPress={getQRCode}
+                        />
                     </View>
-                </View>
-                <Button
-                    text="Recharger le QR Code"
-                    color= {COLORS.primary}
-                    style={{ marginTop: 20 }}
-                    onPress={getQRCode}
-                />
-            </View>
-        </Layout>
+                </Layout>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 

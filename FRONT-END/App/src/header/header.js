@@ -17,6 +17,7 @@ export  function Header () {
                 height: 1,
                 width: '80%',
                 backgroundColor: 'black',
+                marginBottom: 30,
             }}></View>
             
         </View>
