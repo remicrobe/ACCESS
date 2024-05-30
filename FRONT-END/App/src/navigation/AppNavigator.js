@@ -8,13 +8,14 @@ import TabBarIcon from "../components/utils/TabBarIcon";
 
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
-import {View} from "react-native";
+import {View, Image, StyleSheet} from "react-native";
 import Login from "../screens/connexion/Login";
 import ForgetPassword from "../screens/connexion/ForgetPassword";
 import QRCode from "../screens/QRCode";
 import Planning from "../screens/Planning";
 import Activity from "../screens/Activity";
 import {useUserStore} from "../store/user.store";
+import {COLORS} from "../color";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
@@ -95,11 +96,12 @@ const MainTabs = () => {
                             height: 60,
                             width: 60,
                             borderRadius: 30,
-                            backgroundColor: 'grey', // background color of the button
+                            backgroundColor: COLORS.primary, // background color of the button
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}>
-                            <TabBarIcon focused={focused} icon={"qr-code-outline"}/>
+                            <Image style={styles.qrcodeIcon}
+                            source={focused ? require("../../assets/close.png") : require("../../assets/qr-code.png")}/>
                         </View>
                     ),
                 }}
@@ -134,3 +136,10 @@ export default () => {
         </NavigationContainer>
     );
 };
+
+const styles = StyleSheet.create({
+    qrcodeIcon: {
+        height: 35,
+        width: 35,
+    },
+});

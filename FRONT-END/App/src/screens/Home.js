@@ -8,11 +8,13 @@ import {
     SectionContent,
     useTheme,
 } from "react-native-rapi-ui";
+import {Header} from "../header/Header";
 
 export default function ({navigation}) {
     const {isDarkmode, setTheme} = useTheme();
     return (
         <Layout>
+            <Header/>
             <View
                 style={{
                     flex: 1,
