@@ -54,7 +54,7 @@ export default function ({ navigation }) {
     return (
         <SafeAreaView>
             <ScrollView>
-                <Layout>
+                <Layout style={{paddingBottom: 50,}}>
                     <Header/>
                     <View style={s.container}>
                         <View style={styles.qrContainer}>
@@ -108,11 +108,14 @@ const styles = StyleSheet.create({
     qrContainer: {
         backgroundColor: 'transparent',
         borderColor: COLORS.primary,
-        borderWidth: 4,
-        paddingVertical: 40,
+        borderWidth: 5,
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 16,
+        marginBottom: 25,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '65%',
+        paddingVertical: 10,
     },
     bold: {
         fontSize: 25,
@@ -125,5 +128,10 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 12,
+    },
+    progressBar: {
+        width: '70%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
 });

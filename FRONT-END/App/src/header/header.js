@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     headerImage: {
-        height: 120,
+        height: 60,
         width: 130,
         resizeMode: "contain",
     },

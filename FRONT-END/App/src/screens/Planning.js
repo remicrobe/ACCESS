@@ -5,6 +5,9 @@ import {StyleSheet, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {Layout, Text} from "react-native-rapi-ui";
 import {useUserStore} from "../store/user.store";
+import {Header} from "../header/Header";
+import {COLORS} from "../color";
+
 
 LocaleConfig.locales['fr'] = {
     monthNames: [
@@ -57,7 +60,7 @@ const App = () => {
         const startDate = event.datedeb.substring(0, 10);
         const endDate = event.datefin.substring(0, 10);
         for (let date = startDate; date <= endDate; date = addDays(date, 1)) {
-            acc[date] = {selected: true, selectedColor: 'orange'};
+            acc[date] = {selected: true, selectedColor: COLORS.secondary};
         }
         return acc;
     }, {});
@@ -74,16 +77,16 @@ const App = () => {
 
     return (
         <Layout>
+            <Header/>
             <View style={s.container}>
                 <View style={s.header}>
-                    <Ionicons name="calendar-outline" size={96} color="#6c757d"/>
-
                     <View>
                         <Text style={s.bold}>Votre planning</Text>
                     </View>
                 </View>
                 <View>
                     <Calendar
+                        style={styles.calendar}
                         onDayPress={handleDayPress}
                         markedDates={markedDates}
                     />
@@ -157,6 +160,9 @@ const styles = StyleSheet.create({
     eventResponseDate: {
         fontSize: 16,
         marginTop: 8,
+    },
+    calendar: {
+        backgroundColor: 'transparent',
     },
 });
 
