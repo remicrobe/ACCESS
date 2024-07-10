@@ -3,6 +3,7 @@ import { StyleSheet, View, ActivityIndicator, ScrollView, RefreshControl } from 
 import { Layout, Text, useTheme } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import $axios from "../plugins/axios";
+import {Header} from "../header/Header";
 
 export default function ({ navigation }) {
     const s = require('../style');

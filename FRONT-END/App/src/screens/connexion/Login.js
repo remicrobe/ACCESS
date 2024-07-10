@@ -4,7 +4,7 @@ import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui"
 import $axios from "../../plugins/axios";
 import { useAuthStore } from "../../store/auth.store";
 import { useUserStore } from "../../store/user.store";
-import {COLORS} from "../../color";
+import { COLORS } from "../../color";
 
 export default function ({ navigation }) {
     const { isDarkmode, setTheme } = useTheme();
@@ -40,49 +40,49 @@ export default function ({ navigation }) {
                     <View style={styles.header}>
                         <Text style={styles.headerText}>AccessLink</Text>
                     </View>
-                    <View style={styles.curveContainer}>
-                        <View style={styles.innerCurveContainer}>
+                    <View style={styles.curveWrapper}>
+                        <View style={styles.curveContainer}>
                             <Image
                                 resizeMode="contain"
                                 style={styles.logo}
                                 source={require("../../../assets/mns-fulllogo.png")}
                             />
-                        </View>
-                        <View style={styles.formContainer}>
-                            <TextInput
-                                containerStyle={styles.input}
-                                placeholder="Login"
-                                value={email}
-                                autoCapitalize="none"
-                                autoCompleteType="off"
-                                autoCorrect={false}
-                                keyboardType="email-address"
-                                onChangeText={(text) => setEmail(text)}
-                            />
-                            <TextInput
-                                containerStyle={styles.input}
-                                placeholder="Mot de passe"
-                                value={password}
-                                autoCapitalize="none"
-                                autoCompleteType="off"
-                                autoCorrect={false}
-                                secureTextEntry={true}
-                                onChangeText={(text) => setPassword(text)}
-                            />
-                            <TouchableOpacity
-                                style={styles.linkContainer}
-                                onPress={() => navigation.navigate("ForgetPassword")}
-                            >
-                                <Text style={styles.linkText}>Première connexion</Text>
-                                <Text style={styles.linkText}>Mot de passe oublié</Text>
-                            </TouchableOpacity>
-                            <Button
-                                text={loading ? "Loading" : "Connexion"}
-                                onPress={login}
-                                style={styles.button}
-                                disabled={loading}
-                                color="#4793CA"
-                            />
+                            <View style={styles.formContainer}>
+                                <TextInput
+                                    containerStyle={styles.input}
+                                    placeholder="Login"
+                                    value={email}
+                                    autoCapitalize="none"
+                                    autoCompleteType="off"
+                                    autoCorrect={false}
+                                    keyboardType="email-address"
+                                    onChangeText={(text) => setEmail(text)}
+                                />
+                                <TextInput
+                                    containerStyle={styles.input}
+                                    placeholder="Mot de passe"
+                                    value={password}
+                                    autoCapitalize="none"
+                                    autoCompleteType="off"
+                                    autoCorrect={false}
+                                    secureTextEntry={true}
+                                    onChangeText={(text) => setPassword(text)}
+                                />
+                                <TouchableOpacity
+                                    style={styles.linkContainer}
+                                    onPress={() => navigation.navigate("ForgetPassword")}
+                                >
+                                    <Text style={styles.linkText}>Première connexion</Text>
+                                    <Text style={styles.linkText}>Mot de passe oublié</Text>
+                                </TouchableOpacity>
+                                <Button
+                                    text={loading ? "Loading" : "Connexion"}
+                                    onPress={login}
+                                    style={styles.button}
+                                    disabled={loading}
+                                    color="#4793CA"
+                                />
+                            </View>
                         </View>
                     </View>
                 </ScrollView>
@@ -96,29 +96,30 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primary,
         paddingVertical: 40,
         alignItems: "center",
+        paddingBottom: 100,
     },
     headerText: {
         color: "#FFFFFF",
         fontSize: 40,
         fontWeight: "bold",
     },
+    curveWrapper: {
+        flex: 1,
+        overflow: "hidden",
+        backgroundColor: COLORS.base,
+    },
     curveContainer: {
         backgroundColor: COLORS.base,
         borderTopLeftRadius: 50,
-        borderTopRightRadius: 50, // Corrected typo
+        borderTopRightRadius: 50,
         overflow: "hidden",
-        alignItems: "center", // Added to center align items
-    },
-    innerCurveContainer: {
-        width: "100%",
-        alignItems: "center",
-        paddingTop: 50, // Adjust to position the logo correctly
+        paddingTop: 20,
     },
     logo: {
         height: 100,
         width: 100,
         alignSelf: "center",
-        marginTop: -50, // Adjust to position the logo correctly
+        marginTop: 20,
     },
     formContainer: {
         paddingHorizontal: 20,
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
         width: "100%",
         borderTopLeftRadius: 50,
         borderTopRightRadius: 50,
+        overflow: "hidden",
     },
     input: {
         marginVertical: 10,
@@ -143,5 +145,6 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 20,
         borderRadius: 30,
+        marginHorizontal: 30,
     },
 });
