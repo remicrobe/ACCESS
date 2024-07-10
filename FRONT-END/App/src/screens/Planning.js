@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     eventContainer: {
         marginTop: 16,
         padding: 16,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'transparent',
         borderRadius: 8,
     },
     eventTitle: {
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     calendar: {
         backgroundColor: 'transparent',
     },
+
 });
 
 

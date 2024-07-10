@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '65%',
-        paddingVertical: 10,
+        paddingVertical: 20,
     },
     bold: {
         fontSize: 25,

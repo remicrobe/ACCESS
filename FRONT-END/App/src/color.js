@@ -3,5 +3,6 @@ export const COLORS = {
     secondary : '#FF6911',
     contrast: '#000',
     base: '#fff',
+    red: '#C9474E',
 
   }
