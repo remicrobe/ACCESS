@@ -1,0 +1,2555 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Access Link API",
+    "description": "API for Access",
+    "version": "1.0.0"
+  },
+  "host": [
+    "api.access-link.tech"
+  ],
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your Bearer token in the format **Bearer &lt;token&gt;**"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/absence/my/export": {
+      "get": {
+        "tags": [
+          "Absence"
+        ],
+        "description": "Export absences under my control as an Excel file.",
+        "parameters": [
+          {
+            "name": "filtering",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File downloaded successfully."
+          },
+          "401": {
+            "description": "Unauthorized access."
+          }
+        }
+      }
+    },
+    "/absence/my/{page}/{itemsParPage}": {
+      "get": {
+        "tags": [
+          "Absence"
+        ],
+        "description": "Get absences under my control.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Page number",
+            "example": 1
+          },
+          {
+            "name": "itemsParPage",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Number of items per page",
+            "example": 10
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of absences.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Absence"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access."
+          }
+        }
+      }
+    },
+    "/absence/mesAbsences": {
+      "get": {
+        "tags": [
+          "Absence"
+        ],
+        "description": "Get my absences.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of my absences.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Absence"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/absence/creerUneAbsence/{idcollab}": {
+      "post": {
+        "tags": [
+          "Absence"
+        ],
+        "description": "Create an absence.",
+        "parameters": [
+          {
+            "name": "idcollab",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the collaborator",
+            "example": 1
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Absence details",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datedeb": {
+                  "type": "string",
+                  "example": "2023-05-31"
+                },
+                "datefin": {
+                  "type": "string",
+                  "example": "2023-06-07"
+                },
+                "periodeDeb": {
+                  "type": "string",
+                  "example": "0"
+                },
+                "periodeFin": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "raison": {
+                  "type": "string",
+                  "example": "sick leave"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "Flu"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Absence created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Absence"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Required fields missing."
+          }
+        }
+      }
+    },
+    "/modifierAbsence/{absenceId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "absenceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "datedeb": {
+                  "example": "any"
+                },
+                "datefin": {
+                  "example": "any"
+                },
+                "raison": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/accepterAbsence/{absenceId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "absenceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "reponse": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/access/creerAccess": {
+      "post": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Créer un nouveau point d\\'accès",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Informations du point d'accès",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "macadress": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "typePoint": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "nompoint": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "active": {
+                  "type": "string",
+                  "example": "boolean"
+                },
+                "collabAutorise": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "serviceAutorise": {
+                  "type": "string",
+                  "example": "array"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Point d'accès créé avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Access"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/access/modifierAccess/{accessId}": {
+      "put": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Modifier un point d\\'accès existant",
+        "parameters": [
+          {
+            "name": "accessId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID du point d'accès"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Nouvelles informations du point d'accès",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "macadress": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "typePoint": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "nompoint": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "active": {
+                  "type": "string",
+                  "example": "boolean"
+                },
+                "collabAutorise": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "serviceAutorise": {
+                  "type": "string",
+                  "example": "array"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Point d'accès modifié avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Access"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Point d'accès non trouvé."
+          }
+        }
+      }
+    },
+    "/access/listeAccess": {
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Obtenir la liste des points d\\'accès",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des points d'accès.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Access"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/access/pointsAccessibles": {
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Obtenir les points d\\'accès accessibles par un collaborateur",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des points d'accès accessibles.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Access"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/access/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "description": "Obtenir les notifications pour le collaborateur connecté",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des notifications.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Notification"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/access/stats": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "description": "Obtenir les statistiques des points d\\'accès",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistiques des points d'accès.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Statistics"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/access/check/{token}/{macAdress}": {
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Tester si un token a accès à un point",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Token du collaborateur"
+          },
+          {
+            "name": "macAdress",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Adresse MAC du point d'accès"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Résultat du test d'accès.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "hasAccess": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/access/config/{macAdress}": {
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "description": "Récupérer la config du point d\\'accès",
+        "parameters": [
+          {
+            "name": "macAdress",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Adresse MAC du point d'accès"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration du point d'accès.",
+            "schema": {
+              "$ref": "#/definitions/AccessConfig"
+            }
+          }
+        }
+      }
+    },
+    "/collab/creerCollab": {
+      "post": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Créer un nouveau collaborateur",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Informations du collaborateur",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prenom": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "nom": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "mail": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "grade": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "fonction": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "service": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "horairesdefault": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "horaire": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "actif": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Collaborateur créé avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Collaborateur"
+            }
+          },
+          "400": {
+            "description": "L'utilisateur existe déjà."
+          },
+          "401": {
+            "description": "Non autorisé."
+          },
+          "422": {
+            "description": "Champs requis manquants."
+          }
+        }
+      }
+    },
+    "/collab/infoCollab": {
+      "get": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Obtenir les informations du collaborateur connecté",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Informations du collaborateur connecté.",
+            "schema": {
+              "$ref": "#/definitions/Collaborateur"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/collab/infoCollab/{idcollab}": {
+      "get": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Obtenir les informations d\\'un collaborateur par son ID",
+        "parameters": [
+          {
+            "name": "idcollab",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID du collaborateur"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Informations du collaborateur.",
+            "schema": {
+              "$ref": "#/definitions/Collaborateur"
+            }
+          },
+          "401": {
+            "description": "Non autorisé."
+          }
+        }
+      }
+    },
+    "/collab/infoCollabSousControl": {
+      "get": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Obtenir les collaborateurs sous la direction du collaborateur connecté",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des collaborateurs sous la direction.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Collaborateur"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/collab/sansService": {
+      "get": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Obtenir l\\'ensemble des collaborateurs sans service",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des collaborateurs sans service.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "$ref": "#/definitions/Collaborateur"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Non autorisé."
+          }
+        }
+      }
+    },
+    "/collab/modifierCollab/{collaborateur}": {
+      "put": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Modifier les informations d\\'un collaborateur",
+        "parameters": [
+          {
+            "name": "collaborateur",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID du collaborateur"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Nouvelles informations du collaborateur",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prenom": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "nom": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "mail": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "grade": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "fonction": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "service": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "horairesdefault": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "horaire": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "actif": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Collaborateur modifié avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Collaborateur"
+            }
+          },
+          "400": {
+            "description": "L'utilisateur n'existe pas."
+          },
+          "401": {
+            "description": "Non autorisé."
+          },
+          "422": {
+            "description": "Champs requis manquants."
+          }
+        }
+      }
+    },
+    "/collab/recuperation/{token}": {
+      "post": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Récupérer un collaborateur à partir d\\'un token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Token de récupération"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Mot de passe pour la récupération",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "motdepasse": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collaborateur récupéré avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Collaborateur"
+            }
+          },
+          "400": {
+            "description": "Token ou mot de passe invalide."
+          }
+        }
+      }
+    },
+    "/collab/demande-recuperation": {
+      "post": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Demander la récupération du compte",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Email du collaborateur",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mail": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mail de récupération envoyé."
+          },
+          "422": {
+            "description": "Champs requis manquants."
+          },
+          "500": {
+            "description": "Erreur interne du serveur."
+          }
+        }
+      }
+    },
+    "/collab/connect": {
+      "post": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Connecter un collaborateur",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Informations de connexion",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mail": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "motdepasse": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collaborateur connecté avec succès.",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "404": {
+            "description": "Collaborateur non trouvé."
+          },
+          "422": {
+            "description": "Champs requis manquants."
+          }
+        }
+      }
+    },
+    "/collab/deconneter": {
+      "post": {
+        "tags": [
+          "Collaborateur"
+        ],
+        "description": "Déconnecter un collaborateur",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "jwtToken": {
+                  "example": "any"
+                },
+                "connectedCollab": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collaborateur déconnecté avec succès."
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/historique/me": {
+      "get": {
+        "tags": [
+          "Historique"
+        ],
+        "description": "Obtenir l\\'historique personnel du collaborateur connecté",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historique personnel du collaborateur connecté.",
+            "schema": {
+              "$ref": "#/definitions/Historique"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/historique/{page}/{itemsParPage}": {
+      "get": {
+        "tags": [
+          "Historique"
+        ],
+        "description": "Obtenir l\\'historique avec pagination",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Numéro de la page"
+          },
+          {
+            "name": "itemsParPage",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Nombre d'éléments par page"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "description": "Filtres à appliquer",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historique avec pagination.",
+            "schema": {
+              "$ref": "#/definitions/Historique"
+            }
+          },
+          "401": {
+            "description": "Non autorisé."
+          }
+        }
+      }
+    },
+    "/historique/export/{page}/{itemsParPage}": {
+      "get": {
+        "tags": [
+          "Historique"
+        ],
+        "description": "Exporter l\\'historique",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Numéro de la page"
+          },
+          {
+            "name": "itemsParPage",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Nombre d'éléments par page"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "description": "Filtres à appliquer",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fichier exporté avec succès.",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Non autorisé."
+          }
+        }
+      }
+    },
+    "/incidentDeMesCollaborateurs/{page?}/{itemsParPage?}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "itemsParPage?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/{id}/message": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "message": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                },
+                "connectedCollab": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                },
+                "connectedCollab": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/modifierParam/{uniqueName}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "uniqueName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "value": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/presenceDeMesCollaborateurs/{page?}/{itemsParPage?}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "itemsParPage?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/presenceDeMesCollaborateurs/export/{page?}/{itemsParPage?}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "itemsParPage?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filtering",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/mesPresences": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/ajouterPresenceCollab": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "idCollab": {
+                  "example": "any"
+                },
+                "datePres": {
+                  "example": "any"
+                },
+                "hdeb": {
+                  "example": "any"
+                },
+                "hfin": {
+                  "example": "any"
+                },
+                "desc": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/modifierPresenceCollab/{idPres}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "idPres",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "idCollab": {
+                  "example": "any"
+                },
+                "datePres": {
+                  "example": "any"
+                },
+                "hdeb": {
+                  "example": "any"
+                },
+                "hfin": {
+                  "example": "any"
+                },
+                "desc": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/creerService": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "nomservice": {
+                  "example": "any"
+                },
+                "collabs": {
+                  "example": "any"
+                },
+                "chefservice": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/modifierService/{serviceId}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "serviceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "nomservice": {
+                  "example": "any"
+                },
+                "collabs": {
+                  "example": "any"
+                },
+                "chefservice": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/monService": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/mesServices": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/{serviceId}/collaborateurs": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "serviceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/genererCarteQrCode/{collabId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "collabId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/genererPDFCarteQrCode/{collabId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "collabId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/genererAppQrCode": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "connectedCollab": {
+                  "example": "any"
+                },
+                "jwtToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Absence": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "collab": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "datedeb": {
+          "type": "string",
+          "example": "2023-07-15"
+        },
+        "periodeDeb": {
+          "type": "number",
+          "example": 1
+        },
+        "datefin": {
+          "type": "string",
+          "example": "2023-07-20"
+        },
+        "periodeFin": {
+          "type": "number",
+          "example": 2
+        },
+        "raison": {
+          "type": "string",
+          "example": "conge"
+        },
+        "description": {
+          "type": "string",
+          "example": "Congé annuel"
+        },
+        "accepte": {
+          "type": "boolean",
+          "example": true
+        },
+        "datereponse": {
+          "type": "string",
+          "example": "2023-07-16"
+        },
+        "dateDemande": {
+          "type": "string",
+          "example": "2023-07-01"
+        },
+        "reponseDe": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "modifierPar": {
+          "$ref": "#/definitions/Collaborateur"
+        }
+      }
+    },
+    "Access": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "macadress": {
+          "type": "string",
+          "example": "00:14:22:01:23:45"
+        },
+        "typePoint": {
+          "type": "string",
+          "example": "pointeuse"
+        },
+        "location": {
+          "type": "string",
+          "example": "Bureau"
+        },
+        "nompoint": {
+          "type": "string",
+          "example": "Entrée principale"
+        },
+        "active": {
+          "type": "boolean",
+          "example": true
+        },
+        "collabAutorise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collaborateur"
+          }
+        },
+        "serviceAutorise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Service"
+          }
+        },
+        "historique": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Historique"
+          }
+        }
+      }
+    },
+    "Collaborateur": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "prenom": {
+          "type": "string",
+          "example": "John"
+        },
+        "nom": {
+          "type": "string",
+          "example": "Doe"
+        },
+        "mail": {
+          "type": "string",
+          "example": "john.doe@example.com"
+        },
+        "motdepasse": {
+          "type": "string",
+          "example": "password"
+        },
+        "fonction": {
+          "type": "string",
+          "example": "Développeur"
+        },
+        "grade": {
+          "type": "string",
+          "example": "collab"
+        },
+        "tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Token"
+          }
+        },
+        "absences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Absence"
+          }
+        },
+        "incident": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Incident"
+          }
+        },
+        "historique": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Historique"
+          }
+        },
+        "service": {
+          "$ref": "#/definitions/Service"
+        },
+        "horairesdefault": {
+          "$ref": "#/definitions/HorairesModele"
+        },
+        "horaire": {
+          "$ref": "#/definitions/Horaire"
+        },
+        "actif": {
+          "type": "boolean",
+          "example": true
+        },
+        "valide": {
+          "type": "boolean",
+          "example": false
+        },
+        "date": {
+          "type": "string",
+          "example": "2023-07-01"
+        }
+      }
+    },
+    "Historique": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "date": {
+          "type": "string",
+          "example": "2023-07-15"
+        },
+        "collab": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "point": {
+          "$ref": "#/definitions/Access"
+        },
+        "typeAction": {
+          "type": "string",
+          "example": "Entrée"
+        },
+        "actionAutorise": {
+          "type": "boolean",
+          "example": true
+        },
+        "statutUtilise": {
+          "type": "string",
+          "example": "Identité"
+        }
+      }
+    },
+    "Horaire": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "hDebLundi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinLundi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebMardi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinMardi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebMercredi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinMercredi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebJeudi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinJeudi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebVendredi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinVendredi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebSamedi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinSamedi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebDimanche": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinDimanche": {
+          "type": "string",
+          "example": "17:00:00"
+        }
+      }
+    },
+    "HorairesModele": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "nom": {
+          "type": "string",
+          "example": "Modèle standard"
+        },
+        "hDebLundi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinLundi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebMardi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinMardi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebMercredi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinMercredi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebJeudi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinJeudi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebVendredi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinVendredi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebSamedi": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinSamedi": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "hDebDimanche": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hFinDimanche": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "collabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collaborateur"
+          }
+        }
+      }
+    },
+    "Incident": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "collab": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "description": {
+          "type": "string",
+          "example": "Problème de connexion"
+        },
+        "ouvert": {
+          "type": "boolean",
+          "example": true
+        },
+        "modifiePar": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "modifieLe": {
+          "type": "string",
+          "example": "2023-07-15"
+        },
+        "creeLe": {
+          "type": "string",
+          "example": "2023-07-10"
+        },
+        "creePar": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "dateIncident": {
+          "type": "string",
+          "example": "2023-07-09"
+        },
+        "reponse": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IncidentReponse"
+          }
+        }
+      }
+    },
+    "IncidentReponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "reponse": {
+          "type": "string",
+          "example": "Problème résolu"
+        },
+        "incident": {
+          "$ref": "#/definitions/Incident"
+        },
+        "creeLe": {
+          "type": "string",
+          "example": "2023-07-11"
+        }
+      }
+    },
+    "Param": {
+      "type": "object",
+      "properties": {
+        "uniqueName": {
+          "type": "string",
+          "example": "configParam"
+        },
+        "viewName": {
+          "type": "string",
+          "example": "Configuration Parameter"
+        },
+        "value": {
+          "type": "string",
+          "example": "SomeValue"
+        }
+      }
+    },
+    "Presence": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "collab": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "datePres": {
+          "type": "string",
+          "example": "2023-07-15"
+        },
+        "hdeb": {
+          "type": "string",
+          "example": "08:00:00"
+        },
+        "hfin": {
+          "type": "string",
+          "example": "17:00:00"
+        },
+        "modifiePar": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "modifieLe": {
+          "type": "string",
+          "example": "2023-07-16"
+        },
+        "creeLe": {
+          "type": "string",
+          "example": "2023-07-15"
+        },
+        "creePar": {
+          "type": "string",
+          "example": "Admin"
+        },
+        "desc": {
+          "type": "string",
+          "example": "Présence normale"
+        }
+      }
+    },
+    "Service": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "chefservice": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "nomservice": {
+          "type": "string",
+          "example": "Informatique"
+        },
+        "collabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collaborateur"
+          }
+        }
+      }
+    },
+    "Token": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "collab": {
+          "$ref": "#/definitions/Collaborateur"
+        },
+        "type": {
+          "type": "string",
+          "example": "auth"
+        },
+        "actif": {
+          "type": "boolean",
+          "example": true
+        },
+        "token": {
+          "type": "string",
+          "example": "token123"
+        },
+        "datecreation": {
+          "type": "string",
+          "example": "2023-07-15"
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}

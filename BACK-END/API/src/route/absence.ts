@@ -20,6 +20,17 @@ import { jsonToExcel } from "../utils/excel/json-to-excel";
 const absenceRouter = express.Router();
 
 absenceRouter.get('/my/export', jwtMiddlewareFullInfo, async (req, res) => {
+    /*  #swagger.tags = ['Absence']
+        #swagger.path = '/absence/my/export'
+        #swagger.method = 'get'
+        #swagger.description = 'Export absences under my control as an Excel file.'
+        #swagger.responses[200] = {
+            description: 'File downloaded successfully.'
+        }
+        #swagger.responses[401] = {
+            description: 'Unauthorized access.'
+        }
+    */
     try {
         const collab: Collaborateur = req.body.connectedCollab;
         let absences = undefined;
@@ -54,6 +65,42 @@ absenceRouter.get('/my/export', jwtMiddlewareFullInfo, async (req, res) => {
 
 // Obtenir les absences des collaborateurs sous mon contrôle
 absenceRouter.get('/my/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req, res) => {
+    /*  #swagger.tags = ['Absence']
+        #swagger.path = '/absence/my/{page}/{itemsParPage}'
+        #swagger.method = 'get'
+        #swagger.description = 'Get absences under my control.'
+        #swagger.parameters['page'] = {
+            in: 'path',
+            description: 'Page number',
+            required: false,
+            type: 'integer',
+            example: 1
+        }
+        #swagger.parameters['itemsParPage'] = {
+            in: 'path',
+            description: 'Number of items per page',
+            required: false,
+            type: 'integer',
+            example: 10
+        }
+        #swagger.parameters['filtering'] = {
+            in: 'query',
+            description: 'Filter criteria',
+            required: false,
+            type: 'string',
+            example: '{"status": "approved"}'
+        }
+        #swagger.responses[200] = {
+            description: 'List of absences.',
+            schema: {
+                type: 'array',
+                items: { $ref: '#/definitions/Absence' }
+            }
+        }
+        #swagger.responses[401] = {
+            description: 'Unauthorized access.'
+        }
+    */
     try {
         const collab: Collaborateur = req.body.connectedCollab;
         let absences = undefined;
@@ -80,6 +127,18 @@ absenceRouter.get('/my/:page?/:itemsParPage?', jwtMiddlewareFullInfo, async (req
 
 // Obtenir mes absences
 absenceRouter.get('/mesAbsences', jwtMiddlewareFullInfo, async (req, res) => {
+    /*  #swagger.tags = ['Absence']
+        #swagger.path = '/absence/mesAbsences'
+        #swagger.method = 'get'
+        #swagger.description = 'Get my absences.'
+        #swagger.responses[200] = {
+            description: 'List of my absences.',
+            schema: {
+                type: 'array',
+                items: { $ref: '#/definitions/Absence' }
+            }
+        }
+    */
     try {
         const collab = req.body.connectedCollab;
         const absences = await getAbsences(collab);
@@ -91,6 +150,38 @@ absenceRouter.get('/mesAbsences', jwtMiddlewareFullInfo, async (req, res) => {
 
 // Créer une absence
 absenceRouter.post('/creerUneAbsence/:idcollab?', jwtMiddlewareFullInfo, async (req, res) => {
+    /*  #swagger.tags = ['Absence']
+        #swagger.path = '/absence/creerUneAbsence/{idcollab}'
+        #swagger.method = 'post'
+        #swagger.description = 'Create an absence.'
+        #swagger.parameters['idcollab'] = {
+            in: 'path',
+            description: 'ID of the collaborator',
+            required: false,
+            type: 'integer',
+            example: 1
+        }
+        #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Absence details',
+            required: true,
+            schema: {
+                datedeb: '2023-05-31',
+                datefin: '2023-06-07',
+                periodeDeb: '0',
+                periodeFin: '1',
+                raison: 'sick leave',
+                description: 'Flu'
+            }
+        }
+        #swagger.responses[200] = {
+            description: 'Absence created successfully.',
+            schema: { $ref: '#/definitions/Absence' }
+        }
+        #swagger.responses[422] = {
+            description: 'Required fields missing.'
+        }
+    */
     try {
         let connectedCollab = req.body.connectedCollab;
         let targetCollab: Collaborateur = undefined;
@@ -107,11 +198,11 @@ absenceRouter.post('/creerUneAbsence/:idcollab?', jwtMiddlewareFullInfo, async (
             targetCollab = connectedCollab;
         }
 
-        const {dateDeb, dateFin, periodeDeb, periodeFin, raison, description} = req.body;
-        if (!checkRequiredField([dateFin, dateDeb, description, periodeDeb, periodeFin])) {
+        const {datedeb, datefin, periodeDeb, periodeFin, raison, description} = req.body;
+        if (!checkRequiredField([datefin, datedeb, periodeDeb, periodeFin])) {
             return res.sendStatus(422);
         }
-        const newAbsence = await creerAbsence(targetCollab, dateDeb, dateFin, periodeDeb, periodeFin, raison, description);
+        const newAbsence = await creerAbsence(targetCollab, datedeb, datefin, periodeDeb, periodeFin, raison, description);
         return res.json(newAbsence);
     } catch (error) {
         ErrorHandler(error, req, res);

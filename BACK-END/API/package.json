@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon  -e js,ts,json,env --exec \"ts-node src/index.ts\"",
+    "dev": "nodemon  -e js,ts,env --exec \"node swagger.js && ts-node src/index.ts\"",
     "build": "npx tsc",
     "start": "node build/index.js"
   },
@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-basic-auth": "^1.2.1",
     "imap": "^0.8.19",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.4.3",
@@ -31,6 +32,9 @@
     "nodemailer": "^6.9.4",
     "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.3",
+    "swagger-autogen": "^2.23.7",
+    "swagger-stats": "^0.99.7",
+    "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.17",
     "xlsx": "^0.18.5"
   },
