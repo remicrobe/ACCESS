@@ -36,7 +36,7 @@ export default function ({ navigation }) {
     return (
         <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
             <Layout>
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView style={styles.background} contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={styles.header}>
                         <Text style={styles.headerText}>AccessLink</Text>
                     </View>
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
         flex: 1,
         overflow: "hidden",
         backgroundColor: COLORS.base,
+        borderTopLeftRadius: 170,
+        borderTopRightRadius: 170,
     },
     curveContainer: {
         backgroundColor: COLORS.base,
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
         overflow: "hidden",
         paddingTop: 20,
     },
@@ -125,13 +125,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 20,
         backgroundColor: "#FFFFFF",
-        width: "100%",
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
+        width: "90%",
         overflow: "hidden",
+        marginHorizontal:"auto",
     },
     input: {
         marginVertical: 10,
+        borderRadius: 100,
     },
     linkContainer: {
         flexDirection: "row",
@@ -146,5 +146,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 30,
         marginHorizontal: 30,
+    },
+    background: {
+        backgroundColor: COLORS.primary,
     },
 });
