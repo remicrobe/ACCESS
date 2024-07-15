@@ -14,6 +14,7 @@ import ForgetPassword from "../screens/connexion/ForgetPassword";
 import QRCode from "../screens/QRCode";
 import Planning from "../screens/Planning";
 import Activity from "../screens/Activity";
+import Timesheet from '../screens/Timesheet';
 import {useUserStore} from "../store/user.store";
 import {COLORS} from "../color";
 
@@ -46,9 +47,12 @@ const Main = () => {
             <MainStack.Screen name="ForgetPassword" component={ForgetPassword}/>
             <MainStack.Screen name="MainTabs" component={MainTabs}/>
             <MainStack.Screen name="QRCode" component={QRCode}/>
+            <MainStack.Screen name="Timesheet" component={Timesheet}/>
         </MainStack.Navigator>
     );
 };
+
+
 
 const Tabs = createBottomTabNavigator();
 const MainTabs = () => {
@@ -76,11 +80,11 @@ const MainTabs = () => {
             />
 
             <Tabs.Screen
-                name="Mon activité"
+                name="Mes demandes"
                 component={Activity}
                 options={{
                     tabBarIcon: ({focused}) => (
-                        <TabBarIcon focused={focused} icon={"analytics-outline"}/>
+                        <TabBarIcon focused={focused} icon={"time-outline"}/>
                     ),
                 }}
             />
@@ -92,11 +96,11 @@ const MainTabs = () => {
                     tabBarIcon: ({focused}) => (
                         <View style={{
                             position: 'absolute',
-                            bottom: 15, // space from bottombar
+                            bottom: 15,
                             height: 60,
                             width: 60,
                             borderRadius: 30,
-                            backgroundColor: COLORS.primary, // background color of the button
+                            backgroundColor: COLORS.primary,
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}>

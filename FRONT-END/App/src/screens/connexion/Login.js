@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
         flex: 1,
         overflow: "hidden",
         backgroundColor: COLORS.base,
-        borderTopLeftRadius: 170,
-        borderTopRightRadius: 170,
+        borderTopLeftRadius: 190,
+        borderTopRightRadius: 190,
     },
     curveContainer: {
         backgroundColor: COLORS.base,
