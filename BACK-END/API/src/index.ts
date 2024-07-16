@@ -21,7 +21,7 @@ import * as basicAuth from 'express-basic-auth'
 import * as swaggerJsonFile from "./docs/swagger_output.json"
 import * as swStats from "swagger-stats";
 
-class Index {
+export class Index {
     static app = express();
     static router = express.Router();
 
@@ -44,15 +44,17 @@ class Index {
     }
 
     static jobsConfig() {
-        // A 1h du matin, chaque jour
-        cron.schedule('0 1 * * *', async () => {
-            await advertCollabHorsHeure();
-        });
+        if (config.ENVIRONMENT === 'BUILD') { // On charge que les jobs en prod
+            // A 1h du matin, chaque jour
+            cron.schedule('0 1 * * *', async () => {
+                await advertCollabHorsHeure();
+            });
 
-        // Chaque minute, chaque jour
-        cron.schedule('* * * * *', async () => {
-            await parseMailIncident();
-        });
+            // Chaque minute, chaque jour
+            cron.schedule('* * * * *', async () => {
+                await parseMailIncident();
+            });
+        }
     }
 
     static swaggerConfig() {
@@ -78,7 +80,10 @@ class Index {
     static serverConfig() {
         AppDataSource.initialize().then(async () => {
             console.log("Connecté a la base de données");
-            Index.app.listen(config.PORT, () => console.log(`API démarrée sur le port ${config.PORT}....`));
+            Index.app.listen(config.PORT, () => {
+                console.log(`API démarrée sur le port ${config.PORT}....`)
+                Index.app.emit("ready")
+            });
         }).catch(error => console.log(error));
 
     }

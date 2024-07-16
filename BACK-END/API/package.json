@@ -4,7 +4,7 @@
   "description": "A school project to track employee",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "dev": "nodemon  -e js,ts,env --exec \"node swagger.js && ts-node src/index.ts\"",
     "build": "npx tsc",
     "start": "node build/index.js"
@@ -39,17 +39,26 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/chai-http": "^4.2.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.20",
     "@types/imap": "^0.8.40",
     "@types/jsonwebtoken": "^9.0.4",
     "@types/luxon": "^3.3.3",
+    "@types/mocha": "^10.0.7",
     "@types/node": "^20.8.7",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.9",
     "@types/qrcode": "^1.5.4",
+    "@types/swagger-stats": "^0.95.11",
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
+    "cross-env": "^7.0.3",
+    "env": "^0.0.2",
+    "mocha": "^10.6.0",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
   }
 }

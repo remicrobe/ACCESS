@@ -24,4 +24,8 @@ export default {
 
     WEBSITEURL: process.env.WEBSITEURL,
     ENVIRONMENT: process.env.ENVIRONMENT,
+
+    TEST_MAIL: process.env.TEST_MAIL,
+    TEST_PASSWORD: process.env.TEST_PASSWORD,
+
 };

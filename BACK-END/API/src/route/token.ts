@@ -11,18 +11,35 @@ import * as QRCode from "qrcode";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { isSuperior } from "../controller/ServiceController";
 
-declare global {
-    type HTMLCanvasElement = never;
-}
-
 const tokenRouter = express.Router();
 
 // Générer un QR Code pour une carte
 tokenRouter.post('/genererCarteQrCode/:collabId', jwtMiddleware, async (req, res) => {
+    /*  #swagger.tags = ['Token']
+        #swagger.path = '/token/genererCarteQrCode/{collabId}'
+        #swagger.method = 'post'
+        #swagger.description = 'Générer un QR Code pour une carte de collaborateur'
+        #swagger.parameters['collabId'] = {
+            in: 'path',
+            description: 'ID du collaborateur',
+            required: true,
+            type: 'integer'
+        }
+        #swagger.responses[200] = {
+            description: 'QR Code généré.',
+            schema: { $ref: '#/definitions/Token' }
+        }
+        #swagger.responses[401] = {
+            description: 'Accès non autorisé.'
+        }
+        #swagger.responses[404] = {
+            description: 'Collaborateur non trouvé.'
+        }
+    */
     try {
         const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
-        const collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({id: collabId});
+        const collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({ id: collabId });
 
         if (!isDRH(connectedCollab) && !isARH(connectedCollab) && isRH(connectedCollab)) {
             res.sendStatus(401);
@@ -36,12 +53,40 @@ tokenRouter.post('/genererCarteQrCode/:collabId', jwtMiddleware, async (req, res
 
 // Obtenir le pdf avec la carte du collaborateur
 tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, res) => {
+    /*  #swagger.tags = ['Token']
+        #swagger.path = '/token/genererPDFCarteQrCode/{collabId}'
+        #swagger.method = 'get'
+        #swagger.description = 'Obtenir le PDF avec la carte du collaborateur et QR Code'
+        #swagger.parameters['collabId'] = {
+            in: 'path',
+            description: 'ID du collaborateur',
+            required: true,
+            type: 'integer'
+        }
+        #swagger.responses[200] = {
+            description: 'PDF généré avec succès.',
+            content: {
+                'application/pdf': {
+                    schema: {
+                        type: 'string',
+                        format: 'binary'
+                    }
+                }
+            }
+        }
+        #swagger.responses[401] = {
+            description: 'Accès non autorisé.'
+        }
+        #swagger.responses[404] = {
+            description: 'Collaborateur non trouvé.'
+        }
+    */
     try {
         const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
         const collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
-            where: {id: collabId},
-            relations: {service: {chefservice: true}}
+            where: { id: collabId },
+            relations: { service: { chefservice: true } }
         });
         if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab) && !await isSuperior(connectedCollab, collab)) {
             res.sendStatus(401);
@@ -67,10 +112,10 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
                 const pages = pdfDoc.getPages();
                 const firstPage = pages[0];
 
-                firstPage.drawText(`Nom : ${collab.nom}`, {x: 190, y: 610, size: 10, font: helveticaFont});
-                firstPage.drawText(`Prénom : ${collab.prenom}`, {x: 190, y: 595, size: 10, font: helveticaFont});
-                firstPage.drawText(`ID Collab : ${collab.id}`, {x: 190, y: 580, size: 10, font: helveticaFont});
-                firstPage.drawText(`Fonction : ${collab.fonction}`, {x: 190, y: 565, size: 10, font: helveticaFont});
+                firstPage.drawText(`Nom : ${collab.nom}`, { x: 190, y: 610, size: 10, font: helveticaFont });
+                firstPage.drawText(`Prénom : ${collab.prenom}`, { x: 190, y: 595, size: 10, font: helveticaFont });
+                firstPage.drawText(`ID Collab : ${collab.id}`, { x: 190, y: 580, size: 10, font: helveticaFont });
+                firstPage.drawText(`Fonction : ${collab.fonction}`, { x: 190, y: 565, size: 10, font: helveticaFont });
 
                 firstPage.drawText(`${tokenCard.datecreation.toLocaleString()}`, {
                     x: 365,
@@ -88,7 +133,6 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
 
                 const pdfBytesModified = await pdfDoc.save();
 
-
                 res.writeHead(200, {
                     'Content-Length': Buffer.byteLength(pdfBytesModified),
                     'Content-Type': 'application/pdf'
@@ -101,9 +145,20 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
     }
 });
 
-
 // Générer un QR Code pour l'application
 tokenRouter.post('/genererAppQrCode', jwtMiddlewareFullInfo, async (req, res) => {
+    /*  #swagger.tags = ['Token']
+        #swagger.path = '/token/genererAppQrCode'
+        #swagger.method = 'post'
+        #swagger.description = 'Générer un QR Code pour l\'application'
+        #swagger.responses[200] = {
+            description: 'QR Code pour l\'application généré.',
+            schema: { type: 'string' }
+        }
+        #swagger.responses[401] = {
+            description: 'Accès non autorisé.'
+        }
+    */
     try {
         const collab = req.body.connectedCollab;
 
