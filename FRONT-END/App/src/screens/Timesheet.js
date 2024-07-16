@@ -17,6 +17,7 @@ export default function ({ navigation }) {
 
     // Récupération des horaires
     const horaires = userData.horaire || userData.horairesdefault;
+    
 
     return (
         <SafeAreaView>
@@ -44,14 +45,18 @@ export default function ({ navigation }) {
                                 {/* Affichage des horaires */}
                                 {horaires && (
                                     <View style={styles.infoContainer}>
-                                        <Text style={styles.label}>Horaires :</Text>
+                                        <Text style={styles.label}>Vos horaires de travail :</Text>
                                         {/* Génération dynamique des horaires */}
                                         {Object.keys(horaires).map((key, index) => (
                                             // Sauter les deux premiers champs
                                             index > 1 && (
                                                 <View style={styles.scheduleContainer} key={key}>
-                                                    <Text style={styles.day}> { key.substr(4) } :</Text>
-                                                    <Text style={styles.time}>{horaires[key]}</Text>
+                                                    <Text style={styles.day}>{key.substr(4)} :</Text>
+                                                    <View style={styles.timeContainer}>
+                                                        {horaires[key].split('-').map((time, idx) => (
+                                                            <Text style={styles.time} key={idx}>{time.trim()}</Text>
+                                                        ))}
+                                                    </View>
                                                 </View>
                                             )
                                         ))}
@@ -88,6 +93,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#000',
     },
+    name: {
+        fontSize: 24,
+        color: COLORS.base,
+        fontWeight: 'bold',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    email: {
+        fontSize: 18,
+        color: COLORS.base,
+        textAlign: 'center',
+    },
     headerLabel: {
         color: COLORS.base,
         fontWeight: 'bold',
@@ -106,13 +123,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     day: {
-        fontSize: 16,
         fontWeight: 'bold',
-        marginRight: 8,
-        color: '#6c757d',
+        marginRight: 5,
+    },
+    timeContainer: {
+        flexDirection: 'row',
     },
     time: {
-        fontSize: 16,
-        color: '#000',
+        marginHorizontal: 5,
     },
 });

@@ -20,9 +20,6 @@ export default function ({ navigation }) {
         navigate('Login');
     };
 
-    // Récupération des horaires
-    const horaires = userData?.horaire || userData?.horairesdefault;
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView>
