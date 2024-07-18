@@ -1,60 +1,25 @@
 import React, {useEffect} from "react";
-import {NavigationContainer, useNavigation} from "@react-navigation/native";
+import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-
 import {themeColor, useTheme} from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
-
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
-import {View, Image, StyleSheet} from "react-native";
 import Login from "../screens/connexion/Login";
 import ForgetPassword from "../screens/connexion/ForgetPassword";
 import QRCode from "../screens/QRCode";
 import Planning from "../screens/Planning";
 import Activity from "../screens/Activity";
 import Timesheet from '../screens/Timesheet';
+import AskVacation from "../screens/AskVacation";
 import {useUserStore} from "../store/user.store";
 import {COLORS} from "../color";
+import {View, Image, StyleSheet} from "react-native";
 
 const MainStack = createNativeStackNavigator();
-const Main = () => {
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        async function fetchUserData() {
-            let res = await useUserStore.getState().getUserData();
-
-            if (!res) {
-                navigation.navigate("Login");
-                alert("Nous n'avons pu récupérer vos informations, veuillez essayer de vous reconnecter !")
-            } else {
-                navigation.navigate("MainTabs");
-            }
-
-        }
-        fetchUserData()
-
-    }, []);
-    return (
-        <MainStack.Navigator
-            screenOptions={{
-                headerShown: false,
-            }}
-        >
-            <MainStack.Screen name="Login" component={Login}/>
-            <MainStack.Screen name="ForgetPassword" component={ForgetPassword}/>
-            <MainStack.Screen name="MainTabs" component={MainTabs}/>
-            <MainStack.Screen name="QRCode" component={QRCode}/>
-            <MainStack.Screen name="Timesheet" component={Timesheet}/>
-        </MainStack.Navigator>
-    );
-};
-
-
-
 const Tabs = createBottomTabNavigator();
+
 const MainTabs = () => {
     const {isDarkmode} = useTheme();
 
@@ -68,7 +33,6 @@ const MainTabs = () => {
                 },
             }}
         >
-            {/* these icons using Ionicons */}
             <Tabs.Screen
                 name="Accueil"
                 component={Home}
@@ -78,7 +42,6 @@ const MainTabs = () => {
                     ),
                 }}
             />
-
             <Tabs.Screen
                 name="Mes demandes"
                 component={Activity}
@@ -105,7 +68,7 @@ const MainTabs = () => {
                             alignItems: 'center',
                         }}>
                             <Image style={styles.qrcodeIcon}
-                            source={focused ? require("../../assets/close.png") : require("../../assets/qr-code.png")}/>
+                                   source={focused ? require("../../assets/close.png") : require("../../assets/qr-code.png")}/>
                         </View>
                     ),
                 }}
@@ -132,10 +95,43 @@ const MainTabs = () => {
     );
 };
 
+const Main = () => {
+    useEffect(() => {
+        async function fetchUserData() {
+            let res = await useUserStore.getState().getUserData();
+            // Handle navigation within the effect
+            if (!res) {
+                navigationRef.current?.navigate("Login");
+                alert("Nous n'avons pu récupérer vos informations, veuillez essayer de vous reconnecter !");
+            } else {
+                navigationRef.current?.navigate("MainTabs");
+            }
+        }
+
+        fetchUserData();
+    }, []);
+
+    return (
+        <MainStack.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
+            <MainStack.Screen name="Login" component={Login}/>
+            <MainStack.Screen name="ForgetPassword" component={ForgetPassword}/>
+            <MainStack.Screen name="MainTabs" component={MainTabs}/>
+            <MainStack.Screen name="QRCode" component={QRCode}/>
+            <MainStack.Screen name="Timesheet" component={Timesheet}/>
+            <MainStack.Screen name="AskVacation" component={AskVacation}/>
+        </MainStack.Navigator>
+    );
+};
+
+const navigationRef = React.createRef();
 
 export default () => {
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
             <Main/>
         </NavigationContainer>
     );

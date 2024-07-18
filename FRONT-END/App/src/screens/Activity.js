@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
+import { StyleSheet, View, ActivityIndicator, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import { Layout, Text, useTheme } from "react-native-rapi-ui";
 import { Ionicons } from "@expo/vector-icons";
 import $axios from "../plugins/axios";
 import {Header} from "../header/Header";
+import { COLORS } from "../color";
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function ({ navigation }) {
     const s = require('../style');
@@ -20,6 +23,12 @@ export default function ({ navigation }) {
         setRefreshing(true);
         fetchData().then(() => setRefreshing(false));
     }, []);
+
+    const { navigate } = useNavigation();
+
+    const navigateToAskVacation  = () => {
+        navigate('AskVacation');
+    };
 
     function fetchData() {
         return new Promise((resolve, reject) => {
@@ -55,17 +64,27 @@ export default function ({ navigation }) {
 
     return (
         <Layout>
+            <Header/>
             <View style={s.container}>
                 <View style={s.header}>
-                    <Ionicons name="analytics-outline" size={96} color="#6c757d" />
-
-                    <Text style={s.bold}>Mon activité</Text>
+                    <Text style={s.bold}>Mes demandes</Text>
                 </View>
                 <ScrollView
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
                 >
+                    <TouchableOpacity
+                        style={styles.buttonDetails}
+                        onPress={navigateToAskVacation}
+                    >
+                        <Text style={{ color: COLORS.primary, textAlign: 'center' }}>Faire une demande de congé</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.buttonDetails}
+                    >
+                        <Text style={{ color: COLORS.primary, textAlign: 'center' }}>Voir l'état de mes demandes</Text>
+                    </TouchableOpacity>
                     {loading ? (
                         <ActivityIndicator size="large" color="#0000ff" />
                     ) : (
@@ -99,5 +118,16 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
+    },
+    buttonDetails: {
+        marginTop: 50,
+        marginBottom: 30,
+        paddingVertical: 20,
+        paddingHorizontal: 40,
+        backgroundColor: COLORS.base,
+        borderColor: COLORS.primary,
+        borderWidth: 2,
+        borderRadius: 15,
+        alignSelf: 'center',
     },
 });

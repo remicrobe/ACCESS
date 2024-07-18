@@ -10,11 +10,6 @@ export default function ({ navigation }) {
     const userData = useUserStore.getState().userData;
     const s = require('../style');
 
-    const handleLogout = async () => {
-        useAuthStore.getState().disconnect();
-        navigation.navigate('Login');
-    };
-
     // Récupération des horaires
     const horaires = userData.horaire || userData.horairesdefault;
     
@@ -26,7 +21,6 @@ export default function ({ navigation }) {
                     <View style={styles.container}>
                         <View style={styles.header}>
                             <Ionicons name="person-circle-outline" size={96} color="#fff" />
-
                             <View style={styles.info}>
                                 <Text style={styles.name}>{userData.nom} {userData.prenom}</Text>
                                 <Text style={styles.email}>{userData.mail}</Text>
@@ -48,13 +42,12 @@ export default function ({ navigation }) {
                                         <Text style={styles.label}>Vos horaires de travail :</Text>
                                         {/* Génération dynamique des horaires */}
                                         {Object.keys(horaires).map((key, index) => (
-                                            // Sauter les deux premiers champs
                                             index > 1 && (
                                                 <View style={styles.scheduleContainer} key={key}>
                                                     <Text style={styles.day}>{key.substr(4)} :</Text>
                                                     <View style={styles.timeContainer}>
-                                                        {horaires[key].split('-').map((time, idx) => (
-                                                            <Text style={styles.time} key={idx}>{time.trim()}</Text>
+                                                        {horaires[key].split().map((time, idx) => (
+                                                            <Text style={styles.time} key={idx}>{time}</Text>
                                                         ))}
                                                     </View>
                                                 </View>
