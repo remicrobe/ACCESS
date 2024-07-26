@@ -1,112 +1,201 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet } from 'react-native';
-import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui";
+import React, { useState } from "react";
+import { ScrollView, View, StyleSheet, Alert, Platform, SafeAreaView } from 'react-native';
+import { Layout, Text, TextInput, Button } from "react-native-rapi-ui";
 import DropDownPicker from 'react-native-dropdown-picker';
-import { useAuthStore } from "../store/auth.store";
-import { useUserStore } from "../store/user.store";
-import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../color";
-import {Header} from "../header/Header";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Header } from "../header/Header";
 import axios from "../plugins/axios";
+import {COLORS} from "../color";
 
 
 export default function ({ navigation }) {
     const [loading, setLoading] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [absences, setAbsences] = useState([]);
-    const [selectedAbsence, setSelectedAbsence] = useState(null);
+    const [datedeb, setDatedeb] = useState(new Date());
+    const [datefin, setDatefin] = useState(new Date());
+    const [periodeDebOpen, setPeriodeDebOpen] = useState(false);
+    const [periodeDeb, setPeriodeDeb] = useState(null);
+    const [periodeFinOpen, setPeriodeFinOpen] = useState(false);
+    const [periodeFin, setPeriodeFin] = useState(null);
+    const [raisonOpen, setRaisonOpen] = useState(false);
+    const [raison, setRaison] = useState(null);
+    const [description, setDescription] = useState('');
+    const [showDateDeb, setShowDateDeb] = useState(false);
+    const [showDateFin, setShowDateFin] = useState(false);
 
-    useEffect(() => {
-        axios.get('collab/absences')
-          .then(response => {
-            const fetchedAbsences = response.data;
-            const formattedAbsences = fetchedAbsences.map(absence => ({
-              label: `${absence.raison} - ${absence.datedeb}`,
-              value: absence.id,
-            }));
-            setAbsences(formattedAbsences);
-          })
-          .catch(error => {
-            Alert.alert("Error", "Unable to fetch absences.");
-          });
-      }, []);
+    const periodeOptionsDeb = [
+        { label: 'Matin', value: '0' },
+        { label: 'Midi', value: '1' }
+    ];
 
-    return(
-            
-        <Layout>
-            <Header/>
-            <View style={styles.formContainer}>
-            <DropDownPicker
-                open={open}
-                value={value}
-                items={absences}
-                setOpen={setOpen}
-                setValue={setValue}
-                placeholder="Select an option"
-                style={styles.dropdown}
-                dropDownStyle={styles.dropdownList}
-                onValueChange={(value) => setSelectedAbsence(value)}
-            />
-                <TextInput
-                    containerStyle={styles.input}
-                    placeholder="Mot de passe"
-                    autoCapitalize="none"
-                    autoCompleteType="off"
-                    autoCorrect={false}
-                    secureTextEntry={true}
-                    onChangeText={(text) => setPassword(text)}
-                />
-                <Button
-                    text={loading ? "Loading" : "Envoyer"}
-                    style={styles.button}
-                    disabled={loading}
-                    color="#4793CA"
-                />
-            </View>
-        </Layout>
+    const periodeOptionsFin = [
+        { label: 'Midi', value: '0' },
+        { label: 'Soir', value: '1' }
+    ];
+
+    const raisonOptions = [
+        { label: 'Congés', value: 'vacation' },
+        { label: 'Maladie', value: 'disease' },
+        { label: 'Other', value: 'other' }
+    ];
+
+    const handleSubmit = () => {
+        setLoading(true);
+        const leaveRequest = {
+            datedeb: datedeb.toISOString().split('T')[0], // Format date to YYYY-MM-DD
+            datefin: datefin.toISOString().split('T')[0], // Format date to YYYY-MM-DD
+            periodeDeb,
+            periodeFin,
+            raison,
+            description
+        };
+
+        axios.post('/absence/creerUneAbsence/{idcollab}', leaveRequest)
+            .then(response => {
+                Alert.alert("Succès !", "Votre demande a été envoyé avec succès ! ");
+                setLoading(false);
+            })
+            .catch(error => {
+                Alert.alert("Erreur", "Votre demande n'a pas été envoyé...");
+                setLoading(false);
+            });
+    };
+
+    const onChangeDateDeb = (event, selectedDate) => {
+        const currentDate = selectedDate || datedeb;
+        setShowDateDeb(Platform.OS === 'ios');
+        setDatedeb(currentDate);
+    };
+
+    const onChangeDateFin = (event, selectedDate) => {
+        const currentDate = selectedDate || datefin;
+        setShowDateFin(Platform.OS === 'ios');
+        setDatefin(currentDate);
+    };
+
+    return (   
+        <SafeAreaView>
+            <ScrollView>
+                <Layout style={{paddingBottom: 50,}}>
+                    <Header/>
+                        <View style={styles.formContainer}>
+                            <View style={styles.dateContainer}>
+                                <Text style={styles.label}>Date de début:</Text>
+                                <TextInput
+                                    containerStyle={styles.input}
+                                    placeholder="Date de début :"
+                                    value={datedeb.toISOString().split('T')[0]}
+                                    onFocus={() => setShowDateDeb(true)}
+                                />
+                                {showDateDeb && (
+                                    <DateTimePicker
+                                        value={datedeb}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onChangeDateDeb}
+                                    />
+                                )}
+                            </View>
+                            <View style={styles.dateContainer}>
+                                <Text style={styles.label}>Date de fin:</Text>
+                                <TextInput
+                                    containerStyle={styles.input}
+                                    placeholder="Date de fin :"
+                                    value={datefin.toISOString().split('T')[0]}
+                                    onFocus={() => setShowDateFin(true)}
+                                />
+                                {showDateFin && (
+                                    <DateTimePicker
+                                        value={datefin}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onChangeDateFin}
+                                    />
+                                )}
+                            </View>
+                            <DropDownPicker
+                                open={periodeDebOpen}
+                                value={periodeDeb}
+                                items={periodeOptionsDeb}
+                                setOpen={setPeriodeDebOpen}
+                                setValue={setPeriodeDeb}
+                                placeholder="Période de début"
+                                style={styles.dropdown}
+                                dropDownContainerStyle={styles.dropdownList}
+                            />
+                            <DropDownPicker
+                                open={periodeFinOpen}
+                                value={periodeFin}
+                                items={periodeOptionsFin}
+                                setOpen={setPeriodeFinOpen}
+                                setValue={setPeriodeFin}
+                                placeholder="Période de fin"
+                                style={styles.dropdown}
+                                dropDownContainerStyle={styles.dropdownList}
+                            />
+                            <DropDownPicker
+                                open={raisonOpen}
+                                value={raison}
+                                items={raisonOptions}
+                                setOpen={setRaisonOpen}
+                                setValue={setRaison}
+                                placeholder="Type d'absence"
+                                style={styles.dropdown}
+                                dropDownContainerStyle={styles.dropdownList}
+                            />
+                            <TextInput
+                                containerStyle={styles.input}
+                                placeholder="Description de la demande"
+                                value={description}
+                                onChangeText={setDescription}
+                            />
+                            <Button
+                                text={loading ? "Loading" : "Envoyer ma demande"}
+                                style={styles.button}
+                                color= {COLORS.primary}
+                                onPress={handleSubmit}
+                                disabled={loading}
+                            />
+                        </View>
+                    </Layout>
+            </ScrollView>
+        </SafeAreaView> 
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    
+    formContainer: {
+        paddingHorizontal: 20,
         flex: 1,
-        padding: 16,
-    },
-    header: {
-        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 16,
     },
-    bold: {
-        fontSize: 20,
-        fontWeight: 'bold',
+    input: {
+        width: '100%',
+        marginVertical: 10,
     },
-    accessItem: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        padding: 12,
-        marginBottom: 8,
-    },
-    buttonDetails: {
-        marginTop: 50,
-        marginBottom: 30,
-        paddingVertical: 20,
-        paddingHorizontal: 40,
-        backgroundColor: COLORS.base,
-        borderColor: COLORS.primary,
-        borderWidth: 2,
-        borderRadius: 15,
-        alignSelf: 'center',
+    button: {
+        marginTop: 20,
+        width: '100%',
     },
     dropdown: {
-        height: 50,
+        width: '100%',
+        marginVertical: 10,
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 4,
+        zIndex: 0,
     },
     dropdownList: {
         borderColor: 'gray',
+        zIndex: 3
+    },
+    dateContainer: {
+        width: '100%',
+        marginVertical: 10,
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 5,
     },
 });

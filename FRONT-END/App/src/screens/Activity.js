@@ -30,6 +30,10 @@ export default function ({ navigation }) {
         navigate('AskVacation');
     };
 
+    const navigateToAllRequests = () => {
+        navigate('Requests');
+    };
+
     function fetchData() {
         return new Promise((resolve, reject) => {
             // Replace 'get' with 'post' if required
@@ -82,6 +86,7 @@ export default function ({ navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.buttonDetails}
+                        onPress={navigateToAllRequests}
                     >
                         <Text style={{ color: COLORS.primary, textAlign: 'center' }}>Voir l'état de mes demandes</Text>
                     </TouchableOpacity>
