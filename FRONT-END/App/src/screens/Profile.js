@@ -32,11 +32,11 @@ export default function ({ navigation }) {
                                 <Text style={styles.name}>{userData?.nom} {userData?.prenom}</Text>
                                 <Text style={styles.email}>{userData?.mail}</Text>
                                 <View style={styles.infosRow}>
-                                    <Text style={styles.headerLabel}>Fonction :</Text>
+                                    <Text style={styles.headerLabel}>Fonction : </Text>
                                     <Text style={styles.headerValue}>{userData?.fonction}</Text>
                                 </View>
                                 <View style={styles.infosRow}>
-                                    <Text style={styles.headerLabel}>Service :</Text>
+                                    <Text style={styles.headerLabel}>Service : </Text>
                                     <Text style={styles.headerValue}>{userData?.service?.nomservice}</Text>
                                 </View>
                             </View>

@@ -4,7 +4,8 @@ import { Layout, Text } from "react-native-rapi-ui";
 import { Header } from "../header/Header";
 import axios from "../plugins/axios";
 import { COLORS } from "../color";
-import Icon from 'react-native-vector-icons/Ionicons'; // Utilisation des icônes Ionicons
+import Icon from 'react-native-vector-icons/Ionicons';
+import { format } from 'date-fns'; 
 
 export default function AbsencesScreen() {
     const [absences, setAbsences] = useState([]);
@@ -37,15 +38,24 @@ export default function AbsencesScreen() {
                         {absences.length > 0 ? (
                             absences.map((absence, index) => (
                                 <View key={index} style={styles.absenceItem}>
-                                    <Text style={styles.title}>
-                                        Demande N°{absence.id}
-                                    </Text>
-                                    <Text style={styles.absenceText}>
-                                        {absence.datedeb} au {absence.datefin}
-                                    </Text>
-                                    <Text>
-                                        {absence.raison}
-                                    </Text>
+                                    <View>
+                                        <Text style={{ 
+                                            color: absence.accepte === true 
+                                            ? COLORS.green 
+                                            : absence.accepte === false 
+                                                ? COLORS.red 
+                                                : COLORS.yellow,
+                                        fontWeight: 'bold'
+                                        }}>
+                                            Demande N°{absence.id}
+                                        </Text>
+                                        <Text style={styles.absenceText}>
+                                            {format(new Date(absence.datedeb), 'dd/MM/yyyy')} au {format(new Date(absence.datefin), 'dd/MM/yyyy')}
+                                        </Text>
+                                        <Text style={styles.raison}>
+                                            {absence.raison}
+                                        </Text>
+                                    </View>
                                     <Icon
                                         name={
                                             absence.accepte === true
@@ -78,12 +88,16 @@ export default function AbsencesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.white,
     },
-    title: {
-        fontWeight: 'bold',
+    raison: {
+        fontWeight: '700',
+        color: '#828282'
     },
     absenceItem: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        alignItems: 'center',
         marginHorizontal: 20,
         padding: 10,
         backgroundColor: '#EAEAEA',
