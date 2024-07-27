@@ -27,60 +27,52 @@ const QRCodeStack = createNativeStackNavigator();
 const PlanningStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 
-const HomeTabs = () => {
-    return (
-        <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-            <HomeStack.Screen name="Home" component={Home} />
-            <HomeStack.Screen name="Timesheet" component={Timesheet} />
-        </HomeStack.Navigator>
-    );
-};
+const HomeTabs = () => (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+        <HomeStack.Screen name="Home" component={Home} />
+        <HomeStack.Screen name="Timesheet" component={Timesheet} />
+    </HomeStack.Navigator>
+);
 
-const ActivityTabs = () => {
-    return (
-        <ActivityStack.Navigator screenOptions={{ headerShown: false }}>
-            <ActivityStack.Screen name="Activity" component={Activity} />
-            <PlanningStack.Screen name="AskVacation" component={AskVacation} />
-            <ActivityStack.Screen name="Requests" component={Requests} />
-        </ActivityStack.Navigator>
-    );
-};
+const ActivityTabs = () => (
+    <ActivityStack.Navigator screenOptions={{ headerShown: false }}>
+        <ActivityStack.Screen name="Activity" component={Activity} />
+        <ActivityStack.Screen name="AskVacation" component={AskVacation} />
+        <ActivityStack.Screen name="Requests" component={Requests} />
+    </ActivityStack.Navigator>
+);
 
-const QRCodeTabs = () => {
-    return (
-        <QRCodeStack.Navigator screenOptions={{ headerShown: false }}>
-            <QRCodeStack.Screen name="QRCode" component={QRCode} />
-        </QRCodeStack.Navigator>
-    );
-};
+const QRCodeTabs = () => (
+    <QRCodeStack.Navigator screenOptions={{ headerShown: false }}>
+        <QRCodeStack.Screen name="QRCode" component={QRCode} />
+    </QRCodeStack.Navigator>
+);
 
-const PlanningTabs = () => {
-    return (
-        <PlanningStack.Navigator screenOptions={{ headerShown: false }}>
-            <PlanningStack.Screen name="PlanningHome" component={Planning} />
-        </PlanningStack.Navigator>
-    );
-};
+const PlanningTabs = () => (
+    <PlanningStack.Navigator screenOptions={{ headerShown: false }}>
+        <PlanningStack.Screen name="PlanningHome" component={Planning} />
+    </PlanningStack.Navigator>
+);
 
 const ProfileTabs = () => {
     const navigation = useNavigation();
-    const ref = useRef();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', (e) => {
-            if (ref.current) {
-                ref.current.reset({
+            e.preventDefault();  // Prevent default behavior
+            navigation.dispatch({
+                ...CommonActions.reset({
                     index: 0,
                     routes: [{ name: 'Profile' }],
-                });
-            }
+                }),
+            });
         });
 
         return unsubscribe;
     }, [navigation]);
 
     return (
-        <ProfileStack.Navigator screenOptions={{ headerShown: false }} ref={ref}>
+        <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
             <ProfileStack.Screen name="Profile" component={Profile} />
         </ProfileStack.Navigator>
     );
@@ -109,7 +101,6 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        // Reset stack when tab is pressed
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'Home' }],
@@ -127,7 +118,6 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        // Reset stack when tab is pressed
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'Activity' }],
@@ -158,7 +148,6 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        // Reset stack when tab is pressed
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'QRCode' }],
@@ -176,7 +165,6 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        // Reset stack when tab is pressed
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'PlanningHome' }],
@@ -194,7 +182,6 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        // Reset stack when tab is pressed
                         navigation.reset({
                             index: 0,
                             routes: [{ name: 'Profile' }],
@@ -232,13 +219,11 @@ const Main = () => {
 
 const navigationRef = React.createRef();
 
-export default () => {
-    return (
-        <NavigationContainer ref={navigationRef}>
-            <Main />
-        </NavigationContainer>
-    );
-};
+export default () => (
+    <NavigationContainer ref={navigationRef}>
+        <Main />
+    </NavigationContainer>
+);
 
 const styles = StyleSheet.create({
     qrcodeIcon: {

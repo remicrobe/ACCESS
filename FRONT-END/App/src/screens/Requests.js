@@ -29,7 +29,7 @@ export default function AbsencesScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title="Mes Absences" />
+            <Header/>
             <Layout>
                 {loading ? (
                     <Text>Chargement...</Text>

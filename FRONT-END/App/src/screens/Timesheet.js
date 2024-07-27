@@ -12,7 +12,16 @@ export default function ({ navigation }) {
 
     // Récupération des horaires
     const horaires = userData.horaire || userData.horairesdefault;
-    
+
+    const joursSemaine = {
+        Lundi: ['hDebLundi', 'hFinLundi'],
+        Mardi: ['hDebMardi', 'hFinMardi'],
+        Mercredi: ['hDebMercredi', 'hFinMercredi'],
+        Jeudi: ['hDebJeudi', 'hFinJeudi'],
+        Vendredi: ['hDebVendredi', 'hFinVendredi'],
+        Samedi: ['hDebSamedi', 'hFinSamedi'],
+        Dimanche: ['hDebDimanche', 'hFinDimanche'],
+    };
 
     return (
         <SafeAreaView>
@@ -41,17 +50,15 @@ export default function ({ navigation }) {
                                     <View style={styles.infoContainer}>
                                         <Text style={styles.label}>Vos horaires de travail :</Text>
                                         {/* Génération dynamique des horaires */}
-                                        {Object.keys(horaires).map((key, index) => (
-                                            index > 1 && (
-                                                <View style={styles.scheduleContainer} key={key}>
-                                                    <Text style={styles.day}>{key.substr(4)} :</Text>
-                                                    <View style={styles.timeContainer}>
-                                                        {horaires[key].split().map((time, idx) => (
-                                                            <Text style={styles.time} key={idx}>{time}</Text>
-                                                        ))}
-                                                    </View>
+                                        {Object.keys(joursSemaine).map((jour, index) => (
+                                            <View style={styles.scheduleContainer} key={index}>
+                                                <Text style={styles.day}>{jour} :</Text>
+                                                <View style={styles.timeContainer}>
+                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][0]].slice(0, 5)}</Text>
+                                                    <Text style={styles.time}>/</Text>
+                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][1]].slice(0, 5)}</Text>
                                                 </View>
-                                            )
+                                            </View>
                                         ))}
                                     </View>
                                 )}
@@ -114,6 +121,7 @@ const styles = StyleSheet.create({
     scheduleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 8,
     },
     day: {
         fontWeight: 'bold',
