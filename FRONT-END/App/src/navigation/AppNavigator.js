@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { NavigationContainer, useNavigation, CommonActions } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { themeColor, useTheme } from "react-native-rapi-ui";
@@ -60,12 +60,12 @@ const ProfileTabs = () => {
     useEffect(() => {
         const unsubscribe = navigation.addListener('tabPress', (e) => {
             e.preventDefault();  // Prevent default behavior
-            navigation.dispatch({
-                ...CommonActions.reset({
+            navigation.dispatch(
+                CommonActions.reset({
                     index: 0,
                     routes: [{ name: 'Profile' }],
-                }),
-            });
+                })
+            );
         });
 
         return unsubscribe;
@@ -101,10 +101,12 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Home' }],
-                        });
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Home' }],
+                            })
+                        );
                     },
                 })}
             />
@@ -118,10 +120,12 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Activity' }],
-                        });
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Activity' }],
+                            })
+                        );
                     },
                 })}
             />
@@ -148,10 +152,12 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'QRCode' }],
-                        });
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'QRCode' }],
+                            })
+                        );
                     },
                 })}
             />
@@ -165,10 +171,12 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'PlanningHome' }],
-                        });
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'PlanningHome' }],
+                            })
+                        );
                     },
                 })}
             />
@@ -182,10 +190,12 @@ const MainTabs = () => {
                 }}
                 listeners={({ navigation }) => ({
                     tabPress: () => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Profile' }],
-                        });
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Profile' }],
+                            })
+                        );
                     },
                 })}
             />
@@ -194,6 +204,8 @@ const MainTabs = () => {
 };
 
 const Main = () => {
+    const navigationRef = React.createRef();
+
     useEffect(() => {
         async function fetchUserData() {
             let res = await useUserStore.getState().getUserData();
