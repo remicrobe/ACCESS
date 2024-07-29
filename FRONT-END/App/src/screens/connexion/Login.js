@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet } from "react-native";
 import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import $axios from "../../plugins/axios";
 import { useAuthStore } from "../../store/auth.store";
 import { useUserStore } from "../../store/user.store";
@@ -11,6 +12,7 @@ export default function ({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     async function login() {
         setLoading(true);
@@ -58,16 +60,28 @@ export default function ({ navigation }) {
                                     keyboardType="email-address"
                                     onChangeText={(text) => setEmail(text)}
                                 />
-                                <TextInput
-                                    containerStyle={styles.input}
-                                    placeholder="Mot de passe"
-                                    value={password}
-                                    autoCapitalize="none"
-                                    autoCompleteType="off"
-                                    autoCorrect={false}
-                                    secureTextEntry={true}
-                                    onChangeText={(text) => setPassword(text)}
-                                />
+                                <View style={styles.passwordInputContainer}>
+                                    <TextInput
+                                        containerStyle={styles.passwordInput}
+                                        placeholder="Mot de passe"
+                                        value={password}
+                                        autoCapitalize="none"
+                                        autoCompleteType="off"
+                                        autoCorrect={false}
+                                        secureTextEntry={!isPasswordVisible}
+                                        onChangeText={(text) => setPassword(text)}
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.eyeIcon}
+                                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                                    >
+                                        <Ionicons
+                                            name={isPasswordVisible ? 'eye' : 'eye-off'}
+                                            size={24}
+                                            color="grey"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                                 <TouchableOpacity
                                     style={styles.linkContainer}
                                     onPress={() => navigation.navigate("ForgetPassword")}
@@ -127,11 +141,24 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         width: "90%",
         overflow: "hidden",
-        marginHorizontal:"auto",
+        marginHorizontal: "auto",
     },
     input: {
         marginVertical: 10,
         borderRadius: 100,
+    },
+    passwordInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    passwordInput: {
+        flex: 1,
+        borderRadius: 100,
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,
     },
     linkContainer: {
         flexDirection: "row",

@@ -30,7 +30,6 @@ const ProfileStack = createNativeStackNavigator();
 const HomeTabs = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
         <HomeStack.Screen name="Home" component={Home} />
-        <HomeStack.Screen name="Timesheet" component={Timesheet} />
     </HomeStack.Navigator>
 );
 
@@ -50,16 +49,18 @@ const QRCodeTabs = () => (
 
 const PlanningTabs = () => (
     <PlanningStack.Navigator screenOptions={{ headerShown: false }}>
-        <PlanningStack.Screen name="PlanningHome" component={Planning} />
+        <PlanningStack.Screen name="Planning" component={Planning} />
     </PlanningStack.Navigator>
 );
 
 const ProfileTabs = () => {
     const navigation = useNavigation();
 
+
     return (
         <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
             <ProfileStack.Screen name="Profile" component={Profile} />
+            <ProfileStack.Screen name="Timesheet" component={Timesheet} />
         </ProfileStack.Navigator>
     );
 };
@@ -155,16 +156,6 @@ const MainTabs = () => {
                         <TabBarIcon focused={focused} icon={"calendar"} />
                     ),
                 }}
-                listeners={({ navigation }) => ({
-                    tabPress: () => {
-                        navigation.dispatch(
-                            CommonActions.reset({
-                                index: 0,
-                                routes: [{ name: 'Planning' }],
-                            })
-                        );
-                    },
-                })}
             />
             <Tabs.Screen
                 name="Mes infos"
@@ -174,6 +165,16 @@ const MainTabs = () => {
                         <TabBarIcon focused={focused} icon={"person"} />
                     ),
                 }}
+                listeners={({ navigation }) => ({
+                    tabPress: () => {
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Profile' }],
+                            })
+                        );
+                    },
+                })}
             />
         </Tabs.Navigator>
     );

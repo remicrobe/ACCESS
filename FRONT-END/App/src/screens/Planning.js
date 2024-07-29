@@ -2,7 +2,6 @@ import {LocaleConfig} from 'react-native-calendars';
 import React, {useEffect, useState} from 'react';
 import {Calendar} from 'react-native-calendars';
 import {StyleSheet, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
 import {Layout, Text} from "react-native-rapi-ui";
 import {useUserStore} from "../store/user.store";
 import {Header} from "../header/Header";

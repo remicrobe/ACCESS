@@ -24,7 +24,7 @@ export default function ({ navigation }) {
     };
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.base }}>
             <ScrollView>
                 <Layout>
                     <View style={styles.container}>
