@@ -57,20 +57,6 @@ const PlanningTabs = () => (
 const ProfileTabs = () => {
     const navigation = useNavigation();
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('tabPress', (e) => {
-            e.preventDefault();  // Prevent default behavior
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: 'Profile' }],
-                })
-            );
-        });
-
-        return unsubscribe;
-    }, [navigation]);
-
     return (
         <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
             <ProfileStack.Screen name="Profile" component={Profile} />
@@ -174,7 +160,7 @@ const MainTabs = () => {
                         navigation.dispatch(
                             CommonActions.reset({
                                 index: 0,
-                                routes: [{ name: 'PlanningHome' }],
+                                routes: [{ name: 'Planning' }],
                             })
                         );
                     },
@@ -188,16 +174,6 @@ const MainTabs = () => {
                         <TabBarIcon focused={focused} icon={"person"} />
                     ),
                 }}
-                listeners={({ navigation }) => ({
-                    tabPress: () => {
-                        navigation.dispatch(
-                            CommonActions.reset({
-                                index: 0,
-                                routes: [{ name: 'Profile' }],
-                            })
-                        );
-                    },
-                })}
             />
         </Tabs.Navigator>
     );
