@@ -54,9 +54,9 @@ export default function ({ navigation }) {
                                             <View style={styles.scheduleContainer} key={index}>
                                                 <Text style={styles.day}>{jour} :</Text>
                                                 <View style={styles.timeContainer}>
-                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][0]].slice(0, 5)}</Text>
+                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][0]].slice(0, 5)}h</Text>
                                                     <Text style={styles.time}>/</Text>
-                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][1]].slice(0, 5)}</Text>
+                                                    <Text style={styles.time}>{horaires[joursSemaine[jour][1]].slice(0, 5)}h</Text>
                                                 </View>
                                             </View>
                                         ))}

@@ -5,6 +5,7 @@ export const COLORS = {
     base: '#fff',
     red: '#C9474E',
     green: '#02951A',
-    yellow: '#CAB600'
+    yellow: '#CAB600',
+    grey: '#BABABA',
 
   }

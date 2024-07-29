@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import axios from 'axios';
+import { COLORS } from "../color";
+
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -53,21 +55,30 @@ const Weather = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.base,
   },
   scrollView: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLORS.base,
   },
   weatherContainer: {
     padding: 16,
     alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderColor: COLORS.grey,
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 20,
+    padding: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
+    color: COLORS.primary,
   },
   text: {
     fontSize: 16,
