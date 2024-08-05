@@ -5,18 +5,22 @@ import { Header } from "../header/Header";
 import axios from "../plugins/axios";
 import { COLORS } from "../color";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { format } from 'date-fns'; 
+import { format } from 'date-fns';
+import { Picker } from '@react-native-picker/picker';
 
 export default function AbsencesScreen() {
     const [absences, setAbsences] = useState([]);
+    const [filteredAbsences, setFilteredAbsences] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterType, setFilterType] = useState('all');
+    const [filterPeriod, setFilterPeriod] = useState('all');
 
     useEffect(() => {
-        // Fonction pour récupérer les absences
         const fetchAbsences = async () => {
             try {
                 const response = await axios.get('/absence/mesAbsences');
                 setAbsences(response.data);
+                setFilteredAbsences(response.data);
                 setLoading(false);
             } catch (error) {
                 Alert.alert('Erreur', 'Une erreur est survenue lors de la récupération des données.');
@@ -27,16 +31,70 @@ export default function AbsencesScreen() {
         fetchAbsences();
     }, []);
 
+    useEffect(() => {
+        applyFilters();
+    }, [filterType, filterPeriod, absences]);
+
+    const applyFilters = () => {
+        let filtered = [...absences];
+
+        // Filtrage par type
+        if (filterType !== 'all') {
+            filtered = filtered.filter(absence => {
+                if (filterType === 'accepted') return absence.accepte === true;
+                if (filterType === 'rejected') return absence.accepte === false;
+                if (filterType === 'pending') return absence.accepte === null;
+            });
+        }
+
+        // Filtrage par période
+        if (filterPeriod !== 'all') {
+            const today = new Date();
+            filtered = filtered.filter(absence => {
+                const startDate = new Date(absence.datedeb);
+                const endDate = new Date(absence.datefin);
+
+                if (filterPeriod === 'past') return endDate < today;
+                if (filterPeriod === 'upcoming') return startDate > today;
+                if (filterPeriod === 'current') return startDate <= today && endDate >= today;
+            });
+        }
+
+        setFilteredAbsences(filtered);
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <Header/>
             <Layout>
+                <View style={styles.filterContainer}>
+                    <Picker
+                        selectedValue={filterType}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => setFilterType(itemValue)}
+                    >
+                        <Picker.Item label="Tous les types" value="all" />
+                        <Picker.Item label="Accepté" value="accepted" />
+                        <Picker.Item label="Rejeté" value="rejected" />
+                        <Picker.Item label="En attente" value="pending" />
+                    </Picker>
+                    <Picker
+                        selectedValue={filterPeriod}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => setFilterPeriod(itemValue)}
+                    >
+                        <Picker.Item label="Toute période" value="all" />
+                        <Picker.Item label="Passé" value="past" />
+                        <Picker.Item label="À venir" value="upcoming" />
+                        <Picker.Item label="En cours" value="current" />
+                    </Picker>
+                </View>
                 {loading ? (
                     <Text>Chargement...</Text>
                 ) : (
                     <ScrollView>
-                        {absences.length > 0 ? (
-                            absences.map((absence, index) => (
+                        {filteredAbsences.length > 0 ? (
+                            filteredAbsences.map((absence, index) => (
                                 <View key={index} style={styles.absenceItem}>
                                     <View>
                                         <Text style={{ 
@@ -45,7 +103,7 @@ export default function AbsencesScreen() {
                                             : absence.accepte === false 
                                                 ? COLORS.red 
                                                 : COLORS.yellow,
-                                        fontWeight: 'bold'
+                                            fontWeight: 'bold'
                                         }}>
                                             Demande N°{absence.id}
                                         </Text>
@@ -96,7 +154,7 @@ const styles = StyleSheet.create({
     absenceItem: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent:'space-between',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginHorizontal: 20,
         padding: 10,
@@ -106,5 +164,12 @@ const styles = StyleSheet.create({
     },
     absenceText: {
         fontSize: 16,
+    },
+    filterContainer: {
+        margin: 20,
+    },
+    picker: {
+        height: 50,
+        width: '100%',
     },
 });
