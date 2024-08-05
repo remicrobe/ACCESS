@@ -10,7 +10,6 @@ import {Header} from "../header/Header";
 
 export default function ({ navigation }) {
     const s = require('../style');
-    const { isDarkmode } = useTheme();
     const [loading, setLoading] = useState(false);
     const [qrCodeToken, setQrCodeToken] = useState('');
     const [loadingProgress, setLoadingProgress] = useState(0);
@@ -114,8 +113,7 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         marginLeft: 'auto',
         marginRight: 'auto',
-        width: '65%',
-        paddingVertical: 20,
+        padding: 15,
     },
     bold: {
         fontSize: 25,
