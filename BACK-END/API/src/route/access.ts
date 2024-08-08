@@ -309,7 +309,6 @@ accessRouter.get('/check/:token/:macAdress', async (req, res) => {
     try {
         let collab = await checkQRCode(req.params.token);
 
-        const access = await aAccess(collab, req.params.macAdress)
         res.send(await aAccess(collab, req.params.macAdress));
     } catch (error) {
         ErrorHandler(error, req, res);
