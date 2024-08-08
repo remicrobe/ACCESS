@@ -13,16 +13,12 @@ sudo modprobe bcm2835-v4l2
 pip install requests getmac tk pillow opencv-python
 
 # Chemin absolu du script AccessLink_SCRIPT.py
-SCRIPT_PATH=AccessLink_SCRIPT.py
-
-# Chemin absolu du dossier de destination
-DESTINATION_PATH=/usr/local/bin/
-
-# Copie du script vers le dossier de destination
-cp $SCRIPT_PATH $DESTINATION_PATH
+SCRIPT_PATH=$(pwd)/launch.sh
 
 # Ajout du script au fichier rc.local pour qu'il soit exécuté au démarrage
-echo "python3 $DESTINATION_PATH/AccessLink_SCRIPT.py" >> /etc/rc.local
+echo "sh $SCRIPT_PATH" >> /etc/rc.local
 
+# Redémarrage du Raspberry Pi
+sudo reboot
 # Redémarrage du Raspberry Pi
 sudo reboot
