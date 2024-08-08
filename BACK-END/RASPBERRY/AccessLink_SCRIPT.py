@@ -1,6 +1,5 @@
 import json
 import os
-
 import cv2
 import requests
 import time
@@ -17,7 +16,7 @@ mac = gma()
 # On créé la caméra a partir de la première caméra trouvée
 cap = cv2.VideoCapture(0)
 
-# On instance le lecteur de QRCOde
+# On instance le lecteur de QRCode
 detector = cv2.QRCodeDetector()
 
 # Création de l'interface utilisateur
@@ -43,18 +42,38 @@ label.pack()
 sublabel = tk.Label(root, text="", fg="black", font=("Helvetica", 36))
 sublabel.pack()
 
-root.update_idletasks()
-root.update()
+# Créer un canvas pour la vidéo
+video_canvas = tk.Canvas(root, width=640, height=480)
+video_canvas.pack()
+
+# Met à jour l'affichage de la vidéo
+def update_video_frame():
+    global cap, video_canvas
+    ret, frame = cap.read()
+    if ret:
+        # Convertir l'image BGR (OpenCV) en image RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Convertir en image PIL
+        image_pil = Image.fromarray(frame_rgb)
+        # Convertir en ImageTk
+        photo_tk = ImageTk.PhotoImage(image_pil)
+        # Afficher l'image sur le canvas
+        video_canvas.create_image(0, 0, image=photo_tk, anchor=tk.NW)
+        # Mettre à jour l'image pour le prochain appel
+        video_canvas.image = photo_tk
 
 # On fait le première appel API pour récupérer la config de la machine
 state = "get_config"
 last_try = 0
 
-# Déclarations de variables ésentielles
+# Déclarations de variables essentielles
 last_scanned = None
 last_scanned_time = 0
 
 while True:
+    # Mettre à jour le cadre vidéo
+    update_video_frame()
+
     if state == "get_config":
         if time.time() - last_try > 60:
             try:
@@ -73,58 +92,59 @@ while True:
                 last_try = time.time()
 
     elif state == "read_qr":
-        _, img = cap.read()
-        data, bbox, _ = detector.detectAndDecode(img)
+        ret, img = cap.read()
+        if ret:
+            data, bbox, _ = detector.detectAndDecode(img)
 
-        if data:
-            if last_scanned == data:
-                if time.time() - last_scanned_time < 10:
-                    continue
+            if data:
+                if last_scanned == data:
+                    if time.time() - last_scanned_time < 10:
+                        continue
 
-            last_scanned = data
-            last_scanned_time = time.time()
+                last_scanned = data
+                last_scanned_time = time.time()
 
-            elements = data.split(";")
-            print(elements)
+                elements = data.split(";")
+                print(elements)
 
-            parse_data = {}
-            for element in elements:
-                key, value = element.split(":")
-                parse_data[key] = value
+                parse_data = {}
+                for element in elements:
+                    key, value = element.split(":")
+                    parse_data[key] = value
 
-            # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé a accéder au point
-            try:
-                response = requests.get(api + "/access/check/" + parse_data['token'] + "/" + mac)
-                response.raise_for_status()
-                collabInfo = response.json()
-                nom = collabInfo.get('nom')
-                prenom = collabInfo.get('prenom')
-                label.config(text=f'Bienvenue {prenom} {nom}!')
-            except requests.exceptions.RequestException as e:
-                if e.response is not None:
-                    if 404 == e.response.status_code:
-                        label.config(text='Erreur ...')
-                        sublabel.config(text='Votre carte d\'accès n\'est pas reconue par le système')
-                else:
-                    print(f"Error: {e}")
-                    label.config(text='Mode hors ligne ...')
-                    for collab in collabAutorise:
-                        idCollab = int(parse_data['idCollab'])
-                        print("collab['id']:", collab['id'], type(collab['id']))
-                        print("parse_data['idCollab']:", idCollab, type(idCollab))
+                # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé a accéder au point
+                try:
+                    response = requests.get(api + "/access/check/" + parse_data['token'] + "/" + mac)
+                    response.raise_for_status()
+                    collabInfo = response.json()
+                    nom = collabInfo.get('nom')
+                    prenom = collabInfo.get('prenom')
+                    label.config(text=f'Bienvenue {prenom} {nom}!')
+                except requests.exceptions.RequestException as e:
+                    if e.response is not None:
+                        if 404 == e.response.status_code:
+                            label.config(text='Erreur ...')
+                            sublabel.config(text='Votre carte d\'accès n\'est pas reconnue par le système')
+                    else:
+                        print(f"Error: {e}")
+                        label.config(text='Mode hors ligne ...')
+                        for collab in collabAutorise:
+                            idCollab = int(parse_data['idCollab'])
+                            print("collab['id']:", collab['id'], type(collab['id']))
+                            print("parse_data['idCollab']:", idCollab, type(idCollab))
 
-                        if collab['id'] == idCollab:
-                            sublabel.config(text='Accès autorisé')
-                            break
-                        else:
-                            sublabel.config(text='Accès non autorisé')
-                    
-                last_try = time.time()
+                            if collab['id'] == idCollab:
+                                sublabel.config(text='Accès autorisé')
+                                break
+                            else:
+                                sublabel.config(text='Accès non autorisé')
 
-            print(data)
+                    last_try = time.time()
 
-        if time.time() - last_scanned_time > 5:
-            label.config(text='Bonjour, veuillez passer votre QR Code')
+                print(data)
+
+            if time.time() - last_scanned_time > 5:
+                label.config(text='Bonjour, veuillez passer votre QR Code')
 
     root.update_idletasks()
     root.update()
