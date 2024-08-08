@@ -1,4 +1,5 @@
 import json
+import os
 
 import cv2
 import requests
@@ -23,8 +24,12 @@ detector = cv2.QRCodeDetector()
 root = tk.Tk()
 root.attributes('-fullscreen', True)
 
-# Charger l'image
-image = Image.open("mns-fulllogo.png")
+# Obtenir le chemin du répertoire où se trouve le script
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+# Charger l'image en utilisant un chemin absolu basé sur le répertoire du script
+image_path = os.path.join(script_dir, "mns-fulllogo.png")
+image = Image.open(image_path)
 photo = ImageTk.PhotoImage(image)
 
 # Créer un label pour l'image
