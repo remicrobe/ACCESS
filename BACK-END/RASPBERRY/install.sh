@@ -10,7 +10,7 @@ pip3 install opencv-contrib-python==4.1.0.25
 
 sudo modprobe bcm2835-v4l2
 
-pip install requests getmac tk pillow
+pip install requests getmac tk pillow opencv-python
 
 # Chemin absolu du script AccessLink_SCRIPT.py
 SCRIPT_PATH=AccessLink_SCRIPT.py
