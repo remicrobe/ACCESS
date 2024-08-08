@@ -1,4 +1,5 @@
 import json
+
 import cv2
 import requests
 import time
@@ -12,13 +13,13 @@ api = 'https://api.access-link.tech'
 # On récupère l'adresse mac de la machine
 mac = gma()
 
-# On créé la caméra à partir de la première caméra trouvée
+# On créé la caméra a partir de la première caméra trouvée
 cap = cv2.VideoCapture(0)
 
-# On instancie le lecteur de QRCode
+# On instance le lecteur de QRCOde
 detector = cv2.QRCodeDetector()
 
-# Création de l'interface utilisateur principale
+# Création de l'interface utilisateur
 root = tk.Tk()
 root.attributes('-fullscreen', True)
 
@@ -40,29 +41,11 @@ sublabel.pack()
 root.update_idletasks()
 root.update()
 
-# Création d'une nouvelle fenêtre pour afficher la vidéo
-video_window = tk.Toplevel(root)
-video_window.title("Camera Feed")
-video_label = tk.Label(video_window)
-video_label.pack()
-
-def update_video():
-    _, frame = cap.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    img = Image.fromarray(frame)
-    imgtk = ImageTk.PhotoImage(image=img)
-    video_label.imgtk = imgtk
-    video_label.configure(image=imgtk)
-    video_window.after(10, update_video)  # Mise à jour toutes les 10 ms
-
-# Démarrer la mise à jour de la vidéo
-update_video()
-
-# On fait le premier appel API pour récupérer la config de la machine
+# On fait le première appel API pour récupérer la config de la machine
 state = "get_config"
 last_try = 0
 
-# Déclarations de variables essentielles
+# Déclarations de variables ésentielles
 last_scanned = None
 last_scanned_time = 0
 
@@ -81,7 +64,7 @@ while True:
                 print(f"Error: {e}")
                 print("Retrying in 1 minute...")
                 label.config(text='Erreur lors de la récupération de la configuration')
-                sublabel.config(text='Appel API fait à : ' + api + "/access/config/" + mac)
+                sublabel.config(text='Appel api fait a : ' + api + "/access/config/" + mac)
                 last_try = time.time()
 
     elif state == "read_qr":
@@ -104,7 +87,7 @@ while True:
                 key, value = element.split(":")
                 parse_data[key] = value
 
-            # Requête API pour vérifier si le collaborateur est autorisé à accéder au point
+            # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé a accéder au point
             try:
                 response = requests.get(api + "/access/check/" + parse_data['token'] + "/" + mac)
                 response.raise_for_status()
@@ -116,12 +99,15 @@ while True:
                 if e.response is not None:
                     if 404 == e.response.status_code:
                         label.config(text='Erreur ...')
-                        sublabel.config(text='Votre carte d\'accès n\'est pas reconnue par le système')
+                        sublabel.config(text='Votre carte d\'accès n\'est pas reconue par le système')
                 else:
                     print(f"Error: {e}")
                     label.config(text='Mode hors ligne ...')
                     for collab in collabAutorise:
                         idCollab = int(parse_data['idCollab'])
+                        print("collab['id']:", collab['id'], type(collab['id']))
+                        print("parse_data['idCollab']:", idCollab, type(idCollab))
+
                         if collab['id'] == idCollab:
                             sublabel.config(text='Accès autorisé')
                             break
