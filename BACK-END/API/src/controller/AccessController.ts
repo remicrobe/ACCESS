@@ -149,6 +149,7 @@ export async function aAccess(collaborateur: Collaborateur, macAdress) {
     newHistory.collab = collaborateur
     newHistory.point = access
     newHistory.actionAutorise = true
+    newHistory.statutUtilise = ''
 
 
     if (access.typePoint === typePoint.pointeuse) {

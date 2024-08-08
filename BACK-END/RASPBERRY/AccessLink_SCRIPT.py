@@ -13,7 +13,7 @@ api = 'https://api.access-link.tech'
 # On récupère l'adresse mac de la machine
 mac = gma()
 
-# On créé la caméra a partir de la première caméra trouvée
+# On créé la caméra à partir de la première caméra trouvée
 cap = cv2.VideoCapture(0)
 
 # On instance le lecteur de QRCode
@@ -62,13 +62,14 @@ def update_video_frame():
         # Mettre à jour l'image pour le prochain appel
         video_canvas.image = photo_tk
 
-# On fait le première appel API pour récupérer la config de la machine
+# On fait le premier appel API pour récupérer la config de la machine
 state = "get_config"
 last_try = 0
 
 # Déclarations de variables essentielles
 last_scanned = None
 last_scanned_time = 0
+isAp = False
 
 while True:
     # Mettre à jour le cadre vidéo
@@ -82,13 +83,15 @@ while True:
                 config = response.json()
                 servicesAutorise = config['serviceAutorise']
                 collabAutorise = config['collabAutorise']
+                isAp = config.get('typePoint') == 'ap'
                 label.config(text='Bonjour, veuillez passer votre QR Code')
+                sublabel.config(text='')
                 state = "read_qr"
             except requests.exceptions.RequestException as e:
                 print(f"Error: {e}")
                 print("Retrying in 1 minute...")
                 label.config(text='Erreur lors de la récupération de la configuration')
-                sublabel.config(text='Appel api fait a : ' + api + "/access/config/" + mac)
+                sublabel.config(text='Appel API fait à : ' + api + "/access/config/" + mac)
                 last_try = time.time()
 
     elif state == "read_qr":
@@ -112,19 +115,36 @@ while True:
                     key, value = element.split(":")
                     parse_data[key] = value
 
-                # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé a accéder au point
+                # Ici on va faire une requête API pour vérifier si le collaborateur est autorisé à accéder au point
                 try:
                     response = requests.get(api + "/access/check/" + parse_data['token'] + "/" + mac)
-                    response.raise_for_status()
-                    collabInfo = response.json()
-                    nom = collabInfo.get('nom')
-                    prenom = collabInfo.get('prenom')
-                    label.config(text=f'Bienvenue {prenom} {nom}!')
+                    if response.status_code == 200:
+                        collabInfo = response.json()
+                        if isAp:
+                            label.config(text=f'Bienvenue {collabInfo.get("prenom")} {collabInfo.get("nom")}!')
+                        else:
+                            label.config(text='Votre pointage a bien été enregistré')
+                        sublabel.config(text='')
+                    elif response.status_code == 403:
+                        label.config(text='Non autorisé')
+                        sublabel.config(text='')
+                    elif response.status_code == 404:
+                        label.config(text='Votre carte d\'accès n\'est pas reconnue par le système')
+                        sublabel.config(text='')
+                    else:
+                        label.config(text='Une erreur est survenue')
+                        sublabel.config(text='')
                 except requests.exceptions.RequestException as e:
                     if e.response is not None:
-                        if 404 == e.response.status_code:
-                            label.config(text='Erreur ...')
-                            sublabel.config(text='Votre carte d\'accès n\'est pas reconnue par le système')
+                        if e.response.status_code == 403:
+                            label.config(text='Non autorisé')
+                            sublabel.config(text='')
+                        elif e.response.status_code == 404:
+                            label.config(text='Votre carte d\'accès n\'est pas reconnue par le système')
+                            sublabel.config(text='')
+                        else:
+                            label.config(text='Une erreur est survenue')
+                            sublabel.config(text='')
                     else:
                         print(f"Error: {e}")
                         label.config(text='Mode hors ligne ...')
@@ -139,9 +159,7 @@ while True:
                             else:
                                 sublabel.config(text='Accès non autorisé')
 
-                    last_try = time.time()
-
-                print(data)
+                last_try = time.time()
 
             if time.time() - last_scanned_time > 5:
                 label.config(text='Bonjour, veuillez passer votre QR Code')
