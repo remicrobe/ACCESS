@@ -4,6 +4,7 @@ import Weather from '../components/Weather';
 import { Header } from "../header/Header";
 import { COLORS } from "../color";
 import NextAbscence from "../components/Nextabsences";
+import CurrentAbsence from "../components/CurrentAbsences";
 
 
 const Home = () => {
@@ -13,6 +14,7 @@ const Home = () => {
         <ScrollView>
             <Weather style={styles.weather}/>
             <NextAbscence/>
+            <CurrentAbsence/>
         </ScrollView>
     </SafeAreaView>
   );

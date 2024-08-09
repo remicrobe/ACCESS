@@ -7,6 +7,7 @@ import { COLORS } from "../color";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { format } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AbsencesScreen() {
     const [absences, setAbsences] = useState([]);
@@ -38,7 +39,6 @@ export default function AbsencesScreen() {
     const applyFilters = () => {
         let filtered = [...absences];
 
-        // Filtrage par type
         if (filterType !== 'all') {
             filtered = filtered.filter(absence => {
                 if (filterType === 'accepted') return absence.accepte === true;
@@ -47,7 +47,6 @@ export default function AbsencesScreen() {
             });
         }
 
-        // Filtrage par période
         if (filterPeriod !== 'all') {
             const today = new Date();
             filtered = filtered.filter(absence => {
@@ -66,7 +65,10 @@ export default function AbsencesScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <Header/>
-            <Layout>
+            <Layout style={styles.layout}>
+                <View style={{margin: 20, marginBottom: 5, marginTop: 5,}}>
+                    <Text>Nombre total d'absences : {absences.length} </Text>
+                </View>
                 <View style={styles.filterContainer}>
                     <Picker
                         selectedValue={filterType}
@@ -151,6 +153,9 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#828282'
     },
+    layout: {
+        paddingBottom: 50,
+    },
     absenceItem: {
         display: 'flex',
         flexDirection: 'row',
@@ -166,7 +171,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     filterContainer: {
-        margin: 20,
+        marginBottom: 20,
     },
     picker: {
         height: 50,

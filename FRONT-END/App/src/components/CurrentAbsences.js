@@ -4,10 +4,10 @@ import { Layout, Text } from "react-native-rapi-ui";
 import axios from "../plugins/axios";
 import { COLORS } from "../color";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { format } from 'date-fns'; 
+import { format } from 'date-fns';
 
 export default function AbsencesScreen() {
-    const [nextAbsence, setNextAbsence] = useState(null);
+    const [currentAbsences, setCurrentAbsences] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,13 +17,16 @@ export default function AbsencesScreen() {
                 const absences = response.data;
 
                 const currentDate = new Date();
-                const upcomingAbsences = absences
-                    .filter(absence => new Date(absence.datedeb) >= currentDate && absence.accepte === true)
-                    .sort((a, b) => new Date(a.datedeb) - new Date(b.datedeb));
 
-                const nextAbsence = upcomingAbsences[0];
+                const ongoingAbsences = absences.filter(absence => 
+                    new Date(absence.datedeb) <= currentDate && 
+                    new Date(absence.datefin) >= currentDate && 
+                    absence.accepte === true
+                );
 
-                setNextAbsence(nextAbsence);
+                ongoingAbsences.sort((a, b) => new Date(a.datedeb) - new Date(b.datedeb));
+
+                setCurrentAbsences(ongoingAbsences);
                 setLoading(false);
             } catch (error) {
                 Alert.alert('Erreur', 'Une erreur est survenue lors de la récupération des données.');
@@ -41,26 +44,28 @@ export default function AbsencesScreen() {
                     <Text>Chargement...</Text>
                 ) : (
                     <ScrollView>
-                        <Text style={styles.title}>Prochaine absence</Text>
-                        {nextAbsence ? (
-                            <View style={styles.absenceItem}>
-                                <View>
-                                    <Text style={{ 
-                                        color: COLORS.green,
-                                        fontWeight: 'bold'
-                                    }}>
-                                        Demande N°{nextAbsence.id}
-                                    </Text>
-                                    <Text style={styles.absenceText}>
-                                        {format(new Date(nextAbsence.datedeb), 'dd/MM/yyyy')} au {format(new Date(nextAbsence.datefin), 'dd/MM/yyyy')}
-                                    </Text>
-                                    <Text style={styles.raison}>
-                                        {nextAbsence.raison}
-                                    </Text>
+                        <Text style={styles.title}>Absences en cours</Text>
+                        {currentAbsences.length > 0 ? (
+                            currentAbsences.map((absence) => (
+                                <View key={absence.id} style={styles.absenceItem}>
+                                    <View>
+                                        <Text style={{ 
+                                            color: COLORS.green,
+                                            fontWeight: 'bold'
+                                        }}>
+                                            Demande N°{absence.id}
+                                        </Text>
+                                        <Text style={styles.absenceText}>
+                                            {format(new Date(absence.datedeb), 'dd/MM/yyyy')} au {format(new Date(absence.datefin), 'dd/MM/yyyy')}
+                                        </Text>
+                                        <Text style={styles.raison}>
+                                            {absence.raison}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
+                            ))
                         ) : (
-                            <Text>Aucune absence validée à venir.</Text>
+                            <Text>Aucune absence en cours.</Text>
                         )}
                     </ScrollView>
                 )}
