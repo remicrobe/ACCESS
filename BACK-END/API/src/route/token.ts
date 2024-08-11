@@ -1,4 +1,4 @@
-import { Collaborateur, typeCollab } from '../database/entity/Collab';
+import { Collaborateur, typeCollab } from '../database/entity/Collaborateur';
 import { AppDataSource } from "../database/datasource";
 import { Token, tokenType } from "../database/entity/Token";
 import * as express from "express";
@@ -10,6 +10,7 @@ import { PDFDocument, StandardFonts } from 'pdf-lib';
 import * as QRCode from "qrcode";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { isSuperior } from "../controller/ServiceController";
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
 
 const tokenRouter = express.Router();
 
@@ -39,7 +40,7 @@ tokenRouter.post('/genererCarteQrCode/:collabId', jwtMiddleware, async (req, res
     try {
         const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
-        const collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({ id: collabId });
+        const collab = await CollaborateurRepository.findOneByOrFail({ id: collabId });
 
         if (!isDRH(connectedCollab) && !isARH(connectedCollab) && isRH(connectedCollab)) {
             res.sendStatus(401);
@@ -84,7 +85,7 @@ tokenRouter.get('/genererPDFCarteQrCode/:collabId', jwtMiddleware, async (req, r
     try {
         const connectedCollab: Collaborateur = req.body.connectedCollab;
         const collabId = parseInt(req.params.collabId);
-        const collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
+        const collab = await CollaborateurRepository.findOneOrFail({
             where: { id: collabId },
             relations: { service: { chefservice: true } }
         });

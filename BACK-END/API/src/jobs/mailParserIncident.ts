@@ -3,6 +3,8 @@ import config from '../config';
 import { AppDataSource } from '../database/datasource';
 import { IncidentReponse } from '../database/entity/IncidentReponse';
 import { Incident } from '../database/entity/Incident';
+import {IncidentRepository} from "../database/repository/IncidentRepository";
+import {IncidentReponseRepository} from "../database/repository/IncidentReponseRepository";
 
 
 interface Email {
@@ -164,7 +166,7 @@ export async function parseMailIncident() {
             let incidentNumber = extractNumberFromEmails(email.header.to);
 
             if (incidentNumber) {
-                let incident = await AppDataSource.getRepository(Incident).findOneBy({id: incidentNumber});
+                let incident = await IncidentRepository.findOneBy({id: incidentNumber});
                 if (!incident) {
                     console.log("Strange incident " + incidentNumber + ' ' + JSON.stringify(email.header) + " " + email.parsedText);
                     // Creer fichier de log un jour
@@ -173,7 +175,7 @@ export async function parseMailIncident() {
                 let newIncidentAnswer = new IncidentReponse();
                 newIncidentAnswer.incident = incident;
                 newIncidentAnswer.reponse = email.header.from + ' - ' + email.parsedText;
-                await AppDataSource.getRepository(IncidentReponse).save(newIncidentAnswer);
+                await IncidentReponseRepository.save(newIncidentAnswer);
 
             } else {
                 console.log("Strange destination " + JSON.stringify(email.header) + " " + email.parsedText);

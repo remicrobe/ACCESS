@@ -1,4 +1,4 @@
-import {Collaborateur, typeCollab} from '../database/entity/Collab';
+import {Collaborateur, typeCollab} from '../database/entity/Collaborateur';
 import {AppDataSource} from "../database/datasource";
 import {Horaire} from "../database/entity/Horaire";
 import {Service} from "../database/entity/Service";
@@ -10,10 +10,15 @@ import {isNull} from "util";
 import {sendAbsenceMail, sendNotGoodHourMail} from "../utils/mail/mail";
 import {systemeCreerPresence} from "./PresenceController";
 import { Incident } from '../database/entity/Incident';
+import {ServiceRepository} from "../database/repository/ServiceRepository";
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
+import {HoraireRepository} from "../database/repository/HoraireRepository";
+import {HorairesModeleRepository} from "../database/repository/HorairesModeleRepository";
+import {IncidentRepository} from "../database/repository/IncidentRepository";
 
 
 export async function creerCollab(prenom: string, nom: string, mail: string, grade: typeCollab, fonction: string, service: any, modelehoraire: any, horraire: any[], actif: boolean) {
-    const utilisateurExistant = await AppDataSource.getRepository(Collaborateur).findOneBy({mail: mail});
+    const utilisateurExistant = await CollaborateurRepository.findOneBy({mail: mail});
     if (utilisateurExistant) {
         return null;
     }
@@ -27,22 +32,22 @@ export async function creerCollab(prenom: string, nom: string, mail: string, gra
     utilisateur.fonction = fonction
 
     if (modelehoraire) {
-        utilisateur.horairesdefault = await AppDataSource.getRepository(HorairesModele).findOneByOrFail({id: modelehoraire.id})
+        utilisateur.horairesdefault = await HorairesModeleRepository.findOneByOrFail({id: modelehoraire.id})
     } else if (horraire) {
         utilisateur.horaire = await setCollabHoraire(utilisateur, horraire)
     }
 
     if (service) {
         if (service.id)
-            utilisateur.service = await AppDataSource.getRepository(Service).findOneByOrFail({id: service.id})
+            utilisateur.service = await ServiceRepository.findOneByOrFail({id: service.id})
     }
 
 
-    return await AppDataSource.getRepository(Collaborateur).save(utilisateur)
+    return await CollaborateurRepository.save(utilisateur)
 }
 
 export async function getCollabInfoFromId(id: number) {
-    return await AppDataSource.getRepository(Collaborateur).findOneOrFail(
+    return await CollaborateurRepository.findOneOrFail(
         {
             where:
                 {
@@ -85,7 +90,7 @@ export async function setCollabHoraire(collaborateur: Collaborateur, collabHorai
     newHorraire.hDebDimanche = collabHoraire.hDebDimanche;
     newHorraire.hFinDimanche = collabHoraire.hFinDimanche;
 
-    return await AppDataSource.getRepository(Horaire).save(newHorraire)
+    return await HoraireRepository.save(newHorraire)
 }
 
 export async function modifierCollab(collaborateur: Collaborateur, prenom: string, nom: string, mail: string, grade: typeCollab, fonction: string, service: any, modelehoraire: any, horraire: any[], actif: boolean) {
@@ -101,7 +106,7 @@ export async function modifierCollab(collaborateur: Collaborateur, prenom: strin
     collaborateur.actif = actif
     if (modelehoraire) {
         if (modelehoraire.id) {
-            collaborateur.horairesdefault = await AppDataSource.getRepository(HorairesModele).findOneByOrFail({id: modelehoraire.id})
+            collaborateur.horairesdefault = await HorairesModeleRepository.findOneByOrFail({id: modelehoraire.id})
             collaborateur.horaire = null
         } else {
             collaborateur.horairesdefault = null
@@ -117,11 +122,11 @@ export async function modifierCollab(collaborateur: Collaborateur, prenom: strin
         if (service.id === null) {
             collaborateur.service = null
         } else {
-            collaborateur.service = await AppDataSource.getRepository(Service).findOneByOrFail({id: service.id})
+            collaborateur.service = await ServiceRepository.findOneByOrFail({id: service.id})
         }
     }
 
-    return await AppDataSource.getRepository(Collaborateur).save(collaborateur)
+    return await CollaborateurRepository.save(collaborateur)
 }
 
 // Méthode pour récuperer les collab sous le control d'un collab
@@ -131,7 +136,7 @@ export async function getCollabUnderControl(collab: Collaborateur) {
         || isARH(collab)
         || isRH(collab)
     ) { // Si le collab est RH alors il peut récupérer des infos sur l'ensemble des collab
-        return await AppDataSource.getRepository(Collaborateur).find({
+        return await CollaborateurRepository.find({
             relations: {
                 horaire: true,
                 horairesdefault: true,
@@ -144,7 +149,7 @@ export async function getCollabUnderControl(collab: Collaborateur) {
     }
     /* Si cette condition est valide c'est que le collaborateur est chef de son propre service
     Donc nous allons chercher a récupérer l'ensemble des collaborateurs dans ce service*/
-    return await AppDataSource.getRepository(Collaborateur).find({
+    return await CollaborateurRepository.find({
         relations: {
             horaire: true,
             horairesdefault: true,
@@ -186,7 +191,7 @@ export async function advertCollabHorsHeure() {
         let dayOfWeek = yesterday.toJSDate().toLocaleDateString('fr-FR', {weekday: 'long'});
         let hDeb = 'hDeb' + dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
 
-        let presentCollab = await AppDataSource.getRepository(Collaborateur).find({
+        let presentCollab = await CollaborateurRepository.find({
             where: [
                 {
                     horaire: {
@@ -281,7 +286,7 @@ export async function advertCollabHorsHeure() {
 
             let diffEnd = actualEnd.diff(expectedEnd, "hour").toObject();
             if (Math.abs(diffStart.hours) >= 1 || Math.abs(diffEnd.hours) >= 1) { // difference is one hour or more
-                let incident = await AppDataSource.getRepository(Incident).save({
+                let incident = await IncidentRepository.save({
                     collab: collab,
                     creePar: 'SYSTEME',
                     dateIncident: yesterday.toJSDate(),
@@ -295,7 +300,7 @@ export async function advertCollabHorsHeure() {
         }
 
         for(let collab of noPresentCollab){
-            let incident = await AppDataSource.getRepository(Incident).save({
+            let incident = await IncidentRepository.save({
                 collab: collab,
                 dateIncident: yesterday.toJSDate(),
                 desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} -Absence.`,

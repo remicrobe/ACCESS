@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../database/datasource";
 import { HorairesModele } from "../database/entity/HorairesModele";
 import { ErrorHandler } from "../utils/error/error-handler";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { getHistory, getHistoryByService, getMyHistory } from "../controller/HistoriqueController";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { IsNull } from "typeorm";

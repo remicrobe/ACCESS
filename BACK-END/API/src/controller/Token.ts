@@ -3,9 +3,11 @@ import {AppDataSource} from '../database/datasource';
 import {In} from "typeorm";
 import {createHash, randomUUID} from "crypto";
 import {sendRecoveryMail} from "../utils/mail/mail";
-import {Collaborateur} from "../database/entity/Collab";
+import {Collaborateur} from "../database/entity/Collaborateur";
 import * as jwt from 'jsonwebtoken'
 import config from '../config'
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
+import {TokenRepository} from "../database/repository/TokenRepository";
 
 export async function setAuthToken(collab) {
     // Créez un nouveau token pour l'utilisateur
@@ -15,7 +17,7 @@ export async function setAuthToken(collab) {
     token.actif = true;
     token.token = 'jwt'
     token.datecreation = new Date();
-    let generatedToken = await AppDataSource.getRepository(Token).save(token);
+    let generatedToken = await TokenRepository.save(token);
 
     // Contenue du JWT
     const jwtPayload = {
@@ -40,7 +42,7 @@ export async function checkJwtToken(jwtToken) {
     }
 
     // Récupérer le token de la base de données
-    const token = await AppDataSource.getRepository(Token).findOne(
+    const token = await TokenRepository.findOne(
         {
             where:
                 {
@@ -71,7 +73,7 @@ export async function getCollabInfoFromToken(jwtToken) {
     }
 
     // Récupérer le token de la base de données
-    const token = await AppDataSource.getRepository(Token).findOne(
+    const token = await TokenRepository.findOne(
         {
             where:
                 {
@@ -108,7 +110,7 @@ export async function disconnectToken(jwtToken) {
     }
 
     // Récupérer le token de la base de données
-    const token = await AppDataSource.getRepository(Token).findOneOrFail(
+    const token = await TokenRepository.findOneOrFail(
         {
             where:
                 {
@@ -123,7 +125,7 @@ export async function disconnectToken(jwtToken) {
         return false
     }
     token.actif = false
-    await AppDataSource.getRepository(Token).save(token)
+    await TokenRepository.save(token)
 
     // Retourner le collaborateur
     return true
@@ -131,11 +133,11 @@ export async function disconnectToken(jwtToken) {
 
 
 export async function delAllAuthToken(collab) {
-    await AppDataSource.getRepository(Token).update({collab, type: tokenType.auth}, {actif: false});
+    await TokenRepository.update({collab, type: tokenType.auth}, {actif: false});
 }
 
 export async function checkAuthToken(token) {
-    return await AppDataSource.getRepository(Token).findOneByOrFail({
+    return await TokenRepository.findOneByOrFail({
         type: tokenType.auth,
         token: token,
         actif: true,
@@ -144,7 +146,7 @@ export async function checkAuthToken(token) {
 
 export async function setTokenCardQrCode(collab) {
 
-    await AppDataSource.getRepository(Token).update({collab, type: tokenType.cardqrcode}, {actif: false});
+    await TokenRepository.update({collab, type: tokenType.cardqrcode}, {actif: false});
 
     const token = new Token();
     token.collab = collab;
@@ -152,16 +154,16 @@ export async function setTokenCardQrCode(collab) {
     token.actif = true;
     token.token = randomUUID()
     token.datecreation = new Date();
-    return await AppDataSource.getRepository(Token).save(token);
+    return await TokenRepository.save(token);
 }
 
 export async function getTokenCardQrCode(collab) {
     // Récupérez le token de type 'cardqrcode' de l'utilisateur
-    return await AppDataSource.getRepository(Token).findOneBy({collab, type: tokenType.cardqrcode, actif: true});
+    return await TokenRepository.findOneBy({collab, type: tokenType.cardqrcode, actif: true});
 }
 
 export async function setTokenAppQrCode(collab) {
-    await AppDataSource.getRepository(Token).update({collab, type: tokenType.appqrcode}, {actif: false});
+    await TokenRepository.update({collab, type: tokenType.appqrcode}, {actif: false});
 
     const token = new Token();
     token.collab = collab;
@@ -169,25 +171,26 @@ export async function setTokenAppQrCode(collab) {
     token.actif = true;
     token.token = randomUUID()
     token.datecreation = new Date();
-    return await AppDataSource.getRepository(Token).save(token);
+    return await TokenRepository.save(token);
 }
 
 
 export async function setTokenPasswordAndSendMail(collab) {
-    await AppDataSource.getRepository(Token).update({collab, type: tokenType.recoverpassword}, {actif: false});
+    await TokenRepository.update({collab, type: tokenType.recoverpassword}, {actif: false});
     let token = new Token();
     token.collab = collab;
     token.type = tokenType.recoverpassword;
     token.actif = true;
     token.token = randomUUID()
-    token = await AppDataSource.getRepository(Token).save(token);
+
+    token = await TokenRepository.save(token);
     return (await sendRecoveryMail(token.token, collab.mail, collab.prenom))
 }
 
 
 export async function checkTokenPassword(token2check, password) {
     // Récupérez le token de type 'recoverpassword' de l'utilisateur
-    const token = await AppDataSource.getRepository(Token).findOneOrFail({
+    const token = await TokenRepository.findOneOrFail({
         where: {
             token: token2check,
             type: tokenType.recoverpassword,
@@ -212,8 +215,8 @@ export async function checkTokenPassword(token2check, password) {
             token.actif = false
             collab.valide = true
             collab.motdepasse = createHash('sha256').update(config.SALAGE + password).digest('hex');
-            await AppDataSource.getRepository(Token).save(token)
-            await AppDataSource.getRepository(Collaborateur).save(collab)
+            await TokenRepository.save(token)
+            await CollaborateurRepository.save(collab)
             return true;
         }
     }
@@ -223,7 +226,7 @@ export async function checkTokenPassword(token2check, password) {
 
 export async function checkQRCode(tokenToCheck) {
     // Vérifiez si le tokenToCheck correspond à un token de type 'appqrcode' ou 'cardqrcode' actif pour le collaborateur
-    const token = await AppDataSource.getRepository(Token).findOneOrFail(
+    const token = await TokenRepository.findOneOrFail(
         {
             where: {
                 type: In([tokenType.appqrcode, tokenType.cardqrcode]),

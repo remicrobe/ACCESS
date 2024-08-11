@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Collaborateur } from "./Collab";
+import { Collaborateur } from "./Collaborateur";
 import { IncidentReponse } from "./IncidentReponse";
 
 @Entity()

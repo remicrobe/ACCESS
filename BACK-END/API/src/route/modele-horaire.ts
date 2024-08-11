@@ -5,6 +5,7 @@ import { AppDataSource } from "../database/datasource";
 import { HorairesModele } from "../database/entity/HorairesModele";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { editModele, nouveauModele } from "../controller/HorraireController";
+import {HorairesModeleRepository} from "../database/repository/HorairesModeleRepository";
 
 const modeleHoraireRouter = express.Router();
 
@@ -20,7 +21,8 @@ modeleHoraireRouter.get('/', jwtMiddlewareFullInfo, async (req: Request, res: Re
         }
     */
     try {
-        res.send(await AppDataSource.getRepository(HorairesModele).find());
+
+        res.send(await HorairesModeleRepository.find());
     } catch (error) {
         ErrorHandler(error, req, res);
     }
@@ -98,7 +100,7 @@ modeleHoraireRouter.get('/:id', jwtMiddlewareFullInfo, async (req: Request, res:
         }
     */
     try {
-        res.send(await AppDataSource.getRepository(HorairesModele).findOneByOrFail({id: parseInt(req.params.id)}));
+        res.send(await HorairesModeleRepository.findOneByOrFail({id: parseInt(req.params.id)}));
     } catch (error) {
         ErrorHandler(error, req, res);
     }

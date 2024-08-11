@@ -1,7 +1,7 @@
 import express = require("express");
 import { getAllAbsences, getAbsenceUnderMyControl, getAbsences } from "../controller/AbsenceController";
 import { isDRH, isARH, isRH } from "../controller/CollabController";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { ErrorHandler } from "../utils/error/error-handler";
 import {

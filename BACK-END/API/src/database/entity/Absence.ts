@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Collaborateur } from "./Collab";
+import { Collaborateur } from "./Collaborateur";
 
 @Entity()
 export class Absence {

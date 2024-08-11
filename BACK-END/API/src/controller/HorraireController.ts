@@ -1,5 +1,6 @@
 import {HorairesModele} from "../database/entity/HorairesModele";
 import {AppDataSource} from "../database/datasource";
+import {HorairesModeleRepository} from "../database/repository/HorairesModeleRepository";
 
 export async function nouveauModele(name:string, Horaire:any) {
     let newHorraire = new HorairesModele()
@@ -27,11 +28,11 @@ export async function nouveauModele(name:string, Horaire:any) {
     newHorraire.hDebDimanche = Horaire.hDebDimanche;
     newHorraire.hFinDimanche = Horaire.hFinDimanche;
 
-    return await AppDataSource.getRepository(HorairesModele).save(newHorraire)
+    return await HorairesModeleRepository.save(newHorraire)
 }
 
 export async function editModele(id:number,name:string, Horaire:any) {
-    let editHoraire = await AppDataSource.getRepository(HorairesModele).findOneByOrFail({id})
+    let editHoraire = await HorairesModeleRepository.findOneByOrFail({id})
 
     editHoraire.nom = name
 
@@ -56,5 +57,5 @@ export async function editModele(id:number,name:string, Horaire:any) {
     editHoraire.hDebDimanche = Horaire.hDebDimanche;
     editHoraire.hFinDimanche = Horaire.hFinDimanche;
 
-    return await AppDataSource.getRepository(HorairesModele).save(editHoraire)
+    return await HorairesModeleRepository.save(editHoraire)
 }

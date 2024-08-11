@@ -1092,6 +1092,11 @@
         "description": "Connecter un collaborateur",
         "parameters": [
           {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "description": "Informations de connexion",

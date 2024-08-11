@@ -1,12 +1,13 @@
 import {Absence} from '../database/entity/Absence';
 import {AppDataSource} from "../database/datasource";
-import {Collaborateur} from "../database/entity/Collab";
+import {Collaborateur} from "../database/entity/Collaborateur";
 import {isSuperior} from "./ServiceController";
 import {isARH, isDRH, isRH} from "./CollabController";
 import {Between, In, IsNull} from "typeorm";
 import {isNull} from "util";
 import {sendEditConge, sendNewCongeMail, sendResponseConge} from "../utils/mail/mail";
 import {DateTime} from "luxon";
+import {AbsenceRepository} from "../database/repository/AbsenceRepository";
 
 export async function creerAbsence(collab: Collaborateur, datedeb: string, datefin: string, periodeDeb: number, periodeFin: number, raison: string, description?: string) {
     let absence = new Absence();
@@ -22,11 +23,11 @@ export async function creerAbsence(collab: Collaborateur, datedeb: string, datef
         sendNewCongeMail(collab,collab.service.chefservice,absence)
     }
 
-    return await AppDataSource.getRepository(Absence).save(absence);
+    return await AbsenceRepository.save(absence);
 }
 
 export async function getAbsences(collab: Collaborateur) {
-    return await AppDataSource.getRepository(Absence).find({
+    return await AbsenceRepository.find({
         where: {collab: {id: collab.id}},
         relations: {collab: true}
     });
@@ -46,7 +47,7 @@ export async function getAbsenceUnderMyControl(collab: Collaborateur, page:numbe
             accepteConfig = IsNull()
         }
     }
-    return await AppDataSource.getRepository(Absence).findAndCount({
+    return await AbsenceRepository.findAndCount({
         where: {
             dateDemande: dateConfig,
             accepte: accepteConfig,
@@ -82,7 +83,7 @@ export async function getAllAbsences(page:number,itemParPage:number,filter:any) 
             accepteConfig = IsNull()
         }
     }
-    return await AppDataSource.getRepository(Absence).findAndCount({
+    return await AbsenceRepository.findAndCount({
         relations: {collab: true, modifierPar: true, reponseDe: true},
         where:{
             dateDemande: dateConfig,
@@ -100,7 +101,7 @@ export async function getAllAbsences(page:number,itemParPage:number,filter:any) 
 }
 
 export async function modifierAbsence(absenceId: number, datedeb: string, datefin: string, raison: string, donneurDordre: Collaborateur, description?: string) {
-    const absence = await AppDataSource.getRepository(Absence).findOneOrFail({
+    const absence = await AbsenceRepository.findOneOrFail({
         where: {id: absenceId},
         relations: {collab: {service: true}}
     });
@@ -115,7 +116,7 @@ export async function modifierAbsence(absenceId: number, datedeb: string, datefi
 
         sendEditConge(absence.collab,donneurDordre,absence,oldAbsence)
 
-        return await AppDataSource.getRepository(Absence).save(absence);
+        return await AbsenceRepository.save(absence);
     } else {
         throw "Accès refusé"
     }
@@ -124,7 +125,7 @@ export async function modifierAbsence(absenceId: number, datedeb: string, datefi
 }
 
 export async function accepterAbsence(absenceId: number, reponse: boolean, donneurDordre: Collaborateur) {
-    const absence = await AppDataSource.getRepository(Absence).findOneOrFail({
+    const absence = await AbsenceRepository.findOneOrFail({
         where: {id: absenceId},
         relations: {collab: true}
     });
@@ -138,7 +139,7 @@ export async function accepterAbsence(absenceId: number, reponse: boolean, donne
 
         sendResponseConge(absence.collab,donneurDordre,absence)
 
-        return await AppDataSource.getRepository(Absence).save(absence);
+        return await AbsenceRepository.save(absence);
     } else {
         throw "Accès refusé"
     }

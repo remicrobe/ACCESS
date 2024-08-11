@@ -1,12 +1,13 @@
 import {AppDataSource} from "../database/datasource";
-import {Collaborateur} from "../database/entity/Collab";
+import {Collaborateur} from "../database/entity/Collaborateur";
 import {Historique} from "../database/entity/Historique";
 import {Service} from "../database/entity/Service";
 import {Between, In} from "typeorm";
+import {HistoriqueRepository} from "../database/repository/HistoriqueRepository";
 
 export async function getMyHistory(collab:Collaborateur){
 
-    return await AppDataSource.getRepository(Historique).find({
+    return await HistoriqueRepository.find({
         where: {
             collab: {
                 id: collab.id
@@ -23,7 +24,7 @@ export async function getHistoryByService(service:Service,page:number,itemParPag
     if(filter.startDate && filter.endDate){
         dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate))
     }
-    return await AppDataSource.getRepository(Historique).findAndCount({
+    return await HistoriqueRepository.findAndCount({
         where: {
             date: dateConfig,
             actionAutorise: filter.state ? filter.state === 'Autorisé' : undefined,
@@ -52,7 +53,7 @@ export async function getHistory(page:number,itemParPage:number,filter:any){
     if(filter.startDate && filter.endDate){
         dateConfig = Between(new Date(filter.startDate), new Date(filter.endDate))
     }
-    return await AppDataSource.getRepository(Historique).findAndCount({
+    return await HistoriqueRepository.findAndCount({
         where:{
             date: dateConfig,
             actionAutorise: filter.state ? filter.state === 'Autorisé' : undefined,

@@ -1,11 +1,15 @@
 import {Access, typePoint} from '../database/entity/Access';
 import {AppDataSource} from "../database/datasource";
-import {Collaborateur} from "../database/entity/Collab";
+import {Collaborateur} from "../database/entity/Collaborateur";
 import {Service} from "../database/entity/Service";
 import {In} from "typeorm";
 import {Historique} from "../database/entity/Historique";
 import {DateTime} from "luxon";
 import {sendunauthorizedAccessMail} from "../utils/mail/mail";
+import {ServiceRepository} from "../database/repository/ServiceRepository";
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
+import {AccessRepository} from "../database/repository/AccessRepository";
+import {HistoriqueRepository} from "../database/repository/HistoriqueRepository";
 
 export async function creerAccess(macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutorise: any[], serviceAutorise: any[]) {
 
@@ -17,18 +21,18 @@ export async function creerAccess(macadress: string, typePoint: typePoint, locat
     access.nompoint = nompoint;
     access.active = active;
     if (collabAutorise && collabAutorise.length > 0) {
-        access.collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutorise.map((c) => c.id))});
+        access.collabAutorise = await CollaborateurRepository.findBy({id: In(collabAutorise.map((c) => c.id))});
     }
     if (serviceAutorise && serviceAutorise.length > 0) {
-        access.serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutorise.map((s) => s.id))});
+        access.serviceAutorise = await ServiceRepository.findBy({id: In(serviceAutorise.map((s) => s.id))});
     }
 
-    return await AppDataSource.getRepository(Access).save(access)
+    return await AccessRepository.save(access)
 }
 
 export async function modifierAccess(accessID: number, macadress: string, typePoint: typePoint, location: string, nompoint: string, active: boolean, collabAutorise: any[], serviceAutorise: any[]) {
 
-    const access = await AppDataSource.getRepository(Access).findOne(
+    const access = await AccessRepository.findOne(
         {
             where:
                 {
@@ -49,22 +53,22 @@ export async function modifierAccess(accessID: number, macadress: string, typePo
     access.nompoint = nompoint;
     access.active = active;
     if (collabAutorise && collabAutorise.length > 0) {
-        access.collabAutorise = await AppDataSource.getRepository(Collaborateur).findBy({id: In(collabAutorise.map((c) => c.id))});
+        access.collabAutorise = await CollaborateurRepository.findBy({id: In(collabAutorise.map((c) => c.id))});
     } else {
         access.collabAutorise = null
     }
     if (serviceAutorise && serviceAutorise.length > 0) {
-        access.serviceAutorise = await AppDataSource.getRepository(Service).findBy({id: In(serviceAutorise.map((s) => s.id))});
+        access.serviceAutorise = await ServiceRepository.findBy({id: In(serviceAutorise.map((s) => s.id))});
     } else {
         access.serviceAutorise = null
     }
 
 
-    return await AppDataSource.getRepository(Access).save(access);
+    return await AccessRepository.save(access);
 }
 
 export async function listeAccess() {
-    return await AppDataSource.getRepository(Access).find({
+    return await AccessRepository.find({
         relations: {
             collabAutorise: true,
             serviceAutorise: true,
@@ -76,13 +80,13 @@ export async function pointAccessAccessible(collab: Collaborateur) {
     const collabId = collab.id;
     const serviceId = collab.service.id;
 
-    let accessByCollab = await AppDataSource.getRepository(Access)
+    let accessByCollab = await AccessRepository
         .createQueryBuilder("access")
         .leftJoin("access.collabAutorise", "collab")
         .where("collab.id = :collabId", {collabId})
         .getMany();
 
-    let accessByService = await AppDataSource.getRepository(Access)
+    let accessByService = await AccessRepository
         .createQueryBuilder("access")
         .leftJoin("access.serviceAutorise", "service")
         .where("service.id = :serviceId", {serviceId})
@@ -106,7 +110,7 @@ export async function pointAccessAccessible(collab: Collaborateur) {
 
 export async function getPointConfig(macAdress) {
     // Récupérer le point d'accès à partir de l'adresse MAC
-    return await AppDataSource.getRepository(Access).findOneOrFail({
+    return await AccessRepository.findOneOrFail({
         where: {
             macadress: macAdress,
         },
@@ -121,7 +125,7 @@ export async function aAccess(collaborateur: Collaborateur, macAdress) {
 
 
     // Récupérer le point d'accès à partir de l'adresse MAC
-    const access = await AppDataSource.getRepository(Access).findOneOrFail({
+    const access = await AccessRepository.findOneOrFail({
         where: {
             macadress: macAdress,
             active: true,
@@ -154,7 +158,8 @@ export async function aAccess(collaborateur: Collaborateur, macAdress) {
 
     if (access.typePoint === typePoint.pointeuse) {
         newHistory.typeAction = 'Pointage'
-        await AppDataSource.getRepository(Historique).save(newHistory)
+
+        await HistoriqueRepository.save(newHistory)
         return true
     } else {
         newHistory.typeAction = 'Access'
@@ -201,11 +206,11 @@ export async function aAccess(collaborateur: Collaborateur, macAdress) {
     }
 
     if (hasAccess) {
-        await AppDataSource.getRepository(Historique).save(newHistory)
+        await HistoriqueRepository.save(newHistory)
         return collaborateur
     } else {
         newHistory.actionAutorise = false
-        await AppDataSource.getRepository(Historique).save(newHistory)
+        await HistoriqueRepository.save(newHistory)
         if(collaborateur.service && collaborateur.service.chefservice)
         {
             sendunauthorizedAccessMail(collaborateur, collaborateur.service.chefservice, access)

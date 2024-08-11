@@ -1,5 +1,5 @@
 import * as express from "express";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { isDRH, isARH, isRH } from "../controller/CollabController";
 import { ErrorHandler } from "../utils/error/error-handler";
@@ -8,6 +8,8 @@ import { AppDataSource } from '../database/datasource';
 import { Incident } from '../database/entity/Incident';
 import { isSuperior } from '../controller/ServiceController';
 import { IncidentReponse } from '../database/entity/IncidentReponse';
+import {IncidentRepository} from "../database/repository/IncidentRepository";
+import {IncidentReponseRepository} from "../database/repository/IncidentReponseRepository";
 
 const incidentRouter = express.Router();
 
@@ -105,7 +107,7 @@ incidentRouter.post('/:id/message', jwtMiddlewareFullInfo, async (req, res) => {
             return res.sendStatus(422);
         }
 
-        let incident = await AppDataSource.getRepository(Incident).findOneOrFail({
+        let incident = await IncidentRepository.findOneOrFail({
             where: {
                 id: idIncident
             },
@@ -131,9 +133,10 @@ incidentRouter.post('/:id/message', jwtMiddlewareFullInfo, async (req, res) => {
         incident.modifiePar = collab;
         incident.modifieLe = new Date();
         incident.ouvert = false;
-        await AppDataSource.getRepository(Incident).save(incident);
+        await IncidentRepository.save(incident);
 
-        return res.send(await AppDataSource.getRepository(IncidentReponse).save(reponseIncident));
+
+        return res.send(await IncidentReponseRepository.save(reponseIncident));
     } catch (error) {
         ErrorHandler(error, req, res);
     }
@@ -170,7 +173,7 @@ incidentRouter.get('/:id', jwtMiddlewareFullInfo, async (req, res) => {
             return res.sendStatus(422);
         }
 
-        let incident = await AppDataSource.getRepository(Incident).findOneOrFail({
+        let incident = await IncidentRepository.findOneOrFail({
             where: {
                 id: idIncident
             },

@@ -1,7 +1,8 @@
 import { Between, IsNull, In } from "typeorm";
 import { AppDataSource } from "../database/datasource";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { Incident } from "../database/entity/Incident";
+import {IncidentRepository} from "../database/repository/IncidentRepository";
 
 export async function getIncidentUnderMyControl(collab: Collaborateur, page: number, itemParPage: number, filter: any) {
     let dateConfig, accepteConfig;
@@ -13,7 +14,7 @@ export async function getIncidentUnderMyControl(collab: Collaborateur, page: num
     } else if (filter.state === 'Fermé') {
         accepteConfig = false;
     }
-    return await AppDataSource.getRepository(Incident).findAndCount({
+    return await IncidentRepository.findAndCount({
         where: {
             creeLe: dateConfig,
             ouvert: accepteConfig,
@@ -47,7 +48,7 @@ export async function getAllIncident(page: number, itemParPage: number, filter: 
             accepteConfig = false;
         }
     }
-    return await AppDataSource.getRepository(Incident).findAndCount({
+    return await IncidentRepository.findAndCount({
         relations: {collab: true, modifiePar: true, reponse: true},
         where: {
             creeLe: dateConfig,

@@ -1,6 +1,6 @@
 import { Access, typePoint } from '../database/entity/Access';
 import { AppDataSource } from "../database/datasource";
-import { Collaborateur, typeCollab } from "../database/entity/Collab";
+import { Collaborateur, typeCollab } from "../database/entity/Collaborateur";
 import { Service } from "../database/entity/Service";
 import * as express from "express";
 import {
@@ -21,6 +21,9 @@ import { Absence } from "../database/entity/Absence";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { getAbsenceUnderMyControl, getAllAbsences } from "../controller/AbsenceController";
 import { getHistory, getHistoryByService } from "../controller/HistoriqueController";
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
+import {AccessRepository} from "../database/repository/AccessRepository";
+import {HistoriqueRepository} from "../database/repository/HistoriqueRepository";
 
 const accessRouter = express.Router();
 
@@ -95,7 +98,7 @@ accessRouter.put('/modifierAccess/:accessId', jwtMiddlewareFullInfo, async (req,
     const accessId = parseInt(req.params.accessId);
     const { macadress, typePoint, location, nompoint, active, collabAutorise, serviceAutorise } = req.body;
     try {
-        const access = await AppDataSource.getRepository(Access).findOneBy({ id: accessId });
+        const access = await AccessRepository.findOneBy({ id: accessId });
         if (!access) {
             return res.status(404).json({ message: 'Point d\'accès non trouvé' });
         }
@@ -235,7 +238,7 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
         let dayOfWeek = today.toLocaleDateString('fr-FR', { weekday: 'long' });
         let hDeb = 'hDeb' + dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
 
-        let todayCollabByHour = await AppDataSource.getRepository(Collaborateur).count({
+        let todayCollabByHour = await CollaborateurRepository.count({
             where: [
                 {
                     horaire: {
@@ -250,7 +253,7 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
             ]
         });
 
-        let totalInOut = await AppDataSource.getRepository(Historique).count({
+        let totalInOut = await HistoriqueRepository.count({
             where: {
                 date: MoreThan(DateTime.local().startOf('day').toJSDate()),
                 typeAction: 'Access',
@@ -258,7 +261,7 @@ accessRouter.get('/stats', jwtMiddlewareFullInfo, async (req, res) => {
             }
         });
 
-        let collabInToday = await AppDataSource.getRepository(Historique)
+        let collabInToday = await HistoriqueRepository
             .createQueryBuilder("historique")
             .select("DISTINCT collabId")
             .where("date > :date", { date: DateTime.local().startOf('day').toJSDate() })

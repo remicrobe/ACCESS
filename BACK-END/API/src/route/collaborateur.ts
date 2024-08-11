@@ -9,7 +9,7 @@ import {
     isRH,
     modifierCollab
 } from "../controller/CollabController";
-import { Collaborateur, typeCollab } from "../database/entity/Collab";
+import { Collaborateur, typeCollab } from "../database/entity/Collaborateur";
 import { AppDataSource } from "../database/datasource";
 import {
     checkTokenPassword, disconnectToken,
@@ -25,6 +25,7 @@ import { ErrorHandler } from "../utils/error/error-handler";
 import { IsNull } from "typeorm";
 import { checkRequiredField } from "../utils/global";
 import config from '../config';
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
 
 const collaborateurRouter = express.Router();
 
@@ -199,7 +200,7 @@ collaborateurRouter.get('/sansService', jwtMiddleware, async (req: Request, res:
         if (!isDRH(connectedCollab) && !isARH(connectedCollab) && !isRH(connectedCollab)) {
             res.sendStatus(401);
         } else {
-            res.send(await AppDataSource.getRepository(Collaborateur).find({ where: { service: IsNull() } }));
+            res.send(await CollaborateurRepository.find({ where: { service: IsNull() } }));
         }
     } catch (error) {
         ErrorHandler(error, req, res);
@@ -251,7 +252,7 @@ collaborateurRouter.put('/modifierCollab/:collaborateur', jwtMiddleware, async (
     const collabID = parseInt(req.params.collaborateur);
     try {
         let connectedCollab: Collaborateur = req.body.connectedCollab;
-        let target = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
+        let target = await CollaborateurRepository.findOneOrFail({
             where: { id: collabID },
             relations: { service: { chefservice: true } }
         });
@@ -356,7 +357,7 @@ collaborateurRouter.post('/demande-recuperation/', async (req: Request, res: Res
         if (!checkRequiredField([{ object: mail, type: 'mail' }])) {
             return res.sendStatus(422);
         }
-        let collab = await AppDataSource.getRepository(Collaborateur).findOneByOrFail({ mail });
+        let collab = await CollaborateurRepository.findOneByOrFail({ mail });
 
         let success = await setTokenPasswordAndSendMail(collab);
         if (success) {
@@ -404,10 +405,15 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
         }
         motdepasse = createHash('sha256').update(config.SALAGE + motdepasse).digest('hex');
 
-        let collab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
+        let collab = await CollaborateurRepository.findOneOrFail({
             where: { mail, motdepasse },
             relations: { service: { chefservice: true } }
         });
+
+        collab.lastIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
+        collab.lastConnection = new Date();
+
+        await CollaborateurRepository.save(collab);
 
         res.send(await setAuthToken(collab));
 

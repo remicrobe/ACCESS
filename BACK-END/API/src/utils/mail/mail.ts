@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer';
 import config from '../../config';
 import * as path from "path";
 import * as fs from "fs";
-import { Collaborateur } from "../../database/entity/Collab";
+import { Collaborateur } from "../../database/entity/Collaborateur";
 import { Access } from "../../database/entity/Access";
 import { Absence } from "../../database/entity/Absence";
 import { obtenirDateFR } from "../date/date";

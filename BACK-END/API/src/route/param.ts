@@ -2,7 +2,7 @@ import express = require("express");
 import { jwtMiddleware } from "../middleware/jwt";
 import { checkRequiredField } from "../utils/global";
 import { ErrorHandler } from "../utils/error/error-handler";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { listeParam, modifierParam } from "../controller/ParamController";
 

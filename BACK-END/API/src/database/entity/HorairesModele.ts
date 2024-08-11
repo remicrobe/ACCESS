@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Collaborateur } from "./Collab";
+import { Collaborateur } from "./Collaborateur";
 
 @Entity()
 export class HorairesModele {

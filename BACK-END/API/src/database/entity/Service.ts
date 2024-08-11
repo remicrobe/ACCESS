@@ -1,4 +1,4 @@
-import { Collaborateur } from "./Collab";
+import { Collaborateur } from "./Collaborateur";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

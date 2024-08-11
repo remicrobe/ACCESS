@@ -2,11 +2,12 @@ import { AppDataSource } from "../database/datasource";
 import { Service } from "../database/entity/Service";
 import * as express from "express";
 import { createService, editService, getCollabService, ServiceUnderControl } from "../controller/ServiceController";
-import { Collaborateur } from "../database/entity/Collab";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { checkRequiredField } from "../utils/global";
+import {ServiceRepository} from "../database/repository/ServiceRepository";
 
 const serviceRouter = express.Router();
 
@@ -98,7 +99,7 @@ serviceRouter.put('/modifierService/:serviceId', jwtMiddlewareFullInfo, async (r
             return res.sendStatus(422);
         }
         let connectedCollab: Collaborateur = req.body.connectedCollab;
-        const service = await AppDataSource.getRepository(Service).findOneOrFail({
+        const service = await ServiceRepository.findOneOrFail({
             where: { id: serviceId },
             relations: { chefservice: true }
         });
@@ -178,7 +179,7 @@ serviceRouter.get('/:serviceId/collaborateurs', jwtMiddlewareFullInfo, async (re
         const serviceId = parseInt(req.params.serviceId);
         let connectedCollab: Collaborateur = req.body.connectedCollab;
 
-        const service = await AppDataSource.getRepository(Service).findOne({
+        const service = await ServiceRepository.findOne({
             where: { id: serviceId },
             relations: { chefservice: true, collabs: true }
         });
@@ -213,7 +214,7 @@ serviceRouter.get('/', jwtMiddlewareFullInfo, async (req, res) => {
     try {
         let connectedCollab: Collaborateur = req.body.connectedCollab;
 
-        const service = await AppDataSource.getRepository(Service).find({
+        const service = await ServiceRepository.find({
             relations: {
                 chefservice: true,
                 collabs: true

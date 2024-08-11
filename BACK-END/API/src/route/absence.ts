@@ -1,4 +1,4 @@
-import { Collaborateur } from '../database/entity/Collab';
+import { Collaborateur } from '../database/entity/Collaborateur';
 import { AppDataSource } from "../database/datasource";
 import { Token, tokenType } from "../database/entity/Token";
 import * as express from "express";
@@ -16,6 +16,7 @@ import { isSuperior } from "../controller/ServiceController";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { checkRequiredField } from "../utils/global";
 import { jsonToExcel } from "../utils/excel/json-to-excel";
+import {CollaborateurRepository} from "../database/repository/CollaborateurRepository";
 
 const absenceRouter = express.Router();
 
@@ -187,7 +188,7 @@ absenceRouter.post('/creerUneAbsence/:idcollab?', jwtMiddlewareFullInfo, async (
         let targetCollab: Collaborateur = undefined;
         let targetCollabID = parseInt(req.params.idcollab);
         if (targetCollabID) {
-            targetCollab = await AppDataSource.getRepository(Collaborateur).findOneOrFail({
+            targetCollab = await CollaborateurRepository.findOneOrFail({
                 where: {id: targetCollabID},
                 relations: {service: {chefservice: true}}
             });

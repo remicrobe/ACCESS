@@ -1,5 +1,5 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Collaborateur, typeCollab } from "./Collab";
+import { Collaborateur, typeCollab } from "./Collaborateur";
 import { Service } from "./Service";
 import { Historique } from "./Historique";
 
