@@ -16,10 +16,7 @@
                 type="list-item-avatar"
             ></v-skeleton-loader>
         </v-col>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
+        <v-divider v-for="n in 4"></v-divider>
         <v-col md="12">
             <v-card
                 v-if="user"
@@ -53,10 +50,22 @@
                 variant="tonal"
             ></v-skeleton-loader>
         </v-col>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
-        <v-divider></v-divider>
+        <v-divider v-for="n in 4"></v-divider>
+        <v-col md="12">
+            <v-card
+                v-if="user"
+                color="primary"
+                :elevation="2"
+                class="mt-2 mb-2"
+                variant="tonal"
+            >
+                <v-card-text>
+                    Votre dernière connexion a eut lieu à {{new Date(user.lastConnection).toLocaleString()}}
+                    via l'IP {{user.lastIp}} <strong v-if="lastConnectionData">localisé à {{lastConnectionData.city}}</strong>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-divider v-for="n in 4"></v-divider>
     </v-row>
 </template>
 
@@ -66,8 +75,13 @@ import {useApiService} from "~/services/apiServices";
 
 export default {
     async created() {
-        useGlobalStore().getUserInfo().then(tuser => {
+        useGlobalStore().getUserInfo().then(async tuser => {
             this.user = tuser;
+
+            const response = await fetch(`http://ip-api.com/json/${this.user.lastIp}`);
+            if (response.ok) {
+                this.lastConnectionData = await response.json();
+            }
         });
         useApiService("/access/stats", {method: "get"}, true, false).then(({data: tstats}) => {
             this.stats = tstats;
@@ -76,8 +90,9 @@ export default {
     data() {
         return {
             stats: undefined,
-            user: undefined
+            user: undefined,
+            lastConnectionData: undefined,
         };
-    }
+    },
 };
 </script>

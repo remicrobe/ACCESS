@@ -4,8 +4,6 @@ import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { isDRH, isARH, isRH } from "../controller/CollabController";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { getAllIncident, getIncidentUnderMyControl } from "../controller/IncidentController";
-import { AppDataSource } from '../database/datasource';
-import { Incident } from '../database/entity/Incident';
 import { isSuperior } from '../controller/ServiceController';
 import { IncidentReponse } from '../database/entity/IncidentReponse';
 import {IncidentRepository} from "../database/repository/IncidentRepository";

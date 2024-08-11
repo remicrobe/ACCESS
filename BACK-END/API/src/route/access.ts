@@ -1,7 +1,5 @@
-import { Access, typePoint } from '../database/entity/Access';
-import { AppDataSource } from "../database/datasource";
+import { Access } from '../database/entity/Access';
 import { Collaborateur, typeCollab } from "../database/entity/Collaborateur";
-import { Service } from "../database/entity/Service";
 import * as express from "express";
 import {
     creerAccess,
@@ -15,9 +13,7 @@ import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { checkQRCode } from "../controller/Token";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { MoreThan, Not } from "typeorm";
-import { Historique } from "../database/entity/Historique";
 import { DateTime } from "luxon";
-import { Absence } from "../database/entity/Absence";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { getAbsenceUnderMyControl, getAllAbsences } from "../controller/AbsenceController";
 import { getHistory, getHistoryByService } from "../controller/HistoriqueController";

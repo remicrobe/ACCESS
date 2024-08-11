@@ -1,13 +1,10 @@
 import * as express from "express";
 import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { Request, Response } from "express";
-import { AppDataSource } from "../database/datasource";
-import { HorairesModele } from "../database/entity/HorairesModele";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { Collaborateur } from "../database/entity/Collaborateur";
 import { getHistory, getHistoryByService, getMyHistory } from "../controller/HistoriqueController";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
-import { IsNull } from "typeorm";
 import { jsonToExcel } from "../utils/excel/json-to-excel";
 
 const historiqueRouter = express.Router();

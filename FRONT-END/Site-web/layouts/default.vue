@@ -25,7 +25,7 @@
 
                     </template>
                 </v-list-item>
-                <v-list-item @click="disconnect" title="Se déconnecter" append-icon="mdi-login"/>
+                <v-list-item @click="disconnect" v-if="!isPrivacyPage && !isLoginPage" title="Se déconnecter" append-icon="mdi-login"/>
 
                 <v-divider></v-divider>
 
@@ -127,12 +127,21 @@ export default {
                 icon: "mdi-archive-clock-outline",
                 grade: ["*"],
             },
+            {
+                route: "/privacy",
+                title: "Politique de confidentialité",
+                icon: "mdi-lock-outline",
+                grade: ["*"],
+            },
         ],
     }),
 
     computed: {
         isLoginPage() {
             return this.$route.path.indexOf("login") !== -1;
+        },
+        isPrivacyPage() {
+            return this.$route.path.indexOf("privacy") !== -1;
         },
         currentRouteTitle() {
             const currentRoute = this.$route.path;
@@ -144,6 +153,9 @@ export default {
         await this.checkUserRight();
 
         watch(() => this.$route, async (to, from) => {
+            const currentRoute = this.$route.path;
+            const matchingRoute = this.routes.find(route => route.route === currentRoute);
+
             if (!this.user) {
                 this.user = await useGlobalStore().getUserInfo();
             }
@@ -157,7 +169,7 @@ export default {
             useRouter().push('/login');
         },
         checkUserRight() {
-            if (!this.isLoginPage && !useGlobalStore().isLogin()) {
+            if (!this.isLoginPage && !this.isPrivacyPage && !useGlobalStore().isLogin()) {
                 useRouter().push('/login?ref=' + useRouter().currentRoute.value.fullPath);
             }
         }

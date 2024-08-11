@@ -9,18 +9,15 @@ import {
     isRH,
     modifierCollab
 } from "../controller/CollabController";
-import { Collaborateur, typeCollab } from "../database/entity/Collaborateur";
-import { AppDataSource } from "../database/datasource";
+import { Collaborateur } from "../database/entity/Collaborateur";
 import {
     checkTokenPassword, disconnectToken,
-    getCollabInfoFromToken,
     setAuthToken,
     setTokenPasswordAndSendMail
 } from "../controller/Token";
 import { createHash } from "crypto";
 import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { isSuperior } from "../controller/ServiceController";
-import { Token } from "../database/entity/Token";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { IsNull } from "typeorm";
 import { checkRequiredField } from "../utils/global";
@@ -410,13 +407,11 @@ collaborateurRouter.post('/connect/', async (req: Request, res: Response) => {
             relations: { service: { chefservice: true } }
         });
 
-        collab.lastIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
-        collab.lastConnection = new Date();
-
-        await CollaborateurRepository.save(collab);
-
         res.send(await setAuthToken(collab));
 
+        collab.lastIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
+        collab.lastConnection = new Date();
+        await CollaborateurRepository.save(collab);
     } catch (error) {
         ErrorHandler(error, req, res);
     }

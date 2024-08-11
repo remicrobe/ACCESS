@@ -6,18 +6,41 @@
   <component name="ChangeListManager">
     <list default="true" id="3efa089e-089b-4091-b89e-da4b6ca25070" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/absence.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/absence.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/access.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/access.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/collaborateur.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/collaborateur.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/historique.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/historique.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/incident.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/incident.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/modele-horaire.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/modele-horaire.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/presence.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/presence.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BACK-END/API/src/route/token.ts" beforeDir="false" afterPath="$PROJECT_DIR$/BACK-END/API/src/route/token.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FRONT-END/Site-web/layouts/default.vue" beforeDir="false" afterPath="$PROJECT_DIR$/FRONT-END/Site-web/layouts/default.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FRONT-END/Site-web/pages/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/FRONT-END/Site-web/pages/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FRONT-END/Site-web/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/FRONT-END/Site-web/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+        <option value="TypeScript File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -33,16 +56,30 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "H:/node/ACCESS",
+    "last_opened_file_path": "H:/node/ACCESS/BACK-END/API",
+    "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "H:\\node\\ACCESS\\BACK-END\\API\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
+    ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="H:\node\ACCESS\BACK-END\API" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\node\ACCESS\BACK-END\API\src\database" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

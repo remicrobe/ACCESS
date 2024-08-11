@@ -1,5 +1,3 @@
-import { AppDataSource } from "../database/datasource";
-import { Service } from "../database/entity/Service";
 import * as express from "express";
 import { createService, editService, getCollabService, ServiceUnderControl } from "../controller/ServiceController";
 import { Collaborateur } from "../database/entity/Collaborateur";

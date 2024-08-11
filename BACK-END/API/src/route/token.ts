@@ -1,6 +1,4 @@
-import { Collaborateur, typeCollab } from '../database/entity/Collaborateur';
-import { AppDataSource } from "../database/datasource";
-import { Token, tokenType } from "../database/entity/Token";
+import { Collaborateur } from '../database/entity/Collaborateur';
 import * as express from "express";
 import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { getTokenCardQrCode, setTokenAppQrCode, setTokenCardQrCode } from "../controller/Token";

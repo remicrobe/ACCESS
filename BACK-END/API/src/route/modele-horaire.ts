@@ -1,8 +1,6 @@
 import * as express from "express";
 import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import { Request, Response } from "express";
-import { AppDataSource } from "../database/datasource";
-import { HorairesModele } from "../database/entity/HorairesModele";
 import { ErrorHandler } from "../utils/error/error-handler";
 import { editModele, nouveauModele } from "../controller/HorraireController";
 import {HorairesModeleRepository} from "../database/repository/HorairesModeleRepository";

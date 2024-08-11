@@ -1,8 +1,6 @@
 import { Collaborateur } from '../database/entity/Collaborateur';
-import { AppDataSource } from "../database/datasource";
-import { Token, tokenType } from "../database/entity/Token";
 import * as express from "express";
-import { jwtMiddleware, jwtMiddlewareFullInfo } from "../middleware/jwt";
+import { jwtMiddlewareFullInfo } from "../middleware/jwt";
 import {
     accepterAbsence,
     creerAbsence,
@@ -10,7 +8,6 @@ import {
     getAbsenceUnderMyControl, getAllAbsences,
     modifierAbsence
 } from "../controller/AbsenceController";
-import { Absence } from "../database/entity/Absence";
 import { isARH, isDRH, isRH } from "../controller/CollabController";
 import { isSuperior } from "../controller/ServiceController";
 import { ErrorHandler } from "../utils/error/error-handler";
