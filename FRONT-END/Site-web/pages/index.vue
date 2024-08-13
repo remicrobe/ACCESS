@@ -61,7 +61,7 @@
             >
                 <v-card-text>
                     Votre dernière connexion a eut lieu à {{new Date(user.lastConnection).toLocaleString()}}
-                    via l'IP {{user.lastIp}} <strong v-if="lastConnectionData">localisé à {{lastConnectionData.city}}</strong>
+                    via l'IP {{user.lastIp}} <strong v-if="lastConnectionData">localisé à {{lastConnectionData.cityName}}</strong>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -78,7 +78,7 @@ export default {
         useGlobalStore().getUserInfo().then(async tuser => {
             this.user = tuser;
 
-            const response = await fetch(`http://ip-api.com/json/${this.user.lastIp}`);
+            const response = await fetch(`https://freeipapi.com/api/json/${this.user.lastIp}`);
             if (response.ok) {
                 this.lastConnectionData = await response.json();
             }
