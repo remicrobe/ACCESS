@@ -49,7 +49,7 @@ const QRCodeTabs = () => (
 
 const PlanningTabs = () => (
     <PlanningStack.Navigator screenOptions={{ headerShown: false }}>
-        <PlanningStack.Screen name="Planning" component={Planning} />
+        <PlanningStack.Screen name="PlanningScreen" component={Planning} />
     </PlanningStack.Navigator>
 );
 
