@@ -29,7 +29,7 @@
     "luxon": "^3.4.3",
     "mysql": "^2.18.1",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.4",
+    "nodemailer": "^6.9.9",
     "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.3",
     "swagger-autogen": "^2.23.7",
