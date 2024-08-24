@@ -98,7 +98,7 @@ collaborateurRouter.post('/creerCollab', jwtMiddlewareFullInfo, async (req: Requ
 collaborateurRouter.get('/infoCollab', jwtMiddlewareFullInfo, async (req: Request, res: Response) => {
     /*  #swagger.tags = ['Collaborateur']
         #swagger.path = '/collab/infoCollab'
-        #swagger.method = 'get'
+        #swagger.mw ethod = 'get'
         #swagger.description = 'Obtenir les informations du collaborateur connecté'
         #swagger.responses[200] = {
             description: 'Informations du collaborateur connecté.',
@@ -207,44 +207,7 @@ collaborateurRouter.get('/sansService', jwtMiddleware, async (req: Request, res:
 // Route pour modifier un collaborateur
 collaborateurRouter.put('/modifierCollab/:collaborateur', jwtMiddleware, async (req: Request, res: Response) => {
     /*  #swagger.tags = ['Collaborateur']
-        #swagger.path = '/collab/modifierCollab/{collaborateur}'
-        #swagger.method = 'put'
-        #swagger.description = 'Modifier les informations d\'un collaborateur'
-        #swagger.parameters['collaborateur'] = {
-            in: 'path',
-            description: 'ID du collaborateur',
-            required: true,
-            type: 'integer'
-        }
-        #swagger.parameters['body'] = {
-            in: 'body',
-            description: 'Nouvelles informations du collaborateur',
-            required: true,
-            schema: {
-                prenom: 'string',
-                nom: 'string',
-                mail: 'string',
-                grade: 'string',
-                fonction: 'string',
-                service: 'object',
-                horairesdefault: 'object',
-                horaire: 'object',
-                actif: 'boolean'
-            }
-        }
-        #swagger.responses[201] = {
-            description: 'Collaborateur modifié avec succès.',
-            schema: { $ref: '#/definitions/Collaborateur' }
-        }
-        #swagger.responses[400] = {
-            description: 'L\'utilisateur n\'existe pas.'
-        }
-        #swagger.responses[401] = {
-            description: 'Non autorisé.'
-        }
-        #swagger.responses[422] = {
-            description: 'Champs requis manquants.'
-        }
+        ...............
     */
     const collabID = parseInt(req.params.collaborateur);
     try {
@@ -257,17 +220,7 @@ collaborateurRouter.put('/modifierCollab/:collaborateur', jwtMiddleware, async (
             res.sendStatus(401);
         } else {
 
-            let {
-                prenom,
-                nom,
-                mail,
-                grade,
-                fonction,
-                service,
-                horairesdefault,
-                horaire,
-                actif
-            } = req.body;
+            let { prenom, nom, mail, grade, fonction, service, horairesdefault, horaire, actif } = req.body;
             if (!checkRequiredField([prenom, nom, { object: mail, type: 'mail' }, grade, fonction])) {
                 return res.sendStatus(422);
             }
