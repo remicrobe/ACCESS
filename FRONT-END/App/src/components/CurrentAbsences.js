@@ -65,7 +65,7 @@ export default function AbsencesScreen() {
                                 </View>
                             ))
                         ) : (
-                            <Text>Aucune absence en cours.</Text>
+                            <Text style={styles.absenceText}>Aucune absence en cours.</Text>
                         )}
                     </ScrollView>
                 )}
@@ -99,10 +99,12 @@ const styles = StyleSheet.create({
     },
     absenceText: {
         fontSize: 16,
+        backgroundColor: COLORS.base,
     },
     title: {
         fontSize: 20,
         fontWeight: '800',
         color: COLORS.primary,
+        backgroundColor: COLORS.base,
     },
 });

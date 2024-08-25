@@ -6,6 +6,8 @@ import {
     KeyboardAvoidingView,
     Image,
 } from "react-native";
+import {Header} from "../../header/Header";
+import { COLORS } from "../../color";
 
 import {
     Layout,
@@ -18,7 +20,6 @@ import {
 import $axios from "../../plugins/axios";
 
 export default function ({navigation}) {
-    const {isDarkmode, setTheme} = useTheme();
 
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
@@ -51,24 +52,17 @@ export default function ({navigation}) {
                             flex: 1,
                             justifyContent: "center",
                             alignItems: "center",
-                            backgroundColor: isDarkmode ? "#17171E" : themeColor.white100,
+                            backgroundColor: COLORS.base
                         }}
                     >
-                        <Image
-                            resizeMode="contain"
-                            style={{
-                                height: 220,
-                                width: 220,
-                            }}
-                            source={require("../../../assets/mns-fulllogo.png")}
-                        />
+                    <Header/>
                     </View>
                     <View
                         style={{
                             flex: 3,
                             paddingHorizontal: 20,
                             paddingBottom: 20,
-                            backgroundColor: isDarkmode ? themeColor.dark : themeColor.white,
+                            backgroundColor: COLORS.base
                         }}
                     >
                         <Text
@@ -77,6 +71,7 @@ export default function ({navigation}) {
                             style={{
                                 alignSelf: "center",
                                 padding: 30,
+                                textAlign: "center",
                             }}
                         >
                             Problème de connexion
@@ -101,6 +96,7 @@ export default function ({navigation}) {
                                 marginTop: 20,
                             }}
                             disabled={loading}
+                            color="#4793CA"
                         />
 
                         <View
@@ -125,30 +121,6 @@ export default function ({navigation}) {
                                     }}
                                 >
                                     Je veux me connecter
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginTop: 30,
-                                justifyContent: "center",
-                            }}
-                        >
-                            <TouchableOpacity
-                                onPress={() => {
-                                    isDarkmode ? setTheme("light") : setTheme("dark");
-                                }}
-                            >
-                                <Text
-                                    size="md"
-                                    fontWeight="bold"
-                                    style={{
-                                        marginLeft: 5,
-                                    }}
-                                >
-                                    {isDarkmode ? "☀️ mode lumineux" : "🌑 mode sombre"}
                                 </Text>
                             </TouchableOpacity>
                         </View>

@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#EAEAEA',
         marginBottom: 10,
         borderRadius: 10,
+        backgroundColor: COLORS.base,
     },
     absenceText: {
         fontSize: 16,

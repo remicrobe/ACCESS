@@ -19,11 +19,10 @@ export default function ({ navigation }) {
         getQRCode();
         const intervalId = setInterval(() => {
             getQRCode();
-        }, 15000); // 15 seconds
+        }, 15000);
 
-        // Clear interval on component unmount
         return () => clearInterval(intervalId);
-    }, []); // Empty dependency array ensures this effect runs only once
+    }, []);
 
     useEffect(() => {
         if (!loading) {
@@ -53,9 +52,9 @@ export default function ({ navigation }) {
     return (
         <SafeAreaView>
             <ScrollView>
-                <Layout style={{paddingBottom: 50,}}>
+                <Layout style={{backgroundColor: COLORS.base}}>
                     <Header/>
-                    <View style={s.container}>
+                    <View style={styles.container}>
                         <View style={styles.qrContainer}>
                             {loading ? (
                                 <ActivityIndicator size="large" color="#0000ff" />
@@ -98,6 +97,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         padding: 16,
+        backgroundColor: COLORS.base,
     },
     header: {
         alignItems: 'center',

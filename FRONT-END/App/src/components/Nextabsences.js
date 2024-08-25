@@ -60,7 +60,7 @@ export default function AbsencesScreen() {
                                 </View>
                             </View>
                         ) : (
-                            <Text>Aucune absence validée à venir.</Text>
+                            <Text style={styles.absenceText}>Aucune absence validée à venir.</Text>
                         )}
                     </ScrollView>
                 )}
@@ -94,10 +94,12 @@ const styles = StyleSheet.create({
     },
     absenceText: {
         fontSize: 16,
+        backgroundColor: COLORS.base,
     },
     title: {
         fontSize: 20,
         fontWeight: '800',
         color: COLORS.primary,
-    },
+        backgroundColor: COLORS.base,
+    }
 });

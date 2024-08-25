@@ -8,8 +8,8 @@ import { COLORS } from "../color";
 import { useNavigation } from '@react-navigation/native';
 
 export default function ({ navigation }) {
-    const userData = useUserStore(state => state.userData); // Utilisation correcte de useUserStore
-    const { navigate } = useNavigation(); // Utilisation de useNavigation pour obtenir navigate
+    const userData = useUserStore(state => state.userData); 
+    const { navigate } = useNavigation();
 
     const navigateToTimesheet = () => {
         navigate('Timesheet');
@@ -112,4 +112,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#C9474E',
         alignSelf: 'center',
     },
+    container : {
+        backgroundColor: COLORS.base,
+    }
 });

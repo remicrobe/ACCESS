@@ -36,7 +36,6 @@ export default function ({ navigation }) {
 
     function fetchData() {
         return new Promise((resolve, reject) => {
-            // Replace 'get' with 'post' if required
             $axios.get('/historique/me')
                 .then((res) => {
                     setHistorique(res.data);
@@ -69,7 +68,7 @@ export default function ({ navigation }) {
     return (
         <Layout>
             <Header/>
-            <View style={s.container}>
+            <View style={styles.container}>
                 <View style={s.header}>
                     <Text style={s.bold}>Mes demandes</Text>
                 </View>
