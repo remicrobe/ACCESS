@@ -69,9 +69,6 @@ export default function ({ navigation }) {
         <Layout>
             <Header/>
             <View style={styles.container}>
-                <View style={s.header}>
-                    <Text style={s.bold}>Mes demandes</Text>
-                </View>
                 <ScrollView
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -106,6 +103,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+        backgroundColor: COLORS.base,
     },
     header: {
         flexDirection: 'row',

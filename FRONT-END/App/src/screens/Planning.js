@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Agenda, LocaleConfig } from 'react-native-calendars'; // Importer LocaleConfig
+import { Agenda, LocaleConfig } from 'react-native-calendars'; 
 import { Layout } from 'react-native-rapi-ui';
-import { useUserStore } from '../store/user.store';
+import axios from 'axios'; // Importer axios
 import { COLORS } from '../color';
 
 // Configurer la langue française pour les mois et les jours
@@ -28,12 +28,18 @@ const AbsenceAgenda = () => {
 
     useEffect(() => {
         async function fetchAbsences() {
-            let res = await useUserStore.getState().getUserAbsenceData();
-            if (res) {
-                let formattedItems = formatData(res);
-                setItems(formattedItems);
-            } else {
-                alert("Nous n'avons pu récupérer vos informations, veuillez essayer plus tard !");
+            try {
+                // Remplacer 'API_URL' par l'URL réelle de votre API
+                const response = await axios.get('https://votre-api.com/absences');
+                if (response.data) {
+                    let formattedItems = formatData(response.data);
+                    setItems(formattedItems);
+                } else {
+                    alert("Nous n'avons pu récupérer vos informations, veuillez essayer plus tard !");
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des absences:", error);
+                alert("Une erreur est survenue lors de la récupération des données.");
             }
         }
     
@@ -71,23 +77,17 @@ const AbsenceAgenda = () => {
         console.log("Formatted items:", formattedItems);
         return formattedItems;
     };
-    
-    
+
     const addDays = (date, days) => {
-        // Convertir la date en timestamp en millisecondes
         const timestamp = Date.parse(date);
         if (isNaN(timestamp)) {
             console.error("Date invalide détectée:", date);
             return date;  // Retourner la date originale si elle est invalide
         }
     
-        // Ajouter les jours en millisecondes
         const result = new Date(timestamp + days * 24 * 60 * 60 * 1000);
-    
-        // Retourner la nouvelle date au format 'YYYY-MM-DD'
         return result.toISOString().substring(0, 10);
     };
-
 
     const renderItem = (item) => {
         return (
@@ -118,6 +118,8 @@ const AbsenceAgenda = () => {
                         agendaTodayColor: COLORS.primary,
                         agendaKnobColor: COLORS.secondary,
                     }}
+                    // Ajouter des propriétés pour afficher les jours sans événements
+                    renderEmptyData={() => <View style={styles.emptyDay}><Text style={styles.emptyText}>Aucune absence pour cette journée</Text></View>}
                 />
             </View>
         </Layout>
@@ -157,6 +159,15 @@ const styles = StyleSheet.create({
     itemDate: {
         marginTop: 5,
         color: '#888',
+    },
+    emptyDay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        color: '#888',
+        fontStyle: 'italic',
     },
 });
 
