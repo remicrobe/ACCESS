@@ -36,10 +36,11 @@ export default function ({ navigation }) {
     ];
 
     const raisonOptions = [
-        { label: 'Congés', value: 'vacation' },
-        { label: 'Maladie', value: 'disease' },
-        { label: 'Autre', value: 'other' }
+        { label: 'Congé', value: 'conge' },
+        { label: 'Maladie', value: 'maladie' },
+        { label: 'Autre', value: 'autre' }
     ];
+      
 
     const handleSubmit = () => {
         if (!datedeb || !datefin || !periodeDeb || !periodeFin || !raison) {
