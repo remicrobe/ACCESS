@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet } from "react-native";
 import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Modal from 'react-native-modal';
 import $axios from "../../plugins/axios";
 import { useAuthStore } from "../../store/auth.store";
 import { useUserStore } from "../../store/user.store";
@@ -13,6 +14,8 @@ export default function ({ navigation }) {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [welcomeMessage, setWelcomeMessage] = useState("");
 
     async function login() {
         setLoading(true);
@@ -21,10 +24,10 @@ export default function ({ navigation }) {
                 try {
                     useAuthStore.getState().setJwtToken(res.data.jwtToken);
                     await useUserStore.getState().getUserData();
-                    alert(`Bienvenue ${res.data.collab.nom} ${res.data.collab.prenom}`);
-                    navigation.navigate("MainTabs");
+                    setWelcomeMessage(`Bienvenue ${res.data.collab.nom} ${res.data.collab.prenom}`);
+                    setIsModalVisible(true);
                 } catch (error) {
-                    // Error saving data
+                    console.error("Erreur lors de la récupération des données utilisateur", error);
                 }
             })
             .catch((err) => {
@@ -100,6 +103,27 @@ export default function ({ navigation }) {
                         </View>
                     </View>
                 </ScrollView>
+
+                <Modal
+                    isVisible={isModalVisible}
+                    onBackdropPress={() => {
+                        setIsModalVisible(false);
+                        navigation.navigate("MainTabs");
+                    }}
+                >
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{welcomeMessage}</Text>
+                        <Button
+                            text="Merci"
+                            onPress={() => {
+                                setIsModalVisible(false);
+                                navigation.navigate("MainTabs");
+                            }}
+                            style={styles.modalButton}
+                            color={COLORS.primary}
+                        />
+                    </View>
+                </Modal>
             </Layout>
         </KeyboardAvoidingView>
     );
@@ -176,5 +200,18 @@ const styles = StyleSheet.create({
     },
     background: {
         backgroundColor: COLORS.primary,
+    },
+    modalContent: {
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    modalText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    modalButton: {
+        marginTop: 10,
     },
 });
