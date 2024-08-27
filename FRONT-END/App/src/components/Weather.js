@@ -11,7 +11,7 @@ const Weather = () => {
   useEffect(() => {
     const apiKey = '842519d667854c8388d101146242707';
     const location = 'Metz';
-    const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no&lang=fr`;
+    const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no&lang=fr`;
 
     axios.get(url)
       .then(response => {

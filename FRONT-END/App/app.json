@@ -34,7 +34,8 @@
       }
     },
     "android": {
-      "package": "com.iapeika.Access"
+      "package": "com.iapeika.Access",
+      "permissions": ["INTERNET"]
     }
   }
 }
