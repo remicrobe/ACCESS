@@ -66,8 +66,8 @@ export default function AbsencesScreen() {
         <SafeAreaView style={styles.container}>
             <Header/>
             <Layout style={styles.layout}>
-                <View style={{margin: 20, marginBottom: 5, marginTop: 5,}}>
-                    <Text>Nombre total d'absences : {absences.length} </Text>
+                <View style={{backgroundColor: COLORS.base}}>
+                    <Text style={{margin: 20, marginBottom: 5, marginTop: 5,}}>Nombre total d'absences : {absences.length} </Text>
                 </View>
                 <View style={styles.filterContainer}>
                     <Picker
@@ -94,7 +94,7 @@ export default function AbsencesScreen() {
                 {loading ? (
                     <Text>Chargement...</Text>
                 ) : (
-                    <ScrollView>
+                    <ScrollView style={{backgroundColor: COLORS.base}}>
                         {filteredAbsences.length > 0 ? (
                             filteredAbsences.map((absence, index) => (
                                 <View key={index} style={styles.absenceItem}>
@@ -148,13 +148,15 @@ export default function AbsencesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.base,
     },
+
     raison: {
         fontWeight: '700',
         color: '#828282'
     },
     layout: {
-        paddingBottom: 50,
+        backgroundColor: COLORS.base,
     },
     absenceItem: {
         display: 'flex',
@@ -166,16 +168,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#EAEAEA',
         marginBottom: 10,
         borderRadius: 10,
-        backgroundColor: COLORS.base,
+        marginTop: 20,
     },
     absenceText: {
         fontSize: 16,
+        
     },
     filterContainer: {
-        marginBottom: 20,
+        backgroundColor: COLORS.base,
+
     },
     picker: {
         height: 50,
         width: '100%',
+        backgroundColor: COLORS.base,
     },
 });

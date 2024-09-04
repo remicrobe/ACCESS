@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars'; 
 import { Layout } from 'react-native-rapi-ui';
-import axios from 'axios'; // Importer axios
+import $axios from '../plugins/axios';
 import { COLORS } from '../color';
 
-// Configurer la langue française pour les mois et les jours
 LocaleConfig.locales['fr'] = {
     monthNames: [
         'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -25,21 +24,23 @@ LocaleConfig.defaultLocale = 'fr';
 
 const AbsenceAgenda = () => {
     const [items, setItems] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchAbsences() {
             try {
-                // Remplacer 'API_URL' par l'URL réelle de votre API
-                const response = await axios.get('https://votre-api.com/absences');
+               const response = await $axios.get('/absence/mesAbsences');
                 if (response.data) {
                     let formattedItems = formatData(response.data);
                     setItems(formattedItems);
                 } else {
-                    alert("Nous n'avons pu récupérer vos informations, veuillez essayer plus tard !");
+                    Alert.alert("Erreur", "Nous n'avons pu récupérer vos informations, veuillez essayer plus tard !");
                 }
             } catch (error) {
-                console.error("Erreur lors de la récupération des absences:", error);
-                alert("Une erreur est survenue lors de la récupération des données.");
+                console.error("Erreur lors de la récupération des absences:", error.message);
+                Alert.alert("Erreur", "Une erreur est survenue lors de la récupération des données.");
+            } finally {
+                setLoading(false);
             }
         }
     
@@ -82,7 +83,7 @@ const AbsenceAgenda = () => {
         const timestamp = Date.parse(date);
         if (isNaN(timestamp)) {
             console.error("Date invalide détectée:", date);
-            return date;  // Retourner la date originale si elle est invalide
+            return date; 
         }
     
         const result = new Date(timestamp + days * 24 * 60 * 60 * 1000);
@@ -105,22 +106,25 @@ const AbsenceAgenda = () => {
     return (
         <Layout>
             <View style={styles.container}>
-                <Agenda
-                    items={items}
-                    selected={new Date().toISOString().substring(0, 10)}
-                    renderItem={renderItem}
-                    theme={{
-                        selectedDayBackgroundColor: COLORS.secondary,
-                        todayTextColor: COLORS.primary,
-                        dotColor: COLORS.primary,
-                        agendaDayTextColor: COLORS.primary,
-                        agendaDayNumColor: COLORS.primary,
-                        agendaTodayColor: COLORS.primary,
-                        agendaKnobColor: COLORS.secondary,
-                    }}
-                    // Ajouter des propriétés pour afficher les jours sans événements
-                    renderEmptyData={() => <View style={styles.emptyDay}><Text style={styles.emptyText}>Aucune absence pour cette journée</Text></View>}
-                />
+                {loading ? (
+                    <Text style={styles.loadingText}>Chargement des absences...</Text>
+                ) : (
+                    <Agenda
+                        items={items}
+                        selected={new Date().toISOString().substring(0, 10)}
+                        renderItem={renderItem}
+                        theme={{
+                            selectedDayBackgroundColor: COLORS.secondary,
+                            todayTextColor: COLORS.primary,
+                            dotColor: COLORS.primary,
+                            agendaDayTextColor: COLORS.primary,
+                            agendaDayNumColor: COLORS.primary,
+                            agendaTodayColor: COLORS.primary,
+                            agendaKnobColor: COLORS.secondary,
+                        }}
+                        renderEmptyData={() => <View style={styles.emptyDay}><Text style={styles.emptyText}>Aucune absence pour cette journée</Text></View>}
+                    />
+                )}
             </View>
         </Layout>
     );
@@ -168,6 +172,12 @@ const styles = StyleSheet.create({
     emptyText: {
         color: '#888',
         fontStyle: 'italic',
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#888',
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 

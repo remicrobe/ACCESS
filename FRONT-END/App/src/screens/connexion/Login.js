@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet } from "react-native";
+import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet, Alert } from "react-native";
 import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import $axios from "../../plugins/axios";
 import { useAuthStore } from "../../store/auth.store";
 import { useUserStore } from "../../store/user.store";
@@ -19,23 +20,22 @@ export default function ({ navigation }) {
 
     async function login() {
         setLoading(true);
-        await $axios.post(`collab/connect`, { mail: email, motdepasse: password })
-            .then(async (res) => {
-                try {
-                    useAuthStore.getState().setJwtToken(res.data.jwtToken);
-                    await useUserStore.getState().getUserData();
-                    setWelcomeMessage(`Bienvenue ${res.data.collab.nom} ${res.data.collab.prenom}`);
-                    setIsModalVisible(true);
-                } catch (error) {
-                    console.error("Erreur lors de la récupération des données utilisateur", error);
-                }
-            })
-            .catch((err) => {
-                alert(`Une erreur est survenue lors de la connexion`);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        try {
+            const response = await $axios.post(`collab/connect`, { mail: email, motdepasse: password });
+            if (response.data && response.data.jwtToken) {
+                await AsyncStorage.setItem('jwtToken', response.data.jwtToken);
+                useAuthStore.getState().setJwtToken(response.data.jwtToken);
+                await useUserStore.getState().getUserData();
+                setWelcomeMessage(`Bienvenue ${response.data.collab.nom} ${response.data.collab.prenom}`);
+                setIsModalVisible(true);
+            } else {
+                Alert.alert("Erreur", "Nous n'avons pu récupérer vos informations, veuillez essayer plus tard !");
+            }
+        } catch (error) {
+            Alert.alert("Erreur", "Une erreur est survenue lors de la connexion.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (

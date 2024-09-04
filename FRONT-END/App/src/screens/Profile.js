@@ -16,8 +16,13 @@ export default function ({ navigation }) {
     };
 
     const handleLogout = async () => {
-        useAuthStore.getState().disconnect();
-        navigate('Login');
+        try {
+            await AsyncStorage.removeItem('jwtToken');
+            useAuthStore.getState().disconnect();
+            navigate('Login');
+        } catch (error) {
+            console.error('Erreur lors de la déconnexion:', error);
+        }
     };
 
     return (

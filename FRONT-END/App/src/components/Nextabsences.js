@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
         padding: 20,
+        backgroundColor: COLORS.base,
+
     },
     raison: {
         fontWeight: '700',
@@ -91,6 +93,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         borderRadius: 10,
+        backgroundColor: COLORS.base,
     },
     absenceText: {
         fontSize: 16,

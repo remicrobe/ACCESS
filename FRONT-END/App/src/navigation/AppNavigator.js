@@ -133,7 +133,7 @@ const MainTabs = () => {
                             alignItems: 'center',
                         }}>
                             <Image style={styles.qrcodeIcon}
-                                   source={focused ? require("../../assets/close.png") : require("../../assets/qr-code.png")} />
+                                   source={require("../../assets/qr-code.png")} />
                         </View>
                     ),
                 }}

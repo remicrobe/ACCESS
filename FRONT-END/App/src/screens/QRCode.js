@@ -50,9 +50,9 @@ export default function ({ navigation }) {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView >
             <ScrollView>
-                <Layout style={{backgroundColor: COLORS.base}}>
+                <Layout>
                     <Header/>
                     <View style={styles.container}>
                         <View style={styles.qrContainer}>
@@ -82,7 +82,7 @@ export default function ({ navigation }) {
                         <Button
                             text="Recharger le QR Code"
                             color= {COLORS.primary}
-                            style={{ marginTop: 20 }}
+                            style={{ marginTop: 20, marginBottom: 100, }}
                             onPress={getQRCode}
                         />
                     </View>
@@ -114,6 +114,8 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         padding: 15,
+        backgroundColor: COLORS.base,
+
     },
     bold: {
         fontSize: 25,

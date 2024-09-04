@@ -72,6 +72,9 @@ export default function ({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: COLORS.base,
+    },
     header: {
         display : 'flex',
         flexDirection: 'column',
@@ -83,6 +86,7 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         marginBottom: 16,
+        backgroundColor: COLORS.base,
     },
     label: {
         fontSize: 18,

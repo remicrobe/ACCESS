@@ -83,10 +83,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
         padding: 20,
+        
     },
     raison: {
         fontWeight: '700',
         color: '#828282',
+        backgroundColor: COLORS.base,
     },
     absenceItem: {
         display: 'flex',
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         borderRadius: 10,
+        backgroundColor: COLORS.base,
     },
     absenceText: {
         fontSize: 16,
