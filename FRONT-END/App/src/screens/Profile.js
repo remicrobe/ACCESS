@@ -5,11 +5,12 @@ import { useAuthStore } from "../store/auth.store";
 import { useUserStore } from "../store/user.store";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../color";
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Assurez-vous d'importer AsyncStorage
 import { useNavigation } from '@react-navigation/native';
 
-export default function ({ navigation }) {
+export default function () {
     const userData = useUserStore(state => state.userData); 
-    const { navigate } = useNavigation();
+    const { navigate } = useNavigation(); // Utilisez useNavigation pour la navigation
 
     const navigateToTimesheet = () => {
         navigate('Timesheet');
@@ -17,8 +18,13 @@ export default function ({ navigation }) {
 
     const handleLogout = async () => {
         try {
+            // Supprimer le jeton JWT du stockage local
             await AsyncStorage.removeItem('jwtToken');
+
+            // Mettre à jour l'état de l'authentification dans le store
             useAuthStore.getState().disconnect();
+
+            // Naviguer vers l'écran de connexion
             navigate('Login');
         } catch (error) {
             console.error('Erreur lors de la déconnexion:', error);

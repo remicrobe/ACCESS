@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, TouchableOpacity, View, KeyboardAvoidingView, Image, StyleSheet, Alert } from "react-native";
 import { Layout, Text, TextInput, Button, useTheme } from "react-native-rapi-ui";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,6 +17,24 @@ export default function ({ navigation }) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [welcomeMessage, setWelcomeMessage] = useState("");
+
+    // Vérifier l'authentification lors du montage du composant
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const token = await AsyncStorage.getItem('jwtToken');
+                if (token) {
+                    useAuthStore.getState().setJwtToken(token); // Mettre à jour le token dans le store
+                    await useUserStore.getState().getUserData(); // Récupérer les données de l'utilisateur
+                    navigation.navigate("MainTabs"); // Naviguer vers l'écran principal
+                }
+            } catch (error) {
+                console.error("Erreur lors de la vérification du token:", error);
+            }
+        };
+
+        checkAuth(); // Appeler la fonction de vérification d'authentification
+    }, [navigation]); // Ajouter navigation comme dépendance
 
     async function login() {
         setLoading(true);
