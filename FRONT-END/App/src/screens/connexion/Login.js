@@ -107,8 +107,7 @@ export default function ({ navigation }) {
                                     style={styles.linkContainer}
                                     onPress={() => navigation.navigate("ForgetPassword")}
                                 >
-                                    <Text style={styles.linkText}>Première connexion</Text>
-                                    <Text style={styles.linkText}>Mot de passe oublié</Text>
+                                    <Text style={styles.linkText}>Première connexion / Mot de passe oublié</Text>
                                 </TouchableOpacity>
                                 <Button
                                     text={loading ? "Loading" : "Connexion"}
