@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Modal from 'react-native-modal';
 import {
     Alert,
     KeyboardAvoidingView,
     ScrollView,
     View,
     TouchableOpacity,
+    StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from "../../color";
@@ -21,6 +23,8 @@ export default function ForgotPassword() {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const navigation = useNavigation();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [mailMessage, setMailMessage] = useState("");
 
     const forget = async () => {
         setLoading(true);
@@ -28,8 +32,8 @@ export default function ForgotPassword() {
             const response = await axios.post('https://access-api-38cea021d5b8.herokuapp.com/collab/demande-recuperation/', { mail: email });
 
             if (response.status === 200 || response.status === 201) {
-                Alert.alert('Succès', 'Vous avez reçu un mail !');
-                navigation.navigate('Login');
+                setMailMessage(`Un mail vous a été envoyé !`);
+                setIsModalVisible(true);
             } else {
                 Alert.alert('Erreur', 'Une erreur est survenue !');
             }
@@ -91,7 +95,43 @@ export default function ForgotPassword() {
                         </View>
                     </View>
                 </ScrollView>
+                <Modal
+                    isVisible={isModalVisible}
+                    onBackdropPress={() => {
+                        setIsModalVisible(false);
+                        navigation.navigate("Login");
+                    }}
+                >
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{mailMessage}</Text>
+                        <Button
+                            text="Terminé"
+                            onPress={() => {
+                                setIsModalVisible(false);
+                                navigation.navigate("Login");
+                            }}
+                            style={styles.modalButton}
+                            color={COLORS.primary}
+                        />
+                    </View>
+                </Modal>
             </Layout>
         </KeyboardAvoidingView>
     );
 }
+
+const styles = StyleSheet.create({
+    modalContent: {
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    modalText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    modalButton: {
+        marginTop: 10,
+    },
+});
