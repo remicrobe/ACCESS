@@ -294,7 +294,7 @@ export async function advertCollabHorsHeure() {
                     entre l'heure prévue de début (${formatDate(expectedStart)}) et l'heure réelle de début (${formatDate(actualStart)}).
                      Heure prévue de fin : ${formatDate(expectedEnd)}, Heure réelle de fin : ${formatDate(actualEnd)}.`,
                 })
-                sendNotGoodHourMail(collab, incident.id, expectedStart.toJSDate(), expectedEnd.toJSDate(), actualStart.toJSDate(), actualEnd.toJSDate(), yesterday.toJSDate())
+                //sendNotGoodHourMail(collab, incident.id, expectedStart.toJSDate(), expectedEnd.toJSDate(), actualStart.toJSDate(), actualEnd.toJSDate(), yesterday.toJSDate())
             }
             systemeCreerPresence(collab,actualStart.toFormat("HH:mm:ss"),actualEnd.toFormat("HH:mm:ss"),yesterday.toJSDate(),'Basé sur historique')
         }
@@ -306,7 +306,7 @@ export async function advertCollabHorsHeure() {
                 desc: `Le ${formatDate(yesterday)} - ${collab.prenom} ${collab.nom.toUpperCase()} -Absence.`,
                 creePar: 'SYSTEME'
             })
-            sendAbsenceMail(collab, incident.id, yesterday.toJSDate())
+            //sendAbsenceMail(collab, incident.id, yesterday.toJSDate())
             systemeCreerPresence(collab,"00:00:00","00:00:00",yesterday.toJSDate(),'Basé sur historique')
         }
 
